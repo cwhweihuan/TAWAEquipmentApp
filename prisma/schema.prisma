@@ -1,0 +1,105 @@
+// WeihuanTAWAApp — equipment archive & store configuration
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// A master equipment record (the company-wide catalog).
+model Equipment {
+  id           String  @id @default(cuid())
+  masterItemNo Int     @unique
+  description  String
+  manufacturer String?
+  model        String?
+  supplyBy     String?
+  installBy    String?
+
+  // electrical
+  power     String?
+  height    String?
+  nema      String?
+  dataPhone String?
+
+  // plumbing — water
+  waterCold String?
+  waterHot  String?
+  waterElev String?
+
+  // plumbing — gas
+  gasPipe String?
+  gasBtu  String?
+  gasElev String?
+
+  floorSink String?
+  remarks   String?
+
+  departments     String[] // which departments this item belongs to
+  departmentItems Json? // { "BAKERY": "BK#01", ... }
+
+  pdfId String?
+  pdf   Pdf?    @relation(fields: [pdfId], references: [id])
+
+  storeItems StoreItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([masterItemNo])
+}
+
+/// A spec PDF — either stored in Supabase Storage or referenced by Drive link.
+model Pdf {
+  id          String  @id @default(cuid())
+  filename    String
+  storagePath String? // path inside the Supabase Storage bucket
+  driveUrl    String? // original Google Drive link
+  driveId     String? @unique
+  downloaded  Boolean @default(false)
+  sizeBytes   Int?
+
+  equipment Equipment[]
+
+  createdAt DateTime @default(now())
+}
+
+/// A store buildout — an ordered collection of equipment chosen from the catalog.
+model Store {
+  id       String  @id @default(cuid())
+  number   String
+  name     String
+  location String?
+  status   String  @default("active")
+
+  items StoreItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// A line item in a store: references a catalog equipment (or a custom entry),
+/// with store-specific quantity / room / schedule info.
+model StoreItem {
+  id      String @id @default(cuid())
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  equipmentId String?
+  equipment   Equipment? @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
+
+  // store-specific overrides (also used for custom items with no catalog link)
+  description String?
+  quantity   Float   @default(1)
+  room       String?
+  proposeNew String?
+  scheduleNo String?
+  position   Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([storeId])
+}
