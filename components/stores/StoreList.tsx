@@ -47,7 +47,7 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
         </div>
         <button
           onClick={() => setCreating((v) => !v)}
-          className="flex items-center gap-1.5 rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700"
+          className="flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-200 transition hover:bg-brand-700"
         >
           <Plus size={16} /> New store
         </button>
@@ -95,9 +95,9 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
             <Link
               key={s.id}
               href={`/stores/${s.id}`}
-              className="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+              className="group flex items-center gap-3 rounded-2xl border border-brand-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md hover:shadow-brand-100"
             >
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-brand-300 to-rose-400 text-white shadow-sm shadow-brand-200">
                 <Store size={20} />
               </span>
               <div className="min-w-0 flex-1">

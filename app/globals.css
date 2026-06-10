@@ -1,14 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #f7f8fa;
-  --color-foreground: #1a1d21;
-  --color-brand-50: #eef4ff;
-  --color-brand-100: #d9e6ff;
-  --color-brand-500: #2f6bff;
-  --color-brand-600: #1d54e6;
-  --color-brand-700: #1843b8;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Macaron "Lavender Haze" — soft lavender-violet primary, rose-pink accent */
+  --color-background: #f3eefc;
+  --color-foreground: #3f3550;
+  --color-brand-50: #f4effc;
+  --color-brand-100: #e8ddfb;
+  --color-brand-200: #d6c2f6;
+  --color-brand-300: #bfa0ef;
+  --color-brand-400: #a37fe9;
+  --color-brand-500: #9670e6;
+  --color-brand-600: #815fe6;
+  --color-brand-700: #6d49d4;
+  /* rose-pink accent for two-tone gradients & sprinkles */
+  --color-rose-200: #ffd2e6;
+  --color-rose-300: #ffaad0;
+  --color-rose-400: #ff8cbf;
+  --color-rose-500: #f65aa0;
+  /* extra candy accents, kept on hand */
+  --color-mint-200: #c6f0e0;
+  --color-mint-500: #4fd1ac;
+  --color-lemon-200: #fff0bf;
+  --color-lemon-500: #fbc94d;
+  --font-sans: var(--font-quicksand), ui-rounded, "Hiragino Maru Gothic ProN",
+    ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
@@ -17,7 +32,13 @@ body {
 }
 
 body {
+  /* soft lavender base washed with a lilac glow, a rose light-spot, and a low lilac bloom */
   background: var(--color-background);
+  background-image:
+    radial-gradient(75% 60% at 12% 8%, rgba(163, 127, 233, 0.30) 0%, transparent 60%),
+    radial-gradient(65% 55% at 96% 22%, rgba(246, 90, 160, 0.16) 0%, transparent 55%),
+    radial-gradient(95% 75% at 50% 115%, rgba(150, 112, 230, 0.22) 0%, transparent 62%);
+  background-attachment: fixed;
   color: var(--color-foreground);
   font-family: var(--font-sans);
 }
@@ -28,7 +49,7 @@ body {
   height: 8px;
 }
 .scroll-thin::-webkit-scrollbar-thumb {
-  background: #cdd2da;
+  background: var(--color-brand-200);
   border-radius: 9999px;
 }
 .scroll-thin::-webkit-scrollbar-track {
