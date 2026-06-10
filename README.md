@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WeihuanTAWAApp
 
-## Getting Started
+A web app for archiving company equipment and configuring store buildouts. It replaces a
+sprawling master spreadsheet with a searchable catalog of equipment "cards" (each with specs
+and a spec-sheet PDF) and a drag-and-drop builder for assembling the equipment list of a new
+store.
 
-First, run the development server:
+## What it does
+
+- **Equipment catalog** — 209 equipment items as cards, with instant keyword search,
+  filtering across 9 departments (Meat, Seafood, Produce, Grocery, Bakery, Hot Deli,
+  Warehouse, General Market, Subtenants), and a detail drawer with full technical specs
+  (electrical / plumbing / gas) and an embedded PDF viewer.
+- **Manage equipment** — create, edit, and delete equipment cards; upload a spec PDF and bind
+  it to a card.
+- **Store builder** — for each store, drag equipment from the catalog into the store's
+  schedule (or click to add), set quantity / room / "propose-new", reorder by drag, and add
+  custom one-off items.
+- **Exports** — download a store's schedule as a styled Excel file, or download a ZIP bundle
+  of all of that store's spec PDFs.
+
+## Stack
+
+| Layer     | Tech                                       |
+| --------- | ------------------------------------------ |
+| Framework | Next.js 16 (App Router) + TypeScript       |
+| UI        | Tailwind CSS v4, lucide-react, dnd-kit     |
+| Data      | Supabase Postgres via Prisma               |
+| Files     | Supabase Storage (spec PDFs)               |
+| Export    | exceljs (Excel) + jszip (PDF bundle)       |
+| Hosting   | Vercel                                      |
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env      # fill in your Supabase credentials
+npx prisma migrate dev    # create tables
+npm run db:seed           # load 209 items, 3 sample stores, upload PDFs to Storage
+npm run dev               # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Data pipeline
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The original data lived in a Google Sheet (master list + per-store tabs) with spec PDFs
+hyperlinked from Google Drive. `data/extract.py` parses the exported workbook into
+`data/seed/*.json`; the spec PDFs are downloaded from Drive and re-hosted in Supabase Storage
+by the seed script.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment (Vercel)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set the same environment variables from `.env.example` in the Vercel project. The build runs
+`prisma generate && prisma migrate deploy && next build`, so schema changes apply on deploy.
