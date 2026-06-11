@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, Loader2, Upload, Ruler } from "lucide-react";
 import Link from "next/link";
 import type { EquipmentDTO } from "@/lib/types";
 import { DEPARTMENTS, deptStyle, cn } from "@/lib/utils";
@@ -83,6 +83,19 @@ export function EquipmentForm({ item }: { item?: EquipmentDTO }) {
             <Field label="Model" name="model" defaultValue={item?.model} />
             <Field label="Supply by" name="supplyBy" defaultValue={item?.supplyBy} placeholder="OWNER, G.C…" />
             <Field label="Install by" name="installBy" defaultValue={item?.installBy} />
+
+            {/* dimension */}
+            <label className="flex flex-col gap-1 sm:col-span-2">
+              <span className="flex items-center gap-1 text-xs font-medium text-gray-600">
+                <Ruler size={12} /> Dimension
+              </span>
+              <input
+                name="dimension"
+                defaultValue={item?.dimension ?? ""}
+                placeholder='e.g. 48"W x 30"D x 36"H'
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+              />
+            </label>
           </div>
 
           {/* departments */}

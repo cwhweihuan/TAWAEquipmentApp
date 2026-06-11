@@ -18,6 +18,7 @@ model Equipment {
   model        String?
   supplyBy     String?
   installBy    String?
+  dimension    String? // overall size, e.g. 48"W x 30"D x 36"H — manual or auto-extracted from spec PDF
 
   // electrical
   power     String?
@@ -74,6 +75,10 @@ model Store {
   name     String
   location String?
   status   String  @default("active")
+
+  floorplanPath String? // path inside the Supabase Storage bucket for the floor-plan PDF
+  floorplanName String? // original filename of the floor-plan PDF
+  subtenants    Json? // [{ no: string, name: string }, ...] — editable subtenant list
 
   items StoreItem[]
 

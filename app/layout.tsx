@@ -7,7 +7,7 @@ import "./globals.css";
 const quicksand = Quicksand({ variable: "--font-quicksand", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "WeihuanTAWA — Equipment Archive",
+  title: "Wei.Chueh.TAWA — Equipment Archive",
   description: "Company equipment catalog & store buildout configurator",
 };
 
@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <span className="grid h-8 w-8 place-items-center rounded-2xl bg-gradient-to-br from-brand-400 to-rose-500 text-white shadow-sm shadow-brand-200">
                 W
               </span>
-              <span className="text-[15px]">WeihuanTAWA</span>
+              <span className="text-[15px]">Wei.Chueh.TAWA</span>
             </Link>
             <NavLink href="/catalog" icon={<Boxes size={16} />}>
               Equipment

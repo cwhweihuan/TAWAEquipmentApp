@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf, ensurePdfBucket } from "@/lib/supabase";
 import { DEPARTMENTS } from "@/lib/utils";
@@ -11,6 +12,7 @@ const FIELDS = [
   "model",
   "supplyBy",
   "installBy",
+  "dimension",
   "power",
   "height",
   "nema",
@@ -71,6 +73,7 @@ export async function createEquipment(fd: FormData) {
       model: data.model,
       supplyBy: data.supplyBy,
       installBy: data.installBy,
+      dimension: data.dimension,
       power: data.power,
       height: data.height,
       nema: data.nema,
@@ -104,6 +107,59 @@ export async function updateEquipment(id: string, fd: FormData) {
     },
   });
   revalidatePath("/catalog");
+}
+
+/** Quick inline save of just the dimension field (used from the catalog drawer). */
+export async function updateEquipmentDimension(id: string, dimension: string) {
+  await prisma.equipment.update({
+    where: { id },
+    data: { dimension: dimension.trim() || null },
+  });
+  revalidatePath("/catalog");
+}
+
+/**
+ * Duplicate an equipment item as a variant — like a Revit family type. The copy
+ * shares the original's spec PDF (same pdfId) but gets its own name + dimension.
+ */
+export async function duplicateEquipment(
+  id: string,
+  overrides: { description?: string; dimension?: string }
+): Promise<string> {
+  const src = await prisma.equipment.findUnique({ where: { id } });
+  if (!src) throw new Error("Original equipment not found");
+
+  const max = await prisma.equipment.aggregate({ _max: { masterItemNo: true } });
+  const eq = await prisma.equipment.create({
+    data: {
+      masterItemNo: (max._max.masterItemNo ?? 0) + 1,
+      description: overrides.description?.trim() || `${src.description} (variant)`,
+      manufacturer: src.manufacturer,
+      model: src.model,
+      supplyBy: src.supplyBy,
+      installBy: src.installBy,
+      dimension: overrides.dimension?.trim() || null,
+      power: src.power,
+      height: src.height,
+      nema: src.nema,
+      dataPhone: src.dataPhone,
+      waterCold: src.waterCold,
+      waterHot: src.waterHot,
+      waterElev: src.waterElev,
+      gasPipe: src.gasPipe,
+      gasBtu: src.gasBtu,
+      gasElev: src.gasElev,
+      floorSink: src.floorSink,
+      remarks: src.remarks,
+      departments: src.departments,
+      ...(src.departmentItems != null
+        ? { departmentItems: src.departmentItems as Prisma.InputJsonValue }
+        : {}),
+      pdfId: src.pdfId, // share the spec sheet with the original
+    },
+  });
+  revalidatePath("/catalog");
+  return eq.id;
 }
 
 export async function deleteEquipment(id: string) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Link2 } from "lucide-react";
+import { FileText, Link2, Ruler } from "lucide-react";
 import type { EquipmentDTO } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
 import { cn } from "@/lib/utils";
@@ -43,6 +43,13 @@ export function EquipmentCard({
       {(item.manufacturer || item.model) && (
         <p className="line-clamp-1 text-xs text-gray-500">
           {[item.manufacturer, item.model].filter(Boolean).join(" · ")}
+        </p>
+      )}
+
+      {item.dimension && (
+        <p className="flex items-center gap-1 text-xs font-medium text-brand-600">
+          <Ruler size={12} className="shrink-0" />
+          <span className="line-clamp-1">{item.dimension}</span>
         </p>
       )}
 

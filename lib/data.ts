@@ -1,7 +1,7 @@
 import { prisma } from "./prisma";
 import { pdfPublicUrl } from "./supabase";
 import type { Prisma } from "@prisma/client";
-import type { EquipmentDTO, StoreItemDTO } from "./types";
+import type { EquipmentDTO, StoreItemDTO, StoreView, Subtenant } from "./types";
 
 export type EquipmentWithPdf = Prisma.EquipmentGetPayload<{ include: { pdf: true } }>;
 
@@ -15,6 +15,7 @@ export function toEquipmentDTO(e: EquipmentWithPdf): EquipmentDTO {
     model: e.model,
     supplyBy: e.supplyBy,
     installBy: e.installBy,
+    dimension: e.dimension,
     power: e.power,
     height: e.height,
     nema: e.nema,
@@ -123,6 +124,7 @@ export function toStoreItemDTO(it: StoreWithItems["items"][number]): StoreItemDT
     description: eq?.description ?? it.description ?? "Custom item",
     manufacturer: eq?.manufacturer ?? null,
     model: eq?.model ?? null,
+    dimension: eq?.dimension ?? null,
     quantity: it.quantity,
     room: it.room,
     proposeNew: it.proposeNew,
@@ -130,15 +132,27 @@ export function toStoreItemDTO(it: StoreWithItems["items"][number]): StoreItemDT
     position: it.position,
     departments: eq?.departments ?? [],
     pdfUrl: eq ? pdfUrlFor(eq.pdf) : null,
+    pdfDownloaded: eq?.pdf?.downloaded ?? false,
   };
 }
 
-export function toStoreView(store: StoreWithItems) {
+/** Parse the loosely-typed Json subtenants column into a clean, ordered array. */
+export function parseSubtenants(raw: unknown): Subtenant[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((s): s is Record<string, unknown> => !!s && typeof s === "object")
+    .map((s) => ({ no: String(s.no ?? ""), name: String(s.name ?? "") }));
+}
+
+export function toStoreView(store: StoreWithItems): StoreView {
   return {
     id: store.id,
     number: store.number,
     name: store.name,
     location: store.location,
+    floorplanUrl: store.floorplanPath ? pdfPublicUrl(store.floorplanPath) : null,
+    floorplanName: store.floorplanName,
+    subtenants: parseSubtenants(store.subtenants),
     items: store.items.map(toStoreItemDTO),
   };
 }

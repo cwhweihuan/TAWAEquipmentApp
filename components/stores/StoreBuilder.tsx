@@ -31,8 +31,10 @@ import {
   Download,
   Check,
   PackagePlus,
+  Settings2,
+  Ruler,
 } from "lucide-react";
-import type { EquipmentDTO, StoreItemDTO } from "@/lib/types";
+import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
 import { cn } from "@/lib/utils";
 import {
@@ -42,14 +44,14 @@ import {
   reorderStoreItems,
   updateStoreItem,
 } from "@/app/actions/store";
+import { StoreDetailsDrawer } from "./StoreDetailsDrawer";
+import { PdfPreviewDrawer, type PreviewTarget } from "./PdfPreviewDrawer";
 
-type StoreView = {
-  id: string;
-  number: string;
-  name: string;
-  location: string | null;
-  items: StoreItemDTO[];
-};
+/** Mutable header fields the details drawer can edit in place. */
+type StoreMeta = Pick<
+  StoreView,
+  "name" | "number" | "location" | "floorplanUrl" | "floorplanName" | "subtenants"
+>;
 
 export function StoreBuilder({
   store,
@@ -59,8 +61,18 @@ export function StoreBuilder({
   equipment: EquipmentDTO[];
 }) {
   const [items, setItems] = useState<StoreItemDTO[]>(store.items);
+  const [meta, setMeta] = useState<StoreMeta>({
+    name: store.name,
+    number: store.number,
+    location: store.location,
+    floorplanUrl: store.floorplanUrl,
+    floorplanName: store.floorplanName,
+    subtenants: store.subtenants,
+  });
   const [q, setQ] = useState("");
   const [activeDrag, setActiveDrag] = useState<EquipmentDTO | StoreItemDTO | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const addedIds = useMemo(
@@ -78,6 +90,16 @@ export function StoreBuilder({
     );
   }, [equipment, q]);
 
+  function previewItem(it: { description: string; manufacturer: string | null; pdfUrl: string | null; pdfDownloaded: boolean }) {
+    if (!it.pdfUrl) return;
+    setPreview({
+      title: it.description,
+      subtitle: it.manufacturer,
+      url: it.pdfUrl,
+      downloaded: it.pdfDownloaded,
+    });
+  }
+
   async function addEquipment(eq: EquipmentDTO) {
     // optimistic temp row, reconciled with the real id from the server
     const temp: StoreItemDTO = {
@@ -86,6 +108,7 @@ export function StoreBuilder({
       description: eq.description,
       manufacturer: eq.manufacturer,
       model: eq.model,
+      dimension: eq.dimension,
       quantity: 1,
       room: null,
       proposeNew: null,
@@ -93,6 +116,7 @@ export function StoreBuilder({
       position: items.length,
       departments: eq.departments,
       pdfUrl: eq.pdfUrl,
+      pdfDownloaded: eq.pdfDownloaded,
     };
     setItems((cur) => [...cur, temp]);
     const realId = await addItemToStore(store.id, eq.id);
@@ -111,6 +135,7 @@ export function StoreBuilder({
         description: desc,
         manufacturer: null,
         model: null,
+        dimension: null,
         quantity: 1,
         room: null,
         proposeNew: null,
@@ -118,6 +143,7 @@ export function StoreBuilder({
         position: cur.length,
         departments: [],
         pdfUrl: null,
+        pdfDownloaded: false,
       },
     ]);
   }
@@ -188,28 +214,37 @@ export function StoreBuilder({
       <div className="mx-auto flex h-[calc(100vh-3.5rem)] max-w-[1500px] flex-col px-4 sm:px-6">
         {/* header */}
         <div className="flex flex-wrap items-center justify-between gap-3 py-4">
-          <div>
+          <div className="min-w-0">
             <Link
               href="/stores"
               className="mb-1 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800"
             >
               <ArrowLeft size={15} /> Stores
             </Link>
-            <h1 className="text-xl font-semibold tracking-tight text-gray-900">
-              #{store.number} <span className="text-gray-400">{store.location}</span>
+            <h1 className="truncate text-xl font-semibold tracking-tight text-gray-900">
+              {meta.name}
+              {meta.location && (
+                <span className="ml-2 text-base font-normal text-gray-400">{meta.location}</span>
+              )}
             </h1>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">{items.length} items</span>
+            <button
+              onClick={() => setDetailsOpen(true)}
+              className="flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 shadow-sm transition hover:bg-brand-50"
+            >
+              <Settings2 size={15} /> Details
+            </button>
             <a
               href={`/api/stores/${store.id}/export.xlsx`}
-              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               <Download size={15} /> Excel
             </a>
             <a
               href={`/api/stores/${store.id}/export.zip`}
-              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               <FileText size={15} /> PDFs
             </a>
@@ -219,7 +254,7 @@ export function StoreBuilder({
         {/* two panes */}
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 pb-4 lg:grid-cols-[360px_1fr]">
           {/* catalog */}
-          <div className="flex min-h-0 flex-col rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div className="flex min-h-0 flex-col rounded-2xl border border-brand-100 bg-white shadow-sm">
             <div className="border-b border-gray-100 p-3">
               <div className="relative">
                 <Search size={15} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -250,17 +285,28 @@ export function StoreBuilder({
             onPatch={patch}
             onPersist={persistField}
             onAddCustom={addCustom}
+            onPreview={previewItem}
           />
         </div>
       </div>
 
       <DragOverlay>
         {activeDrag ? (
-          <div className="w-[340px] rounded-lg border border-brand-300 bg-white p-2.5 text-sm font-medium text-gray-800 shadow-lg">
+          <div className="w-[340px] rounded-xl border border-brand-300 bg-white p-2.5 text-sm font-medium text-gray-800 shadow-lg">
             {activeDrag.description}
           </div>
         ) : null}
       </DragOverlay>
+
+      {detailsOpen && (
+        <StoreDetailsDrawer
+          store={{ id: store.id, ...meta }}
+          onClose={() => setDetailsOpen(false)}
+          onSaved={(p) => setMeta((m) => ({ ...m, ...p }))}
+          onPreview={setPreview}
+        />
+      )}
+      <PdfPreviewDrawer target={preview} onClose={() => setPreview(null)} />
     </DndContext>
   );
 }
@@ -296,6 +342,7 @@ function CatalogItem({
         <p className="truncate text-xs text-gray-400">
           #{eq.masterItemNo}
           {eq.manufacturer ? ` · ${eq.manufacturer}` : ""}
+          {eq.dimension ? ` · ${eq.dimension}` : ""}
         </p>
       </div>
       {eq.pdfUrl && <FileText size={13} className="shrink-0 text-brand-400" />}
@@ -315,12 +362,17 @@ function CatalogItem({
   );
 }
 
+// shared column template for the schedule header + rows
+const COLS =
+  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_104px]";
+
 function StoreDropZone({
   items,
   onRemove,
   onPatch,
   onPersist,
   onAddCustom,
+  onPreview,
 }: {
   items: StoreItemDTO[];
   onRemove: (id: string) => void;
@@ -331,14 +383,15 @@ function StoreDropZone({
     value: string
   ) => void;
   onAddCustom: () => void;
+  onPreview: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-h-0 flex-col rounded-xl border-2 bg-white shadow-sm transition",
-        isOver ? "border-brand-400 bg-brand-50/30" : "border-gray-200"
+        "flex min-h-0 flex-col rounded-2xl border-2 bg-white shadow-sm transition",
+        isOver ? "border-brand-400 bg-brand-50/30" : "border-brand-100"
       )}
     >
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
@@ -358,13 +411,19 @@ function StoreDropZone({
       ) : (
         <div className="scroll-thin flex-1 overflow-y-auto p-2">
           {/* header row */}
-          <div className="sticky top-0 z-10 mb-1 grid grid-cols-[24px_28px_1fr_64px_88px_80px] items-center gap-2 bg-white px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+          <div
+            className={cn(
+              "sticky top-0 z-10 mb-1 grid items-center gap-2 bg-white px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400",
+              COLS
+            )}
+          >
             <span />
             <span>#</span>
             <span>Equipment</span>
+            <span>Dimension</span>
             <span>Qty</span>
             <span>Room</span>
-            <span>New?</span>
+            <span>Status</span>
           </div>
           <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
             {items.map((it, idx) => (
@@ -375,6 +434,7 @@ function StoreDropZone({
                 onRemove={() => onRemove(it.id)}
                 onPatch={(p) => onPatch(it.id, p)}
                 onPersist={(field, value) => onPersist(it.id, field, value)}
+                onPreview={() => onPreview(it)}
               />
             ))}
           </SortableContext>
@@ -390,12 +450,14 @@ function SortableStoreRow({
   onRemove,
   onPatch,
   onPersist,
+  onPreview,
 }: {
   item: StoreItemDTO;
   index: number;
   onRemove: () => void;
   onPatch: (p: Partial<StoreItemDTO>) => void;
   onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => void;
+  onPreview: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -407,25 +469,41 @@ function SortableStoreRow({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group mb-1 grid grid-cols-[24px_28px_1fr_64px_88px_80px] items-center gap-2 rounded-lg border border-gray-100 bg-white px-2 py-1.5 hover:border-gray-200",
+        "group mb-1 grid items-start gap-2 rounded-lg border border-gray-100 bg-white px-2 py-2 hover:border-gray-200",
+        COLS,
         isDragging && "z-20 opacity-80 shadow-md"
       )}
     >
       <button
         {...attributes}
         {...listeners}
-        className="cursor-grab touch-none text-gray-300 hover:text-gray-500 active:cursor-grabbing"
+        className="mt-1 cursor-grab touch-none text-gray-300 hover:text-gray-500 active:cursor-grabbing"
       >
         <GripVertical size={15} />
       </button>
-      <span className="font-mono text-xs text-gray-400">{index}</span>
+      <span className="mt-1 font-mono text-xs text-gray-400">{index}</span>
+
+      {/* equipment: description, manufacturer, ALL department tags, pdf preview */}
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-gray-800">{item.description}</p>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-start gap-1.5">
+          <p className="min-w-0 flex-1 text-sm font-medium leading-snug text-gray-800">
+            {item.description}
+          </p>
+          {item.pdfUrl && (
+            <button
+              onClick={onPreview}
+              className="mt-0.5 shrink-0 rounded p-0.5 text-brand-400 transition hover:bg-brand-50 hover:text-brand-600"
+              title="Preview spec PDF"
+            >
+              <FileText size={14} />
+            </button>
+          )}
+        </div>
+        <div className="mt-1 flex flex-wrap items-center gap-1">
           {item.manufacturer && (
             <span className="truncate text-xs text-gray-400">{item.manufacturer}</span>
           )}
-          {item.departments.slice(0, 1).map((d) => (
+          {item.departments.map((d) => (
             <DeptChip key={d} dept={d} />
           ))}
           {!item.equipmentId && (
@@ -433,6 +511,19 @@ function SortableStoreRow({
           )}
         </div>
       </div>
+
+      {/* dimension (from catalog, read-only here) */}
+      <div className="mt-1 min-w-0">
+        {item.dimension ? (
+          <span className="flex items-start gap-1 text-xs text-gray-600">
+            <Ruler size={12} className="mt-0.5 shrink-0 text-gray-300" />
+            <span className="break-words">{item.dimension}</span>
+          </span>
+        ) : (
+          <span className="text-xs text-gray-300">—</span>
+        )}
+      </div>
+
       <input
         type="number"
         min={0}
@@ -444,9 +535,9 @@ function SortableStoreRow({
       />
       <input
         defaultValue={item.room ?? ""}
-        placeholder="—"
+        placeholder="Room / area…"
         onBlur={(e) => onPersist("room", e.target.value)}
-        className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-sm outline-none focus:border-brand-400"
+        className="w-full rounded-md border border-gray-200 px-2 py-1 text-sm outline-none focus:border-brand-400"
       />
       <div className="flex items-center gap-1">
         <input

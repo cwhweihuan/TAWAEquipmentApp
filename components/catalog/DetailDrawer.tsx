@@ -1,9 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
-import { X, FileText, ExternalLink, Pencil, Trash2 } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import {
+  X,
+  FileText,
+  ExternalLink,
+  Pencil,
+  Trash2,
+  Ruler,
+  CopyPlus,
+  Loader2,
+  Check,
+} from "lucide-react";
 import type { EquipmentDTO } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
+import { updateEquipmentDimension, duplicateEquipment } from "@/app/actions/equipment";
 
 function Spec({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
@@ -26,6 +38,15 @@ export function DetailDrawer({
   onEdit?: (item: EquipmentDTO) => void;
   onDelete?: (item: EquipmentDTO) => void;
 }) {
+  const router = useRouter();
+  const [dim, setDim] = useState(item?.dimension ?? "");
+  const [dimMsg, setDimMsg] = useState<string | null>(null);
+  const [savingDim, startSaveDim] = useTransition();
+  const [dupOpen, setDupOpen] = useState(false);
+  const [dupName, setDupName] = useState(item?.description ?? "");
+  const [dupDim, setDupDim] = useState(item?.dimension ?? "");
+  const [duping, startDup] = useTransition();
+
   useEffect(() => {
     const h = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     if (item) window.addEventListener("keydown", h);
@@ -33,6 +54,23 @@ export function DetailDrawer({
   }, [item, onClose]);
 
   if (!item) return null;
+  const equip = item;
+
+  function saveDim() {
+    startSaveDim(async () => {
+      await updateEquipmentDimension(equip.id, dim);
+      setDimMsg("Saved");
+      router.refresh();
+    });
+  }
+
+  function doDuplicate() {
+    startDup(async () => {
+      await duplicateEquipment(equip.id, { description: dupName, dimension: dupDim });
+      router.refresh();
+      onClose();
+    });
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -57,6 +95,13 @@ export function DetailDrawer({
             )}
           </div>
           <div className="flex items-center gap-1">
+            <button
+              onClick={() => setDupOpen((v) => !v)}
+              className="rounded-lg p-2 text-gray-400 hover:bg-brand-50 hover:text-brand-700"
+              title="Duplicate as a variant (shares this spec sheet)"
+            >
+              <CopyPlus size={16} />
+            </button>
             {onEdit && (
               <button
                 onClick={() => onEdit(item)}
@@ -86,6 +131,80 @@ export function DetailDrawer({
 
         {/* body */}
         <div className="scroll-thin flex-1 overflow-y-auto px-6 py-5">
+          {/* duplicate-as-variant panel */}
+          {dupOpen && (
+            <div className="mb-5 rounded-xl border border-brand-200 bg-brand-50/50 p-4 animate-fade-in">
+              <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-brand-700">
+                <CopyPlus size={15} /> Duplicate as a variant
+              </h3>
+              <p className="mb-3 text-xs text-gray-500">
+                Creates a new item sharing this spec sheet — give it its own name and size.
+              </p>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-gray-600">Variant name</span>
+                  <input
+                    value={dupName}
+                    onChange={(e) => setDupName(e.target.value)}
+                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-gray-600">Dimension</span>
+                  <input
+                    value={dupDim}
+                    onChange={(e) => setDupDim(e.target.value)}
+                    placeholder='e.g. 36"W x 30"D x 36"H'
+                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+                  />
+                </label>
+              </div>
+              <div className="mt-3 flex justify-end gap-2">
+                <button
+                  onClick={() => setDupOpen(false)}
+                  className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={doDuplicate}
+                  disabled={duping}
+                  className="flex items-center gap-1.5 rounded-full bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm shadow-brand-200 hover:bg-brand-700 disabled:opacity-60"
+                >
+                  {duping && <Loader2 size={14} className="animate-spin" />} Create variant
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* dimension — quick inline editor */}
+          <div className="mb-5 rounded-xl border border-brand-100 bg-brand-50/40 p-3">
+            <div className="mb-1.5 flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-700">
+                <Ruler size={13} /> Dimension
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                value={dim}
+                onChange={(e) => {
+                  setDim(e.target.value);
+                  setDimMsg(null);
+                }}
+                placeholder='e.g. 48"W x 30"D x 36"H'
+                className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+              />
+              <button
+                onClick={saveDim}
+                disabled={savingDim || dim === (item.dimension ?? "")}
+                className="flex items-center gap-1 rounded-lg bg-brand-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-50"
+              >
+                {savingDim ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} Save
+              </button>
+            </div>
+            {dimMsg && <p className="mt-1 text-xs text-gray-500">{dimMsg}</p>}
+          </div>
+
           <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
             <Spec label="Supply by" value={item.supplyBy} />
             <Spec label="Install by" value={item.installBy} />

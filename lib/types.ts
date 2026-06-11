@@ -7,6 +7,7 @@ export type EquipmentDTO = {
   model: string | null;
   supplyBy: string | null;
   installBy: string | null;
+  dimension: string | null;
   power: string | null;
   height: string | null;
   nema: string | null;
@@ -31,6 +32,7 @@ export type StoreItemDTO = {
   description: string;
   manufacturer: string | null;
   model: string | null;
+  dimension: string | null;
   quantity: number;
   room: string | null;
   proposeNew: string | null;
@@ -38,4 +40,23 @@ export type StoreItemDTO = {
   position: number;
   departments: string[];
   pdfUrl: string | null;
+  pdfDownloaded: boolean;
+};
+
+/** A subtenant slot in a store buildout — editable number + name. */
+export type Subtenant = {
+  no: string;
+  name: string;
+};
+
+/** Client-safe shape of a store buildout (header + items). */
+export type StoreView = {
+  id: string;
+  number: string;
+  name: string;
+  location: string | null;
+  floorplanUrl: string | null;
+  floorplanName: string | null;
+  subtenants: Subtenant[];
+  items: StoreItemDTO[];
 };

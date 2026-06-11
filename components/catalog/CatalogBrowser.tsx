@@ -153,6 +153,7 @@ export function CatalogBrowser({
       )}
 
       <DetailDrawer
+        key={selected?.id ?? "closed"}
         item={selected}
         onClose={() => setSelected(null)}
         onEdit={(it) => router.push(`/catalog/${it.id}/edit`)}
