@@ -19,8 +19,8 @@ export function EquipmentCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "group flex w-full flex-col gap-2 rounded-2xl border border-brand-100 bg-white p-3 text-left shadow-sm transition",
-        "hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md hover:shadow-brand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+        "group flex w-full flex-col gap-2 rounded-2xl border border-white/50 bg-white/40 p-3 text-left shadow-sm backdrop-blur-md backdrop-saturate-150 transition",
+        "hover:-translate-y-0.5 hover:border-brand-300 hover:bg-white/65 hover:shadow-md hover:shadow-brand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
       )}
     >
       <div className="flex items-start justify-between gap-2">

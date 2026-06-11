@@ -254,7 +254,7 @@ export function StoreBuilder({
         {/* two panes */}
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 pb-4 lg:grid-cols-[360px_1fr]">
           {/* catalog */}
-          <div className="flex min-h-0 flex-col rounded-2xl border border-brand-100 bg-white shadow-sm">
+          <div className="flex min-h-0 flex-col rounded-2xl border border-white/60 bg-white/55 shadow-sm backdrop-blur-md backdrop-saturate-150">
             <div className="border-b border-gray-100 p-3">
               <div className="relative">
                 <Search size={15} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -325,7 +325,7 @@ function CatalogItem({
     <div
       ref={setNodeRef}
       className={cn(
-        "group flex items-center gap-2 rounded-lg border border-gray-200 bg-white p-2 transition hover:border-brand-300",
+        "group flex items-center gap-2 rounded-lg border border-white/50 bg-white/50 p-2 transition hover:border-brand-300 hover:bg-white/70",
         isDragging && "opacity-40"
       )}
     >
@@ -390,8 +390,8 @@ function StoreDropZone({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-h-0 flex-col rounded-2xl border-2 bg-white shadow-sm transition",
-        isOver ? "border-brand-400 bg-brand-50/30" : "border-brand-100"
+        "flex min-h-0 flex-col rounded-2xl border-2 shadow-sm backdrop-blur-md backdrop-saturate-150 transition",
+        isOver ? "border-brand-400 bg-brand-50/40" : "border-white/60 bg-white/55"
       )}
     >
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
@@ -413,7 +413,7 @@ function StoreDropZone({
           {/* header row */}
           <div
             className={cn(
-              "sticky top-0 z-10 mb-1 grid items-center gap-2 bg-white px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400",
+              "sticky top-0 z-10 mb-1 grid items-center gap-2 bg-white/70 px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400 backdrop-blur",
               COLS
             )}
           >
@@ -469,7 +469,7 @@ function SortableStoreRow({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group mb-1 grid items-start gap-2 rounded-lg border border-gray-100 bg-white px-2 py-2 hover:border-gray-200",
+        "group mb-1 grid items-start gap-2 rounded-lg border border-white/50 bg-white/45 px-2 py-2 hover:border-brand-200 hover:bg-white/65",
         COLS,
         isDragging && "z-20 opacity-80 shadow-md"
       )}

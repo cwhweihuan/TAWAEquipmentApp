@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 
-/** Theme-matched heart colors: rose accents + a touch of lavender. */
-const COLORS = ["#ff8cbf", "#f65aa0", "#ffaad0", "#a37fe9"];
+/** Theme-matched heart colors: rose accents + a touch of lavender (saturated
+ *  enough to still read as soft blobs behind frosted-glass surfaces). */
+const COLORS = ["#ff6fae", "#f0469a", "#ff8cbf", "#9b78ee"];
 
 /**
  * Deterministic pseudo-random in [0,1) from an index + salt. Using a stable
@@ -21,7 +22,7 @@ function seeded(i: number, salt: number): number {
  * Honors the OS "reduce motion" setting via CSS (see globals.css).
  */
 export function FloatingHearts({
-  count = 18,
+  count = 34,
   mode = "rise",
 }: {
   count?: number;
@@ -38,11 +39,11 @@ export function FloatingHearts({
       Array.from({ length: count }, (_, i) => ({
         id: i,
         left: r2(seeded(i, 1) * 102 - 2), // vw
-        size: Math.round(12 + seeded(i, 2) * 14), // px
+        size: Math.round(18 + seeded(i, 2) * 26), // px — bigger so they read through frosted glass
         dur: r2(base * 0.7 + seeded(i, 3) * base * 0.7), // s
         delay: r2(-seeded(i, 4) * base), // s
         sway: Math.round(seeded(i, 5) * 160 - 80), // px
-        opacity: r2(0.5 + seeded(i, 6) * 0.4),
+        opacity: r2(0.6 + seeded(i, 6) * 0.35),
         color: COLORS[Math.floor(seeded(i, 7) * COLORS.length)],
       })),
     [count]

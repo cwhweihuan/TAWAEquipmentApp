@@ -56,7 +56,7 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
       {creating && (
         <form
           onSubmit={onCreate}
-          className="mb-5 flex flex-wrap items-end gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm animate-fade-in"
+          className="mb-5 flex flex-wrap items-end gap-3 rounded-2xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-md animate-fade-in"
         >
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-gray-600">Store number</span>
@@ -95,7 +95,7 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
             <Link
               key={s.id}
               href={`/stores/${s.id}`}
-              className="group flex items-center gap-3 rounded-2xl border border-brand-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md hover:shadow-brand-100"
+              className="group flex items-center gap-3 rounded-2xl border border-white/50 bg-white/45 p-4 shadow-sm backdrop-blur-md backdrop-saturate-150 transition hover:-translate-y-0.5 hover:border-brand-300 hover:bg-white/65 hover:shadow-md hover:shadow-brand-100"
             >
               <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-brand-300 to-rose-400 text-white shadow-sm shadow-brand-200">
                 <Store size={20} />

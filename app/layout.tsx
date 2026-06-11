@@ -17,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${quicksand.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <FloatingHearts />
-        <header className="sticky top-0 z-30 border-b border-brand-100 bg-white/80 backdrop-blur">
+        <header className="sticky top-0 z-30 border-b border-white/50 bg-white/45 backdrop-blur-xl backdrop-saturate-150">
           <div className="mx-auto flex h-14 max-w-[1500px] items-center gap-1 px-4 sm:px-6">
             <Link href="/" className="mr-4 flex items-center gap-2 font-bold tracking-tight">
               <span className="grid h-8 w-8 place-items-center rounded-2xl bg-gradient-to-br from-brand-400 to-rose-500 text-white shadow-sm shadow-brand-200">
