@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import Link from "next/link";
 import { Boxes, Store } from "lucide-react";
+import { FloatingHearts } from "@/components/FloatingHearts";
 import "./globals.css";
 
 const quicksand = Quicksand({ variable: "--font-quicksand", subsets: ["latin"] });
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${quicksand.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <FloatingHearts />
         <header className="sticky top-0 z-30 border-b border-brand-100 bg-white/80 backdrop-blur">
           <div className="mx-auto flex h-14 max-w-[1500px] items-center gap-1 px-4 sm:px-6">
             <Link href="/" className="mr-4 flex items-center gap-2 font-bold tracking-tight">

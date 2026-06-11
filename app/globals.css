@@ -69,3 +69,62 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.18s ease-out;
 }
+
+/* ── floating hearts background (behind all content, never blocks clicks) ── */
+.float-heart {
+  position: absolute;
+  will-change: transform, opacity;
+}
+.float-heart--rise {
+  bottom: -6vh;
+  animation: heartRise var(--dur) ease-in var(--delay) infinite;
+}
+.float-heart--fall {
+  top: -6vh;
+  animation:
+    heartFall var(--dur) linear var(--delay) infinite,
+    heartSway calc(var(--dur) / 2.5) ease-in-out var(--delay) infinite alternate;
+}
+@keyframes heartRise {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.6);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-55vh) translateX(var(--sway)) scale(1);
+  }
+  100% {
+    transform: translateY(-115vh) translateX(calc(var(--sway) * -0.6)) scale(0.8);
+    opacity: 0;
+  }
+}
+@keyframes heartFall {
+  0% {
+    transform: translateY(-6vh) rotate(-12deg);
+    opacity: 0.95;
+  }
+  50% {
+    transform: translateY(50vh) rotate(10deg);
+  }
+  100% {
+    transform: translateY(112vh) rotate(-8deg);
+    opacity: 0.8;
+  }
+}
+@keyframes heartSway {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: var(--sway);
+  }
+}
+/* respect the OS "reduce motion" accessibility setting */
+@media (prefers-reduced-motion: reduce) {
+  .heart-layer {
+    display: none;
+  }
+}
