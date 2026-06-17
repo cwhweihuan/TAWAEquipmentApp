@@ -43,3 +43,6 @@ next-env.d.ts
 # large seed assets (already uploaded to Supabase Storage)
 /data/seed/pdfs/
 /data/source/*.xlsx
+
+# 本地一次性导入记录(含 NAS 绝对路径)
+/data/seed/_match.json
