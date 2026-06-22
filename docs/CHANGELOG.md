@@ -4,7 +4,7 @@
 > 更早的代码级历史见 `git log`。
 
 ## 2026-06-21
-- ✅ **门店 Status 改下拉**：门店搭建页的 Status(=`proposeNew`) 由自由输入改为下拉 `New / Existing / (E)Relocate / Remove`，与审计 Excel 一致。旧值（`NEW`、`(E) Relocate`）通过 `canonicalStatus()` 大小写/空格不敏感地显示为对应选项，重新选择即写回规范值；无需改数据库。
+- ✅ **门店 Status 改下拉**：门店搭建页的 Status(=`proposeNew`) 由自由输入改为下拉 `New / Existing / (E)Relocate / Remove`，与审计 Excel 一致。旧值（`NEW`、`(E) Relocate`）通过 `canonicalStatus()` 大小写/空格不敏感地显示为对应选项，重新选择即写回规范值。另：经用户确认，已把生产库 11 行旧值规范化为 `New`(9) / `(E)Relocate`(2)，与下拉及导出彻底统一。
 - ✅ **门店界面联动编辑设备 family**：门店搭建页每个设备行的「删除」左边加了「✏️ 编辑」按钮，点开抽屉直接改底层 `Equipment`（family）资料；保存后该门店内所有引用此设备的行即时联动更新，并 `router.refresh()` 同步目录面板。实现：给 `EquipmentForm` 加 `embedded` 模式复用 + 新增 `components/stores/EquipmentEditDrawer.tsx`。tsc/eslint 通过，门店页冒烟测试 200 正常渲染。
 - ✅ **Excel 升级**：`设备规格表-待处理清单.xlsx` 加「状态（下拉选择）」列——下拉 `New / Existing / (E)Relocate / Remove`（数据校验），加宽、浅黄提示填写；两个 sheet 都有。对应 app 里的 Status(=proposeNew) 字段。
 
