@@ -37,7 +37,19 @@ function Field({
   );
 }
 
-export function EquipmentForm({ item }: { item?: EquipmentDTO }) {
+export function EquipmentForm({
+  item,
+  embedded,
+  onSaved,
+  onCancel,
+}: {
+  item?: EquipmentDTO;
+  /** render without page chrome (back link / title / max-width) for use inside a drawer */
+  embedded?: boolean;
+  /** in embedded mode, called with the submitted FormData after a successful save (instead of navigating) */
+  onSaved?: (fd: FormData) => void;
+  onCancel?: () => void;
+}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -52,8 +64,12 @@ export function EquipmentForm({ item }: { item?: EquipmentDTO }) {
       try {
         if (editing) await updateEquipment(item!.id, fd);
         else await createEquipment(fd);
-        router.push("/catalog");
-        router.refresh();
+        if (embedded) {
+          onSaved?.(fd);
+        } else {
+          router.push("/catalog");
+          router.refresh();
+        }
       } catch (err) {
         setError((err as Error).message || "Something went wrong");
       }
@@ -61,16 +77,20 @@ export function EquipmentForm({ item }: { item?: EquipmentDTO }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
-      <Link
-        href="/catalog"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800"
-      >
-        <ArrowLeft size={15} /> Back to catalog
-      </Link>
-      <h1 className="mb-5 text-xl font-semibold tracking-tight text-gray-900">
-        {editing ? `Edit #${item!.masterItemNo}` : "New equipment"}
-      </h1>
+    <div className={embedded ? "" : "mx-auto max-w-3xl px-4 py-6 sm:px-6"}>
+      {!embedded && (
+        <>
+          <Link
+            href="/catalog"
+            className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800"
+          >
+            <ArrowLeft size={15} /> Back to catalog
+          </Link>
+          <h1 className="mb-5 text-xl font-semibold tracking-tight text-gray-900">
+            {editing ? `Edit #${item!.masterItemNo}` : "New equipment"}
+          </h1>
+        </>
+      )}
 
       <form onSubmit={onSubmit} className="flex flex-col gap-6">
         {/* basics */}
@@ -182,12 +202,22 @@ export function EquipmentForm({ item }: { item?: EquipmentDTO }) {
         )}
 
         <div className="flex items-center justify-end gap-2">
-          <Link
-            href="/catalog"
-            className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
-          >
-            Cancel
-          </Link>
+          {embedded ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+          ) : (
+            <Link
+              href="/catalog"
+              className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+            >
+              Cancel
+            </Link>
+          )}
           <button
             type="submit"
             disabled={pending}

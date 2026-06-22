@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   DndContext,
   DragOverlay,
@@ -27,6 +28,7 @@ import {
   Plus,
   GripVertical,
   Trash2,
+  Pencil,
   FileText,
   Download,
   Check,
@@ -36,7 +38,8 @@ import {
 } from "lucide-react";
 import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
-import { cn } from "@/lib/utils";
+import { cn, DEPARTMENTS } from "@/lib/utils";
+import { EquipmentEditDrawer } from "./EquipmentEditDrawer";
 import {
   addItemToStore,
   addCustomItem,
@@ -60,7 +63,9 @@ export function StoreBuilder({
   store: StoreView;
   equipment: EquipmentDTO[];
 }) {
+  const router = useRouter();
   const [items, setItems] = useState<StoreItemDTO[]>(store.items);
+  const [editingEq, setEditingEq] = useState<EquipmentDTO | null>(null);
   const [meta, setMeta] = useState<StoreMeta>({
     name: store.name,
     number: store.number,
@@ -155,6 +160,33 @@ export function StoreBuilder({
 
   function patch(id: string, p: Partial<StoreItemDTO>) {
     setItems((cur) => cur.map((i) => (i.id === id ? { ...i, ...p } : i)));
+  }
+
+  // open the family editor for a linked store item
+  function editEquipment(item: StoreItemDTO) {
+    if (!item.equipmentId) return;
+    const eq = equipment.find((e) => e.id === item.equipmentId);
+    if (eq) setEditingEq(eq);
+  }
+
+  // after the shared Equipment is saved, reflect the change on every row that uses it
+  function onEquipmentSaved(fd: FormData) {
+    const eqId = editingEq?.id;
+    if (!eqId) return;
+    const val = (k: string) => {
+      const v = (fd.get(k) as string | null)?.trim();
+      return v ? v : null;
+    };
+    const description = val("description");
+    const p: Partial<StoreItemDTO> = {
+      manufacturer: val("manufacturer"),
+      model: val("model"),
+      dimension: val("dimension"),
+      departments: DEPARTMENTS.filter((d) => fd.get(`dept:${d}`) === "on"),
+      ...(description ? { description } : {}),
+    };
+    setItems((cur) => cur.map((i) => (i.equipmentId === eqId ? { ...i, ...p } : i)));
+    router.refresh(); // refresh server data so the catalog pane + specs stay in sync
   }
 
   async function persistField(
@@ -286,6 +318,7 @@ export function StoreBuilder({
             onPersist={persistField}
             onAddCustom={addCustom}
             onPreview={previewItem}
+            onEdit={editEquipment}
           />
         </div>
       </div>
@@ -307,6 +340,14 @@ export function StoreBuilder({
         />
       )}
       <PdfPreviewDrawer target={preview} onClose={() => setPreview(null)} />
+
+      {editingEq && (
+        <EquipmentEditDrawer
+          equipment={editingEq}
+          onClose={() => setEditingEq(null)}
+          onSaved={onEquipmentSaved}
+        />
+      )}
     </DndContext>
   );
 }
@@ -364,7 +405,7 @@ function CatalogItem({
 
 // shared column template for the schedule header + rows
 const COLS =
-  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_104px]";
+  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_132px]";
 
 function StoreDropZone({
   items,
@@ -373,6 +414,7 @@ function StoreDropZone({
   onPersist,
   onAddCustom,
   onPreview,
+  onEdit,
 }: {
   items: StoreItemDTO[];
   onRemove: (id: string) => void;
@@ -384,6 +426,7 @@ function StoreDropZone({
   ) => void;
   onAddCustom: () => void;
   onPreview: (it: StoreItemDTO) => void;
+  onEdit: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
   return (
@@ -435,6 +478,7 @@ function StoreDropZone({
                 onPatch={(p) => onPatch(it.id, p)}
                 onPersist={(field, value) => onPersist(it.id, field, value)}
                 onPreview={() => onPreview(it)}
+                onEdit={() => onEdit(it)}
               />
             ))}
           </SortableContext>
@@ -451,6 +495,7 @@ function SortableStoreRow({
   onPatch,
   onPersist,
   onPreview,
+  onEdit,
 }: {
   item: StoreItemDTO;
   index: number;
@@ -458,6 +503,7 @@ function SortableStoreRow({
   onPatch: (p: Partial<StoreItemDTO>) => void;
   onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => void;
   onPreview: () => void;
+  onEdit: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -546,6 +592,15 @@ function SortableStoreRow({
           onBlur={(e) => onPersist("proposeNew", e.target.value)}
           className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-sm outline-none focus:border-brand-400"
         />
+        {item.equipmentId && (
+          <button
+            onClick={onEdit}
+            className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
+            title="Edit equipment"
+          >
+            <Pencil size={14} />
+          </button>
+        )}
         <button
           onClick={onRemove}
           className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
