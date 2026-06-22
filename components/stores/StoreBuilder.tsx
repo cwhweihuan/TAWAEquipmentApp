@@ -405,7 +405,17 @@ function CatalogItem({
 
 // shared column template for the schedule header + rows
 const COLS =
-  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_132px]";
+  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_150px]";
+
+// equipment-schedule status options (mirror the audit Excel)
+const STATUS_OPTIONS = ["New", "Existing", "(E)Relocate", "Remove"] as const;
+const statusKey = (v: string) => v.toLowerCase().replace(/\s+/g, "");
+/** map a stored value to its canonical option (case/space-insensitive), else pass through */
+function canonicalStatus(v: string | null): string {
+  if (!v) return "";
+  const k = statusKey(v);
+  return STATUS_OPTIONS.find((o) => statusKey(o) === k) ?? v;
+}
 
 function StoreDropZone({
   items,
@@ -586,12 +596,28 @@ function SortableStoreRow({
         className="w-full rounded-md border border-gray-200 px-2 py-1 text-sm outline-none focus:border-brand-400"
       />
       <div className="flex items-center gap-1">
-        <input
-          defaultValue={item.proposeNew ?? ""}
-          placeholder="—"
-          onBlur={(e) => onPersist("proposeNew", e.target.value)}
-          className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-sm outline-none focus:border-brand-400"
-        />
+        {(() => {
+          const status = canonicalStatus(item.proposeNew);
+          const extra = status && !STATUS_OPTIONS.includes(status as (typeof STATUS_OPTIONS)[number]);
+          return (
+            <select
+              value={status}
+              onChange={(e) => {
+                onPatch({ proposeNew: e.target.value || null });
+                onPersist("proposeNew", e.target.value);
+              }}
+              className="w-full rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm outline-none focus:border-brand-400"
+            >
+              <option value="">—</option>
+              {STATUS_OPTIONS.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+              {extra && <option value={status}>{status}</option>}
+            </select>
+          );
+        })()}
         {item.equipmentId && (
           <button
             onClick={onEdit}
