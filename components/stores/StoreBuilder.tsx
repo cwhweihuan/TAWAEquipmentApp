@@ -282,7 +282,8 @@ export function StoreBuilder({
             </Link>
             <h1 className="truncate text-xl font-semibold tracking-tight text-gray-900">
               {meta.name}
-              {meta.location && (
+              {/* name is usually "#<number> <location>" — only append location when it isn't already in the name */}
+              {meta.location && !meta.name.toLowerCase().includes(meta.location.trim().toLowerCase()) && (
                 <span className="ml-2 text-base font-normal text-gray-400">{meta.location}</span>
               )}
             </h1>
