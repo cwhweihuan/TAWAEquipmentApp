@@ -3,6 +3,9 @@
 > 已经做完并 ship 的事，倒序排列。计划/在做的在 [BACKLOG.md](./BACKLOG.md)。
 > 更早的代码级历史见 `git log`。
 
+## 2026-10-06
+- ✅ **Custom 条目也能 ✏️ 编辑**：门店搭建页里未关联目录的自定义行（如 #1695 的 MAKE-UP AIR SYSTEM）以前没有小铅笔，现在点铅笔打开 `CustomItemEditDrawer`，可改 Description / Manufacturer / Model / Dimension，只影响本店。实现：`StoreItem` 新增 `manufacturer` / `model` / `dimension` 三列（migration `20261006000000_store_item_custom_fields`，Vercel build 的 `prisma migrate deploy` 自动跑），DTO 与 Excel 导出对自定义行回退读这三列；新 server action `updateCustomItem` 拒绝改目录关联行。seed 以后导入自定义行时保留 manufacturer/model（生产库已有的自定义行需手动补填）。tsc/eslint 通过。
+
 ## 2026-06-21
 - ✅ **门店 Status 改下拉**：门店搭建页的 Status(=`proposeNew`) 由自由输入改为下拉 `New / Existing / (E)Relocate / Remove`，与审计 Excel 一致。旧值（`NEW`、`(E) Relocate`）通过 `canonicalStatus()` 大小写/空格不敏感地显示为对应选项，重新选择即写回规范值。另：经用户确认，已把生产库 11 行旧值规范化为 `New`(9) / `(E)Relocate`(2)，与下拉及导出彻底统一。
 - ✅ **门店界面联动编辑设备 family**：门店搭建页每个设备行的「删除」左边加了「✏️ 编辑」按钮，点开抽屉直接改底层 `Equipment`（family）资料；保存后该门店内所有引用此设备的行即时联动更新，并 `router.refresh()` 同步目录面板。实现：给 `EquipmentForm` 加 `embedded` 模式复用 + 新增 `components/stores/EquipmentEditDrawer.tsx`。tsc/eslint 通过，门店页冒烟测试 200 正常渲染。

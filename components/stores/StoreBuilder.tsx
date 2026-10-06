@@ -40,6 +40,7 @@ import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
 import { cn, DEPARTMENTS } from "@/lib/utils";
 import { EquipmentEditDrawer } from "./EquipmentEditDrawer";
+import { CustomItemEditDrawer } from "./CustomItemEditDrawer";
 import {
   addItemToStore,
   addCustomItem,
@@ -66,6 +67,7 @@ export function StoreBuilder({
   const router = useRouter();
   const [items, setItems] = useState<StoreItemDTO[]>(store.items);
   const [editingEq, setEditingEq] = useState<EquipmentDTO | null>(null);
+  const [editingCustom, setEditingCustom] = useState<StoreItemDTO | null>(null);
   const [meta, setMeta] = useState<StoreMeta>({
     name: store.name,
     number: store.number,
@@ -162,9 +164,12 @@ export function StoreBuilder({
     setItems((cur) => cur.map((i) => (i.id === id ? { ...i, ...p } : i)));
   }
 
-  // open the family editor for a linked store item
-  function editEquipment(item: StoreItemDTO) {
-    if (!item.equipmentId) return;
+  // pencil: linked rows open the shared family editor, custom rows edit their own fields
+  function editItem(item: StoreItemDTO) {
+    if (!item.equipmentId) {
+      if (!item.id.startsWith("temp-")) setEditingCustom(item);
+      return;
+    }
     const eq = equipment.find((e) => e.id === item.equipmentId);
     if (eq) setEditingEq(eq);
   }
@@ -318,7 +323,7 @@ export function StoreBuilder({
             onPersist={persistField}
             onAddCustom={addCustom}
             onPreview={previewItem}
-            onEdit={editEquipment}
+            onEdit={editItem}
           />
         </div>
       </div>
@@ -346,6 +351,16 @@ export function StoreBuilder({
           equipment={editingEq}
           onClose={() => setEditingEq(null)}
           onSaved={onEquipmentSaved}
+        />
+      )}
+      {editingCustom && (
+        <CustomItemEditDrawer
+          item={editingCustom}
+          onClose={() => setEditingCustom(null)}
+          onSaved={(fields) => {
+            patch(editingCustom.id, fields);
+            setEditingCustom(null);
+          }}
         />
       )}
     </DndContext>
@@ -618,15 +633,13 @@ function SortableStoreRow({
             </select>
           );
         })()}
-        {item.equipmentId && (
-          <button
-            onClick={onEdit}
-            className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
-            title="Edit equipment"
-          >
-            <Pencil size={14} />
-          </button>
-        )}
+        <button
+          onClick={onEdit}
+          className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
+          title={item.equipmentId ? "Edit equipment" : "Edit custom item"}
+        >
+          <Pencil size={14} />
+        </button>
         <button
           onClick={onRemove}
           className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"

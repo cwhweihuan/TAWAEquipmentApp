@@ -29,7 +29,7 @@ npm run dev               # http://localhost:3000
 ## 数据模型（prisma/schema.prisma）
 - `Equipment` — 主设备目录，`masterItemNo` 唯一；含电气/水/气规格字段；`pdfId → Pdf`；`departments` / `departmentItems`。
 - `Pdf` — 规格表。**`storagePath`**=Supabase 内路径（首选），`driveUrl`=旧 Google Drive 链接（回退）。`driveId` 唯一、也用作存储文件名。
-- `Store` / `StoreItem` — 门店搭建，StoreItem 引用 Equipment 或自定义条目。
+- `Store` / `StoreItem` — 门店搭建，StoreItem 引用 Equipment 或自定义条目。自定义条目（`equipmentId` 为空）的 description / manufacturer / model / dimension 存在 StoreItem 自身列上；关联行这些字段一律来自 Equipment。
 
 ## PDF 解析逻辑（重要）
 `lib/data.ts` 的 `pdfUrlFor(pdf)`：**有 `storagePath` 就用 Supabase 公网 URL，否则回退 `driveUrl`**。

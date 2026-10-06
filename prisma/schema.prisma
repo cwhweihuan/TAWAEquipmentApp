@@ -97,7 +97,10 @@ model StoreItem {
   equipment   Equipment? @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
 
   // store-specific overrides (also used for custom items with no catalog link)
-  description String?
+  description  String?
+  manufacturer String?
+  model        String?
+  dimension    String?
   quantity   Float   @default(1)
   room       String?
   proposeNew String?

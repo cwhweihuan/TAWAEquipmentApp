@@ -121,6 +121,39 @@ export async function updateStoreItem(
   revalidatePath(`/stores/${item.storeId}`);
 }
 
+/** Fields a custom (non-catalog) line item carries on its own row. */
+export type CustomItemFields = {
+  description: string;
+  manufacturer: string | null;
+  model: string | null;
+  dimension: string | null;
+};
+
+/**
+ * Edit a custom line item's own description / manufacturer / model / dimension.
+ * Catalog-linked rows get these from the shared Equipment record instead, so
+ * this refuses to touch them (edit the family via EquipmentEditDrawer).
+ */
+export async function updateCustomItem(itemId: string, fields: CustomItemFields) {
+  const existing = await prisma.storeItem.findUnique({ where: { id: itemId } });
+  if (!existing) throw new Error("Item not found");
+  if (existing.equipmentId) throw new Error("Catalog-linked items are edited via the equipment record");
+  const clean = (v: string | null) => {
+    const t = v?.trim();
+    return t ? t : null;
+  };
+  const item = await prisma.storeItem.update({
+    where: { id: itemId },
+    data: {
+      description: fields.description.trim() || "Custom item",
+      manufacturer: clean(fields.manufacturer),
+      model: clean(fields.model),
+      dimension: clean(fields.dimension),
+    },
+  });
+  revalidatePath(`/stores/${item.storeId}`);
+}
+
 export async function removeStoreItem(itemId: string) {
   const item = await prisma.storeItem.delete({ where: { id: itemId } });
   revalidatePath(`/stores/${item.storeId}`);

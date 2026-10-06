@@ -41,6 +41,8 @@ type StoreSeed = {
     quantity: string | null;
     scheduleNo: string | null;
     description: string;
+    manufacturer?: string | null;
+    model?: string | null;
     [k: string]: unknown;
   }>;
 };
@@ -146,6 +148,8 @@ async function seedStores(stores: StoreSeed[], codeToId: Map<string, string>) {
           storeId: store.id,
           equipmentId,
           description: equipmentId ? null : it.description,
+          manufacturer: equipmentId ? null : (it.manufacturer ?? null),
+          model: equipmentId ? null : (it.model ?? null),
           quantity: it.quantity ? parseFloat(it.quantity) || 1 : 1,
           room: it.room ?? null,
           proposeNew: it.proposeNew ?? null,
