@@ -154,6 +154,45 @@ export async function updateCustomItem(itemId: string, fields: CustomItemFields)
   revalidatePath(`/stores/${item.storeId}`);
 }
 
+/**
+ * Duplicate a store row as a detached custom item inserted right after it.
+ * Copies the visible fields (description / manufacturer / model / dimension) plus
+ * quantity / room / status, so a catalog row can be turned into an editable
+ * one-off for this store. Returns the new row id.
+ */
+export async function duplicateAsCustom(itemId: string) {
+  const src = await prisma.storeItem.findUnique({
+    where: { id: itemId },
+    include: { equipment: true },
+  });
+  if (!src) throw new Error("Item not found");
+  const eq = src.equipment;
+  const [, item] = await prisma.$transaction([
+    // make room right after the source row
+    prisma.storeItem.updateMany({
+      where: { storeId: src.storeId, position: { gt: src.position } },
+      data: { position: { increment: 1 } },
+    }),
+    prisma.storeItem.create({
+      data: {
+        storeId: src.storeId,
+        equipmentId: null,
+        description: eq?.description ?? src.description ?? "Custom item",
+        manufacturer: eq?.manufacturer ?? src.manufacturer ?? null,
+        model: eq?.model ?? src.model ?? null,
+        dimension: eq?.dimension ?? src.dimension ?? null,
+        quantity: src.quantity,
+        room: src.room,
+        proposeNew: src.proposeNew,
+        scheduleNo: src.scheduleNo,
+        position: src.position + 1,
+      },
+    }),
+  ]);
+  revalidatePath(`/stores/${src.storeId}`);
+  return item.id;
+}
+
 export async function removeStoreItem(itemId: string) {
   const item = await prisma.storeItem.delete({ where: { id: itemId } });
   revalidatePath(`/stores/${item.storeId}`);

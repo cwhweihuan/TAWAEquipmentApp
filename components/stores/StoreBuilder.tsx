@@ -28,6 +28,7 @@ import {
   Plus,
   GripVertical,
   Trash2,
+  Copy,
   Pencil,
   FileText,
   Download,
@@ -45,6 +46,7 @@ import {
   addItemToStore,
   addCustomItem,
   removeStoreItem,
+  duplicateAsCustom,
   reorderStoreItems,
   updateStoreItem,
 } from "@/app/actions/store";
@@ -153,6 +155,26 @@ export function StoreBuilder({
         pdfDownloaded: false,
       },
     ]);
+  }
+
+  // copy a row into a detached custom item placed right after it
+  async function duplicate(item: StoreItemDTO) {
+    if (item.id.startsWith("temp-")) return;
+    const newId = await duplicateAsCustom(item.id);
+    setItems((cur) => {
+      const idx = cur.findIndex((i) => i.id === item.id);
+      const copy: StoreItemDTO = {
+        ...item,
+        id: newId,
+        equipmentId: null,
+        departments: [],
+        pdfUrl: null,
+        pdfDownloaded: false,
+      };
+      const next = [...cur];
+      next.splice(idx < 0 ? cur.length : idx + 1, 0, copy);
+      return next.map((i, pos) => ({ ...i, position: pos }));
+    });
   }
 
   async function remove(id: string) {
@@ -319,6 +341,7 @@ export function StoreBuilder({
           <StoreDropZone
             items={items}
             onRemove={remove}
+            onDuplicate={duplicate}
             onPatch={patch}
             onPersist={persistField}
             onAddCustom={addCustom}
@@ -420,7 +443,7 @@ function CatalogItem({
 
 // shared column template for the schedule header + rows
 const COLS =
-  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_150px]";
+  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_176px]";
 
 // equipment-schedule status options (mirror the audit Excel)
 const STATUS_OPTIONS = ["New", "Existing", "(E)Relocate", "Remove"] as const;
@@ -435,6 +458,7 @@ function canonicalStatus(v: string | null): string {
 function StoreDropZone({
   items,
   onRemove,
+  onDuplicate,
   onPatch,
   onPersist,
   onAddCustom,
@@ -443,6 +467,7 @@ function StoreDropZone({
 }: {
   items: StoreItemDTO[];
   onRemove: (id: string) => void;
+  onDuplicate: (it: StoreItemDTO) => void;
   onPatch: (id: string, p: Partial<StoreItemDTO>) => void;
   onPersist: (
     id: string,
@@ -500,6 +525,7 @@ function StoreDropZone({
                 item={it}
                 index={idx + 1}
                 onRemove={() => onRemove(it.id)}
+                onDuplicate={() => onDuplicate(it)}
                 onPatch={(p) => onPatch(it.id, p)}
                 onPersist={(field, value) => onPersist(it.id, field, value)}
                 onPreview={() => onPreview(it)}
@@ -517,6 +543,7 @@ function SortableStoreRow({
   item,
   index,
   onRemove,
+  onDuplicate,
   onPatch,
   onPersist,
   onPreview,
@@ -525,6 +552,7 @@ function SortableStoreRow({
   item: StoreItemDTO;
   index: number;
   onRemove: () => void;
+  onDuplicate: () => void;
   onPatch: (p: Partial<StoreItemDTO>) => void;
   onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => void;
   onPreview: () => void;
@@ -633,6 +661,13 @@ function SortableStoreRow({
             </select>
           );
         })()}
+        <button
+          onClick={onDuplicate}
+          className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
+          title="Duplicate as custom item"
+        >
+          <Copy size={14} />
+        </button>
         <button
           onClick={onEdit}
           className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"

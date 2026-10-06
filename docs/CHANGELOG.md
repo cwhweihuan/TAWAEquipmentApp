@@ -4,6 +4,7 @@
 > 更早的代码级历史见 `git log`。
 
 ## 2026-10-06
+- ✅ **门店行「复制成 custom」**：每行 ✏️ 左边加 📋 复制按钮，点一下在该行正下方插入一个脱离目录的 custom 条目，复制 description / manufacturer / model / dimension / qty / room / status，可再用铅笔单独改（例如把目录里的 TYPE I EXHAUST HOOD 复制成本店专用的变体）。server action `duplicateAsCustom` 用事务把后续行 position +1 再插入。
 - ✅ **Custom 条目也能 ✏️ 编辑**：门店搭建页里未关联目录的自定义行（如 #1695 的 MAKE-UP AIR SYSTEM）以前没有小铅笔，现在点铅笔打开 `CustomItemEditDrawer`，可改 Description / Manufacturer / Model / Dimension，只影响本店。实现：`StoreItem` 新增 `manufacturer` / `model` / `dimension` 三列（migration `20261006000000_store_item_custom_fields`，Vercel build 的 `prisma migrate deploy` 自动跑），DTO 与 Excel 导出对自定义行回退读这三列；新 server action `updateCustomItem` 拒绝改目录关联行。seed 以后导入自定义行时保留 manufacturer/model（生产库已有的自定义行需手动补填）。tsc/eslint 通过。
 
 ## 2026-06-21
