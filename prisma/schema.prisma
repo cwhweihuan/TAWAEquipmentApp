@@ -9,6 +9,13 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum BimStatus {
+  NOT_CREATED
+  CREATED
+  IN_PROGRESS
+  CUSTOM
+}
+
 /// A master equipment record (the company-wide catalog).
 model Equipment {
   id           String  @id @default(cuid())
@@ -19,6 +26,9 @@ model Equipment {
   supplyBy     String?
   installBy    String?
   dimension    String? // overall size, e.g. 48"W x 30"D x 36"H — manual or auto-extracted from spec PDF
+  specUrl      String? // official manufacturer product/specification page
+  bimModelUrl  String? // official BIM / 3D model page or download
+  bimStatus    BimStatus @default(NOT_CREATED)
 
   // electrical
   power     String?

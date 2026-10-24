@@ -3,6 +3,9 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
+  ArrowLeft,
+  ArrowRight,
+  Box,
   X,
   FileText,
   ExternalLink,
@@ -14,8 +17,10 @@ import {
   Check,
 } from "lucide-react";
 import type { EquipmentDTO } from "@/lib/types";
+import { BIM_STATUS_OPTIONS } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
 import { updateEquipmentDimension, duplicateEquipment } from "@/app/actions/equipment";
+import { EquipmentForm } from "./EquipmentForm";
 
 function Spec({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
@@ -30,13 +35,19 @@ function Spec({ label, value }: { label: string; value: string | null }) {
 export function DetailDrawer({
   item,
   onClose,
-  onEdit,
   onDelete,
+  onPrevious,
+  onNext,
+  position,
+  total,
 }: {
   item: EquipmentDTO | null;
   onClose: () => void;
-  onEdit?: (item: EquipmentDTO) => void;
   onDelete?: (item: EquipmentDTO) => void;
+  onPrevious?: () => void;
+  onNext?: () => void;
+  position?: number;
+  total?: number;
 }) {
   const router = useRouter();
   const [dim, setDim] = useState(item?.dimension ?? "");
@@ -46,12 +57,22 @@ export function DetailDrawer({
   const [dupName, setDupName] = useState(item?.description ?? "");
   const [dupDim, setDupDim] = useState(item?.dimension ?? "");
   const [duping, startDup] = useTransition();
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const h = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (
+        !isEditing &&
+        !(e.target instanceof HTMLElement && e.target.matches("input, textarea, select, [contenteditable='true']"))
+      ) {
+        if (e.key === "ArrowLeft") onPrevious?.();
+        if (e.key === "ArrowRight") onNext?.();
+      }
+    };
     if (item) window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
-  }, [item, onClose]);
+  }, [item, isEditing, onClose, onPrevious, onNext]);
 
   if (!item) return null;
   const equip = item;
@@ -95,23 +116,59 @@ export function DetailDrawer({
             )}
           </div>
           <div className="flex items-center gap-1">
-            <button
-              onClick={() => setDupOpen((v) => !v)}
-              className="rounded-lg p-2 text-gray-400 hover:bg-brand-50 hover:text-brand-700"
-              title="Duplicate as a variant (shares this spec sheet)"
-            >
-              <CopyPlus size={16} />
-            </button>
-            {onEdit && (
+            {!isEditing && typeof position === "number" && typeof total === "number" && total > 1 && (
+              <>
+                <span className="px-1 text-xs tabular-nums text-gray-400">
+                  {position} / {total}
+                </span>
+                <button
+                  onClick={onPrevious}
+                  disabled={position <= 1}
+                  className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+                  title="Previous equipment (←)"
+                  aria-label="Previous equipment"
+                >
+                  <ArrowLeft size={17} />
+                </button>
+                <button
+                  onClick={onNext}
+                  disabled={position >= total}
+                  className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+                  title="Next equipment (→)"
+                  aria-label="Next equipment"
+                >
+                  <ArrowRight size={17} />
+                </button>
+              </>
+            )}
+            {!isEditing && (
               <button
-                onClick={() => onEdit(item)}
+                onClick={() => setDupOpen((v) => !v)}
+                className="rounded-lg p-2 text-gray-400 hover:bg-brand-50 hover:text-brand-700"
+                title="Duplicate as a variant (shares this spec sheet)"
+              >
+                <CopyPlus size={16} />
+              </button>
+            )}
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
                 className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-                title="Edit"
+                title="Edit equipment"
+                aria-label="Edit equipment"
               >
                 <Pencil size={16} />
               </button>
             )}
-            {onDelete && (
+            {isEditing && (
+              <button
+                onClick={() => setIsEditing(false)}
+                className="rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            )}
+            {onDelete && !isEditing && (
               <button
                 onClick={() => onDelete(item)}
                 className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600"
@@ -131,8 +188,23 @@ export function DetailDrawer({
 
         {/* body */}
         <div className="scroll-thin flex-1 overflow-y-auto px-6 py-5">
-          {/* duplicate-as-variant panel */}
-          {dupOpen && (
+          {isEditing ? (
+            <EquipmentForm
+              item={item}
+              embedded
+              onSaved={(fd) => {
+                const dimension = fd.get("dimension");
+                setDim(typeof dimension === "string" ? dimension : "");
+                setDimMsg(null);
+                setIsEditing(false);
+                router.refresh();
+              }}
+              onCancel={() => setIsEditing(false)}
+            />
+          ) : (
+            <>
+              {/* duplicate-as-variant panel */}
+              {dupOpen && (
             <div className="mb-5 rounded-xl border border-brand-200 bg-brand-50/50 p-4 animate-fade-in">
               <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-brand-700">
                 <CopyPlus size={15} /> Duplicate as a variant
@@ -175,10 +247,10 @@ export function DetailDrawer({
                 </button>
               </div>
             </div>
-          )}
+              )}
 
-          {/* dimension — quick inline editor */}
-          <div className="mb-5 rounded-xl border border-brand-100 bg-brand-50/40 p-3">
+              {/* dimension — quick inline editor */}
+              <div className="mb-5 rounded-xl border border-brand-100 bg-brand-50/40 p-3">
             <div className="mb-1.5 flex items-center justify-between">
               <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-700">
                 <Ruler size={13} /> Dimension
@@ -203,9 +275,9 @@ export function DetailDrawer({
               </button>
             </div>
             {dimMsg && <p className="mt-1 text-xs text-gray-500">{dimMsg}</p>}
-          </div>
+              </div>
 
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
             <Spec label="Supply by" value={item.supplyBy} />
             <Spec label="Install by" value={item.installBy} />
             <Spec label="Power" value={item.power} />
@@ -219,17 +291,17 @@ export function DetailDrawer({
             <Spec label="Gas — BTU" value={item.gasBtu} />
             <Spec label="Gas — elev." value={item.gasElev} />
             <Spec label="Floor sink" value={item.floorSink} />
-          </dl>
+              </dl>
 
-          {item.remarks && (
+              {item.remarks && (
             <div className="mt-5 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-inset ring-amber-100">
               <span className="font-medium">Remarks: </span>
               {item.remarks}
             </div>
-          )}
+              )}
 
-          {/* PDF */}
-          <div className="mt-6">
+              {/* PDF */}
+              <div className="mt-6">
             <div className="mb-2 flex items-center justify-between">
               <h3 className="flex items-center gap-1.5 text-sm font-semibold text-gray-700">
                 <FileText size={15} /> Spec sheet
@@ -242,6 +314,16 @@ export function DetailDrawer({
                   className="flex items-center gap-1 text-xs font-medium text-brand-600 hover:underline"
                 >
                   Open <ExternalLink size={12} />
+                </a>
+              )}
+              {item.specUrl && (
+                <a
+                  href={item.specUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs font-medium text-brand-600 hover:underline"
+                >
+                  Official product page <ExternalLink size={12} />
                 </a>
               )}
             </div>
@@ -267,7 +349,33 @@ export function DetailDrawer({
                 No spec sheet attached
               </div>
             )}
-          </div>
+              </div>
+              <div className="mt-5 rounded-xl border border-brand-100 bg-brand-50/40 p-4">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-gray-700">
+                <Box size={15} className="text-brand-600" /> 3D / BIM model
+              </h3>
+              <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-100">
+                {BIM_STATUS_OPTIONS.find((status) => status.value === item.bimStatus)?.label ?? "未建立"}
+              </span>
+            </div>
+            {item.bimModelUrl ? (
+              <a
+                href={item.bimModelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-24 items-center justify-center gap-2 rounded-lg border border-dashed border-brand-200 bg-white px-4 py-5 text-sm font-medium text-brand-700 hover:bg-brand-50"
+              >
+                <Box size={20} /> Open 3D Preview <ExternalLink size={14} />
+              </a>
+            ) : (
+              <p className="rounded-lg border border-dashed border-brand-200 bg-white px-4 py-5 text-center text-sm text-gray-500">
+                No BIM / 3D model URL added
+              </p>
+            )}
+              </div>
+            </>
+          )}
         </div>
       </aside>
     </div>

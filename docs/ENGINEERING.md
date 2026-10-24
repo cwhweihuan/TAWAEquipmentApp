@@ -27,7 +27,7 @@ npm run dev               # http://localhost:3000
 其它脚本：`npm run db:push` / `npm run extract:dimensions`（Gemini 回填尺寸）。
 
 ## 数据模型（prisma/schema.prisma）
-- `Equipment` — 主设备目录，`masterItemNo` 唯一；含电气/水/气规格字段；`pdfId → Pdf`；`departments` / `departmentItems`。
+- `Equipment` — 主设备目录，`masterItemNo` 唯一；含电气/水/气规格字段、官方产品页 `specUrl`、BIM/3D 的 `bimModelUrl` / `bimStatus`；`pdfId → Pdf`；`departments` / `departmentItems`。
 - `Pdf` — 规格表。**`storagePath`**=Supabase 内路径（首选），`driveUrl`=旧 Google Drive 链接（回退）。`driveId` 唯一、也用作存储文件名。
 - `Store` / `StoreItem` — 门店搭建，StoreItem 引用 Equipment 或自定义条目。自定义条目（`equipmentId` 为空）的 description / manufacturer / model / dimension 存在 StoreItem 自身列上；关联行这些字段一律来自 Equipment。
 

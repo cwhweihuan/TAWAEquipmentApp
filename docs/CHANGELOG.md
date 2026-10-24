@@ -3,6 +3,9 @@
 > 已经做完并 ship 的事，倒序排列。计划/在做的在 [BACKLOG.md](./BACKLOG.md)。
 > 更早的代码级历史见 `git log`。
 
+## 2026-10-24
+- ✅ **设备目录编辑与 BIM 链接**：设备详情抽屉内点击铅笔即可编辑，不再跳转独立页面；详情可用左右箭头/键盘方向键切换当前筛选结果。设备卡片新增官方产品页链接、BIM 状态和 3D Preview 外链；表单可维护产品页 URL、模型 URL 与「未建立 / 已建立 / 建立中 / 客製化」状态。新字段通过 Prisma migration 保存，复制设备时会继承。旧设备默认「未建立」且不预填未核实网址；逐项查询官方产品页及 BIM 可用性仍待完成（见 BACKLOG T-004）。
+
 ## 2026-10-06
 - ✅ **门店行「复制成 custom」**：每行 ✏️ 左边加 📋 复制按钮，点一下在该行正下方插入一个脱离目录的 custom 条目，复制 description / manufacturer / model / dimension / qty / room / status，可再用铅笔单独改（例如把目录里的 TYPE I EXHAUST HOOD 复制成本店专用的变体）。server action `duplicateAsCustom` 用事务把后续行 position +1 再插入。
 - ✅ **Custom 条目也能 ✏️ 编辑**：门店搭建页里未关联目录的自定义行（如 #1695 的 MAKE-UP AIR SYSTEM）以前没有小铅笔，现在点铅笔打开 `CustomItemEditDrawer`，可改 Description / Manufacturer / Model / Dimension，只影响本店。实现：`StoreItem` 新增 `manufacturer` / `model` / `dimension` 三列（migration `20261006000000_store_item_custom_fields`，Vercel build 的 `prisma migrate deploy` 自动跑），DTO 与 Excel 导出对自定义行回退读这三列；新 server action `updateCustomItem` 拒绝改目录关联行。seed 以后导入自定义行时保留 manufacturer/model（生产库已有的自定义行需手动补填）。tsc/eslint 通过。

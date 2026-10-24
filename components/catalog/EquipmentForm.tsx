@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Upload, Ruler } from "lucide-react";
 import Link from "next/link";
 import type { EquipmentDTO } from "@/lib/types";
+import { BIM_STATUS_OPTIONS } from "@/lib/types";
 import { DEPARTMENTS, deptStyle, cn } from "@/lib/utils";
 import { createEquipment, updateEquipment } from "@/app/actions/equipment";
 
@@ -14,12 +15,14 @@ function Field({
   defaultValue,
   required,
   placeholder,
+  type = "text",
 }: {
   label: string;
   name: string;
   defaultValue?: string | null;
   required?: boolean;
   placeholder?: string;
+  type?: "text" | "url";
 }) {
   return (
     <label className="flex flex-col gap-1">
@@ -28,6 +31,7 @@ function Field({
       </span>
       <input
         name={name}
+        type={type}
         defaultValue={defaultValue ?? ""}
         required={required}
         placeholder={placeholder}
@@ -142,6 +146,40 @@ export function EquipmentForm({
                 );
               })}
             </div>
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <h2 className="mb-3 text-sm font-semibold text-gray-700">Official links &amp; BIM model</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Field
+              label="Official product / spec page"
+              name="specUrl"
+              type="url"
+              defaultValue={item?.specUrl}
+              placeholder="https://manufacturer.com/product"
+            />
+            <Field
+              label="BIM / 3D model URL"
+              name="bimModelUrl"
+              type="url"
+              defaultValue={item?.bimModelUrl}
+              placeholder="https://manufacturer.com/bim-model"
+            />
+            <label className="flex flex-col gap-1 sm:col-span-2">
+              <span className="text-xs font-medium text-gray-600">BIM model status</span>
+              <select
+                name="bimStatus"
+                defaultValue={item?.bimStatus ?? "NOT_CREATED"}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+              >
+                {BIM_STATUS_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
         </section>
 

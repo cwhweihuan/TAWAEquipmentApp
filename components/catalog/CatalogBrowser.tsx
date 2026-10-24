@@ -20,13 +20,13 @@ export function CatalogBrowser({
   const [q, setQ] = useState("");
   const [activeDepts, setActiveDepts] = useState<string[]>([]);
   const [pdfOnly, setPdfOnly] = useState(false);
-  const [selected, setSelected] = useState<EquipmentDTO | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const router = useRouter();
   const [, startDelete] = useTransition();
 
   function handleDelete(item: EquipmentDTO) {
     if (!confirm(`Delete "${item.description}"? This cannot be undone.`)) return;
-    setSelected(null);
+    setSelectedId(null);
     startDelete(async () => {
       await deleteEquipment(item.id);
       router.refresh();
@@ -46,8 +46,13 @@ export function CatalogBrowser({
     });
   }, [equipment, q, activeDepts, pdfOnly]);
 
-  const toggleDept = (d: string) =>
+  const selectedIndex = filtered.findIndex((item) => item.id === selectedId);
+  const selected = selectedIndex >= 0 ? filtered[selectedIndex] : null;
+
+  const toggleDept = (d: string) => {
+    setSelectedId(null);
     setActiveDepts((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]));
+  };
 
   return (
     <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6">
@@ -73,7 +78,10 @@ export function CatalogBrowser({
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => {
+                setQ(e.target.value);
+                setSelectedId(null);
+              }}
               placeholder="Search description, manufacturer, model…"
               className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-9 text-sm shadow-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
             />
@@ -87,7 +95,10 @@ export function CatalogBrowser({
             )}
           </div>
           <button
-            onClick={() => setPdfOnly((v) => !v)}
+            onClick={() => {
+              setPdfOnly((v) => !v);
+              setSelectedId(null);
+            }}
             className={cn(
               "flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition",
               pdfOnly
@@ -130,6 +141,7 @@ export function CatalogBrowser({
                 setActiveDepts([]);
                 setPdfOnly(false);
                 setQ("");
+                setSelectedId(null);
               }}
               className="rounded-full px-2.5 py-1 text-xs font-medium text-gray-400 hover:text-gray-700"
             >
@@ -147,7 +159,7 @@ export function CatalogBrowser({
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {filtered.map((item) => (
-            <EquipmentCard key={item.id} item={item} onClick={() => setSelected(item)} />
+            <EquipmentCard key={item.id} item={item} onClick={() => setSelectedId(item.id)} />
           ))}
         </div>
       )}
@@ -155,9 +167,18 @@ export function CatalogBrowser({
       <DetailDrawer
         key={selected?.id ?? "closed"}
         item={selected}
-        onClose={() => setSelected(null)}
-        onEdit={(it) => router.push(`/catalog/${it.id}/edit`)}
+        onClose={() => setSelectedId(null)}
         onDelete={handleDelete}
+        position={selectedIndex + 1}
+        total={filtered.length}
+        onPrevious={() => {
+          if (selectedIndex > 0) setSelectedId(filtered[selectedIndex - 1].id);
+        }}
+        onNext={() => {
+          if (selectedIndex >= 0 && selectedIndex < filtered.length - 1) {
+            setSelectedId(filtered[selectedIndex + 1].id);
+          }
+        }}
       />
     </div>
   );

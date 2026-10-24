@@ -32,5 +32,6 @@
 ---
 
 ## 🔜 待办（已知但未排期）
+- 逐项核实有规格表设备的厂商官方产品页及 BIM/3D 模型可用性，把已确认的官方网址、模型网址与状态补进目录（卡片及编辑表单字段已就绪；不能用未核实的猜测链接代替）。
 - 各门店文件夹（`/Volumes/Work/Wei_Huan/2026-TAWA/` 下 #92 Edmonds / #1695 Portland 等）的 store-specific 设备清单 + floor plan 对应到 `Store`。
 - 用 `npm run extract:dimensions`（Gemini）从规格 PDF 回填设备 `dimension` 字段。
