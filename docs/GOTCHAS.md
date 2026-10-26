@@ -2,6 +2,12 @@
 
 > 已经踩过的坑，避免下次重踩。新坑往上加，带日期。
 
+## 2026-10-26
+
+### G-006 规格 PDF 不能塞进 server action 的 FormData
+在表单里上传 spec sheet 报 "An unexpected response was received from the server"。根因：PDF 随 server action 的 body 一起送，Next.js 对 action body 默认上限 **1MB**，Vercel 函数请求还有 **4.5MB** 硬上限，超了就是这句没头没尾的报错。
+**→ 现在浏览器先向 `prepareSpecUpload()` 要一个 Supabase 签名上传 URL，直接 PUT 到 Storage，再把 `pdfPath` 交给 action。** 别把文件本体再塞回 action。
+
 ## 2026-06-17
 
 ### G-001 cut-sheet 文件名的编号前缀 ≠ 系统 masterItemNo

@@ -7,7 +7,7 @@ import Link from "next/link";
 import type { EquipmentDTO } from "@/lib/types";
 import { BIM_STATUS_OPTIONS } from "@/lib/types";
 import { DEPARTMENTS, deptStyle, cn } from "@/lib/utils";
-import { createEquipment, updateEquipment } from "@/app/actions/equipment";
+import { createEquipment, updateEquipment, prepareSpecUpload } from "@/app/actions/equipment";
 
 function Field({
   label,
@@ -66,6 +66,24 @@ export function EquipmentForm({
     const fd = new FormData(e.currentTarget);
     start(async () => {
       try {
+        // Upload the PDF straight from the browser to Storage, then submit only
+        // its path. Sending the file inside the server action blows past the
+        // 1MB action body limit (and Vercel's 4.5MB request limit).
+        const file = fd.get("pdf");
+        fd.delete("pdf");
+        if (file instanceof File && file.size > 0) {
+          if (file.type && file.type !== "application/pdf") throw new Error("Spec sheet must be a PDF");
+          const { path, uploadUrl } = await prepareSpecUpload(file.name);
+          const res = await fetch(uploadUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/pdf", "x-upsert": "true" },
+            body: file,
+          });
+          if (!res.ok) throw new Error(`Spec upload failed (${res.status}). Please try again.`);
+          fd.set("pdfPath", path);
+          fd.set("pdfName", file.name);
+          fd.set("pdfSize", String(file.size));
+        }
         if (editing) await updateEquipment(item!.id, fd);
         else await createEquipment(fd);
         if (embedded) {

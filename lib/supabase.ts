@@ -49,6 +49,25 @@ export async function uploadPdf(path: string, bytes: Uint8Array | Buffer): Promi
   return path;
 }
 
+/**
+ * Create a signed upload URL so the *browser* can PUT the file straight into
+ * Storage. Keeps large PDFs out of the server-action body (Next.js caps it at
+ * 1MB, Vercel at 4.5MB). The URL is scoped to this path and short-lived.
+ */
+export async function createSignedUploadUrl(path: string): Promise<string> {
+  const res = await fetch(`${URL}/storage/v1/object/upload/sign/${PDF_BUCKET}/${path}`, {
+    method: "POST",
+    headers: adminHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify({}),
+  });
+  if (!res.ok) {
+    throw new Error(`createSignedUploadUrl failed (${res.status}): ${await res.text()}`);
+  }
+  const { url } = (await res.json()) as { url: string };
+  // Supabase returns a path relative to /storage/v1 (e.g. "/object/upload/sign/...?token=...")
+  return url.startsWith("http") ? url : `${URL}/storage/v1${url}`;
+}
+
 /** Delete a stored PDF (best-effort). */
 export async function deletePdf(path: string) {
   await fetch(`${URL}/storage/v1/object/${PDF_BUCKET}/${path}`, {

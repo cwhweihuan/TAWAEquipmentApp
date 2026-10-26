@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { uploadPdf, deletePdf, ensurePdfBucket } from "@/lib/supabase";
+import { uploadPdf, deletePdf, ensurePdfBucket, createSignedUploadUrl } from "@/lib/supabase";
 import { BIM_STATUS_OPTIONS } from "@/lib/types";
 import { DEPARTMENTS } from "@/lib/utils";
 
@@ -57,14 +57,52 @@ function readFields(fd: FormData) {
   return { data, departments, bimStatus: bimStatus ?? "NOT_CREATED" };
 }
 
-/** Upload an optional PDF from the form, returning a new Pdf row id (or null). */
+function specStoragePath(filename: string) {
+  const safe = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return `uploads/${Date.now()}-${safe}`;
+}
+
+/**
+ * Step 1 of a spec-sheet upload: hand the browser a signed URL so it can PUT
+ * the PDF directly into Storage. The form then submits only the resulting
+ * storage path (see `maybeUploadPdf`), so the server-action body stays tiny.
+ */
+export async function prepareSpecUpload(filename: string) {
+  if (!filename.toLowerCase().endsWith(".pdf")) throw new Error("Spec sheet must be a PDF");
+  await ensurePdfBucket();
+  const path = specStoragePath(filename);
+  const uploadUrl = await createSignedUploadUrl(path);
+  return { path, uploadUrl };
+}
+
+/**
+ * Record an optional spec PDF from the form, returning a new Pdf row id (or null).
+ * Preferred path: the browser already uploaded the file (pdfPath/pdfName/pdfSize).
+ * Fallback: a raw `pdf` File in the body — only works for files under the
+ * server-action body limit (1MB default), kept for small files / older clients.
+ */
 async function maybeUploadPdf(fd: FormData): Promise<string | null> {
+  const pdfPath = fd.get("pdfPath");
+  if (typeof pdfPath === "string" && pdfPath) {
+    if (!pdfPath.startsWith("uploads/") || pdfPath.includes("..")) throw new Error("Invalid spec path");
+    const name = fd.get("pdfName");
+    const size = Number(fd.get("pdfSize"));
+    const pdf = await prisma.pdf.create({
+      data: {
+        filename: typeof name === "string" && name ? name : pdfPath.split("/").pop()!,
+        storagePath: pdfPath,
+        downloaded: true,
+        sizeBytes: Number.isFinite(size) && size > 0 ? size : null,
+      },
+    });
+    return pdf.id;
+  }
+
   const file = fd.get("pdf") as File | null;
   if (!file || file.size === 0) return null;
   await ensurePdfBucket();
   const bytes = Buffer.from(await file.arrayBuffer());
-  const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const path = `uploads/${Date.now()}-${safe}`;
+  const path = specStoragePath(file.name);
   await uploadPdf(path, bytes);
   const pdf = await prisma.pdf.create({
     data: {
