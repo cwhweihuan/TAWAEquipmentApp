@@ -3,6 +3,9 @@
 > 已经做完并 ship 的事，倒序排列。计划/在做的在 [BACKLOG.md](./BACKLOG.md)。
 > 更早的代码级历史见 `git log`。
 
+## 2026-10-27
+- ✅ **背景飘浮图案改为小猫咪**：全站背景的飘浮爱心换成可爱的猫脸（圆头、尖耳、胡须、小嘴），颜色沿用原本的玫瑰/薰衣草色系。`components/FloatingHearts.tsx` 改名为 `FloatingCats.tsx`，CSS class / keyframes 同步改为 `float-cat` / `cat-layer` / `catRise` 等；动画、reduce-motion 行为不变。
+
 ## 2026-10-24
 - ✅ **设备目录编辑与 BIM 链接**：设备详情抽屉内点击铅笔即可编辑，不再跳转独立页面；详情可用左右箭头/键盘方向键切换当前筛选结果。设备卡片新增官方产品页链接、BIM 状态和 3D Preview 外链；表单可维护产品页 URL、模型 URL 与「未建立 / 已建立 / 建立中 / 客製化」状态。新字段通过 Prisma migration 保存，复制设备时会继承。旧设备默认「未建立」且不预填未核实网址；逐项查询官方产品页及 BIM 可用性仍待完成（见 BACKLOG T-004）。
 

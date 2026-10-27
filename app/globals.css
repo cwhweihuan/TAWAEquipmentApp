@@ -70,22 +70,22 @@ body {
   animation: fadeIn 0.18s ease-out;
 }
 
-/* ── floating hearts background (behind all content, never blocks clicks) ── */
-.float-heart {
+/* ── floating cats background (behind all content, never blocks clicks) ── */
+.float-cat {
   position: absolute;
   will-change: transform, opacity;
 }
-.float-heart--rise {
+.float-cat--rise {
   bottom: -6vh;
-  animation: heartRise var(--dur) ease-in var(--delay) infinite;
+  animation: catRise var(--dur) ease-in var(--delay) infinite;
 }
-.float-heart--fall {
+.float-cat--fall {
   top: -6vh;
   animation:
-    heartFall var(--dur) linear var(--delay) infinite,
-    heartSway calc(var(--dur) / 2.5) ease-in-out var(--delay) infinite alternate;
+    catFall var(--dur) linear var(--delay) infinite,
+    catSway calc(var(--dur) / 2.5) ease-in-out var(--delay) infinite alternate;
 }
-@keyframes heartRise {
+@keyframes catRise {
   0% {
     transform: translateY(0) translateX(0) scale(0.6);
     opacity: 0;
@@ -101,7 +101,7 @@ body {
     opacity: 0;
   }
 }
-@keyframes heartFall {
+@keyframes catFall {
   0% {
     transform: translateY(-6vh) rotate(-12deg);
     opacity: 0.95;
@@ -114,7 +114,7 @@ body {
     opacity: 0.8;
   }
 }
-@keyframes heartSway {
+@keyframes catSway {
   from {
     margin-left: 0;
   }
@@ -124,7 +124,7 @@ body {
 }
 /* respect the OS "reduce motion" accessibility setting */
 @media (prefers-reduced-motion: reduce) {
-  .heart-layer {
+  .cat-layer {
     display: none;
   }
 }
