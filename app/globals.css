@@ -1,17 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  /* Macaron "Lavender Haze" — soft lavender-violet primary, rose-pink accent */
-  --color-background: #f3eefc;
-  --color-foreground: #3f3550;
-  --color-brand-50: #f4effc;
-  --color-brand-100: #e8ddfb;
-  --color-brand-200: #d6c2f6;
-  --color-brand-300: #bfa0ef;
+  /* "Pixel Night" — near-black navy sky with neon lavender / rose / cyan accents.
+   * The default gray scale and `white` are remapped so every bg-white / text-gray-*
+   * utility across the app becomes its dark-mode equivalent without per-file edits. */
+  --color-background: #0a0914;
+  --color-foreground: #ece8f8;
+  --color-white: #16142b; /* card / panel surface (text-white is pinned back to #fff below) */
+  --color-gray-50: #1b1833;
+  --color-gray-100: #221f3d;
+  --color-gray-200: #312d52;
+  --color-gray-300: #5a5488;
+  --color-gray-400: #8b85b0;
+  --color-gray-500: #a7a1cb;
+  --color-gray-600: #c1bbdd;
+  --color-gray-700: #d6d1ea;
+  --color-gray-800: #e5e1f3;
+  --color-gray-900: #f4f1fc;
+  /* lavender-violet brand: dark tints for fills, bright tones for text & borders */
+  --color-brand-50: #1f1a3d;
+  --color-brand-100: #2b2456;
+  --color-brand-200: #3d3374;
+  --color-brand-300: #7c66cc;
   --color-brand-400: #a37fe9;
-  --color-brand-500: #9670e6;
-  --color-brand-600: #815fe6;
-  --color-brand-700: #6d49d4;
+  --color-brand-500: #b094ff;
+  --color-brand-600: #bda6ff;
+  --color-brand-700: #d0bfff;
   /* rose-pink accent for two-tone gradients & sprinkles */
   --color-rose-200: #ffd2e6;
   --color-rose-300: #ffaad0;
@@ -22,22 +36,53 @@
   --color-mint-500: #4fd1ac;
   --color-lemon-200: #fff0bf;
   --color-lemon-500: #fbc94d;
+  /* semantic tints used by warning / error boxes */
+  --color-red-50: #3a1526;
+  --color-red-100: #4e1b32;
+  --color-red-600: #f87171;
+  --color-amber-50: #332812;
+  --color-amber-100: #45361a;
+  --color-amber-300: #8a6a22;
+  --color-amber-700: #f3c96b;
+  --color-amber-800: #f8dc9b;
   --font-sans: var(--font-quicksand), ui-rounded, "Hiragino Maru Gothic ProN",
     ui-sans-serif, system-ui, sans-serif;
+}
+
+/* A few utilities must NOT follow the surface remap above. */
+@layer utilities {
+  .text-white {
+    color: #fff;
+  }
+  .text-white\/80 {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .border-white\/50,
+  .border-white\/60 {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  /* solid brand buttons stay a deep violet so their white label keeps contrast */
+  .bg-brand-600 {
+    background-color: #7c5ce8;
+  }
+  .bg-brand-700 {
+    background-color: #6b4bd6;
+  }
 }
 
 html,
 body {
   height: 100%;
+  color-scheme: dark;
 }
 
 body {
-  /* soft lavender base washed with a lilac glow, a rose light-spot, and a low lilac bloom */
+  /* night sky: a violet bloom top-left, a rose glow top-right, a cyan haze low */
   background: var(--color-background);
   background-image:
-    radial-gradient(75% 60% at 12% 8%, rgba(163, 127, 233, 0.30) 0%, transparent 60%),
-    radial-gradient(65% 55% at 96% 22%, rgba(246, 90, 160, 0.16) 0%, transparent 55%),
-    radial-gradient(95% 75% at 50% 115%, rgba(150, 112, 230, 0.22) 0%, transparent 62%);
+    radial-gradient(75% 60% at 12% 8%, rgba(181, 123, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(65% 55% at 96% 22%, rgba(255, 95, 180, 0.14) 0%, transparent 55%),
+    radial-gradient(95% 75% at 50% 115%, rgba(78, 230, 255, 0.10) 0%, transparent 62%);
   background-attachment: fixed;
   color: var(--color-foreground);
   font-family: var(--font-sans);
@@ -70,10 +115,13 @@ body {
   animation: fadeIn 0.18s ease-out;
 }
 
-/* ── floating cats background (behind all content, never blocks clicks) ── */
+/* ── pixel cats + neon doodles background (behind all content, never blocks clicks) ── */
 .float-cat {
   position: absolute;
   will-change: transform, opacity;
+}
+.float-cat--neon {
+  filter: drop-shadow(0 0 3px currentColor);
 }
 .float-cat--rise {
   bottom: -6vh;

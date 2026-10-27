@@ -22,19 +22,19 @@ export type Department = (typeof DEPARTMENTS)[number];
 
 /** Consistent accent color per department (tailwind classes). */
 export const DEPT_STYLE: Record<string, { dot: string; chip: string }> = {
-  MEAT: { dot: "bg-rose-500", chip: "bg-rose-50 text-rose-700 ring-rose-200" },
-  SEAFOOD: { dot: "bg-sky-500", chip: "bg-sky-50 text-sky-700 ring-sky-200" },
-  PRODUCE: { dot: "bg-green-500", chip: "bg-green-50 text-green-700 ring-green-200" },
-  GROCERY: { dot: "bg-amber-500", chip: "bg-amber-50 text-amber-700 ring-amber-200" },
-  BAKERY: { dot: "bg-orange-500", chip: "bg-orange-50 text-orange-700 ring-orange-200" },
-  "HOT DELI": { dot: "bg-red-600", chip: "bg-red-50 text-red-700 ring-red-200" },
-  WAREHOUSE: { dot: "bg-slate-500", chip: "bg-slate-100 text-slate-700 ring-slate-300" },
-  "GENERAL MARKET": { dot: "bg-violet-500", chip: "bg-violet-50 text-violet-700 ring-violet-200" },
-  SUBTENANTS: { dot: "bg-teal-500", chip: "bg-teal-50 text-teal-700 ring-teal-200" },
+  MEAT: { dot: "bg-rose-500", chip: "bg-rose-500/15 text-rose-300 ring-rose-500/30" },
+  SEAFOOD: { dot: "bg-sky-500", chip: "bg-sky-500/15 text-sky-300 ring-sky-500/30" },
+  PRODUCE: { dot: "bg-green-500", chip: "bg-green-500/15 text-green-300 ring-green-500/30" },
+  GROCERY: { dot: "bg-amber-500", chip: "bg-amber-500/15 text-amber-300 ring-amber-500/30" },
+  BAKERY: { dot: "bg-orange-500", chip: "bg-orange-500/15 text-orange-300 ring-orange-500/30" },
+  "HOT DELI": { dot: "bg-red-500", chip: "bg-red-500/15 text-red-300 ring-red-500/30" },
+  WAREHOUSE: { dot: "bg-slate-400", chip: "bg-slate-400/15 text-slate-300 ring-slate-400/30" },
+  "GENERAL MARKET": { dot: "bg-violet-500", chip: "bg-violet-500/15 text-violet-300 ring-violet-500/30" },
+  SUBTENANTS: { dot: "bg-teal-500", chip: "bg-teal-500/15 text-teal-300 ring-teal-500/30" },
 };
 
 export function deptStyle(d: string) {
-  return DEPT_STYLE[d] ?? { dot: "bg-gray-400", chip: "bg-gray-50 text-gray-600 ring-gray-200" };
+  return DEPT_STYLE[d] ?? { dot: "bg-gray-400", chip: "bg-gray-100 text-gray-600 ring-gray-200" };
 }
 
 /** Solid accent hex per department (for inline styles like active filter chips). */
