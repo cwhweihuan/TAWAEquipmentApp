@@ -4,6 +4,7 @@
 > 更早的代码级历史见 `git log`。
 
 ## 2026-10-27
+- ✅ **像素猫加种类、缩小**：背景小猫从 3 种造型增加到 9 种（新增吐司趴猫、杯子猫、手柄耳机猫、皇冠猫、领巾猫、睡觉猫），配奶油/灰/白三色共 19 个精灵；猫的尺寸缩小约三成（约 30–45px 宽），猫在漂浮物中占比提高到四成。
 - ✅ **全站深色主题 + 像素猫霓虹背景**：界面改为深色「Pixel Night」：近黑的藏青底，卡片/面板为深紫灰玻璃。实现方式是在 `app/globals.css` 的 `@theme` 里把 `white`、`gray-*`、`brand-*` 与警告/错误用的 `red-*`/`amber-*` token 整体重新映射，所以 11 个组件里的 `bg-white` / `text-gray-*` 不用逐个改；`text-white`、`border-white/*` 与实心 brand 按钮用几条 utility 覆盖钉回原色。部门标签 `DEPT_STYLE` 改成深色友好的半透明色块。背景漂浮物换成像素风小猫（戴眼镜、用笔电、戴耳机，奶油/灰/白三色）和霓虹数学符号（π、Σ、∫、√x、∞、E=mc²、y=mx+b、a²+b²=c²、GG、爱心、星星、猫掌、钻石等），参考用户给的 Pinterest 图自行绘制，未使用原图。每个精灵只渲染一次成 SVG `<symbol>`，漂浮物用 `<use>` 引用，DOM 很轻。
 - ✅ **背景飘浮图案改为小猫咪**：全站背景的飘浮爱心换成可爱的猫脸（圆头、尖耳、胡须、小嘴），颜色沿用原本的玫瑰/薰衣草色系。`components/FloatingHearts.tsx` 改名为 `FloatingCats.tsx`，CSS class / keyframes 同步改为 `float-cat` / `cat-layer` / `catRise` 等；动画、reduce-motion 行为不变。
 

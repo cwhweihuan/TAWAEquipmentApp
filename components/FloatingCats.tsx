@@ -15,7 +15,8 @@ type Grid = string[];
 type Palette = Record<string, string>;
 
 /* ---- cat palettes (legend: c body, d shade, k ink, p blush, g glasses,
- *      w highlight, l laptop lid, s laptop base, h headphones) ---- */
+ *      w highlight, l laptop lid, s laptop base, h headphones, m/u mug,
+ *      r gamepad, y crown, b bandana) ---- */
 const CREAM: Palette = {
   c: "#f6e7d2",
   d: "#d9bf9f",
@@ -26,6 +27,11 @@ const CREAM: Palette = {
   l: "#2e2b4a",
   s: "#4a4778",
   h: "#c084fc",
+  m: "#8fc3ff",
+  u: "#5f93e6",
+  r: "#ff5fb4",
+  y: "#ffe066",
+  b: "#8fc3ff",
 };
 const GREY: Palette = { ...CREAM, c: "#c9c7d6", d: "#9e9cb3" };
 const WHITE: Palette = { ...CREAM, c: "#fbfafe", d: "#d6d3e8" };
@@ -80,6 +86,95 @@ const CAT_HEADPHONES: Grid = [
   ".cccccccccccc.",
   ".ccc.cccc.ccc.",
   ".ddd.dddd.ddd.",
+];
+
+const CAT_LOAF: Grid = [
+  "..c.....c.........",
+  ".cc.....cc........",
+  ".cccccccccc.......",
+  ".ckwcccckwcccccc..",
+  ".cccckkccccccccccc",
+  ".cpccccccpccccccc.",
+  ".cccccccccccccccc.",
+  "..cccccccccccccc..",
+  "..dddddddddddddd..",
+];
+
+const CAT_CUP: Grid = [
+  "..c........c..",
+  ".cc........cc.",
+  ".ccc......ccc.",
+  ".cccccccccccc.",
+  ".ckwcccccckwc.",
+  ".ccccckkccccc.",
+  ".cpcccccccpcc.",
+  "mmmmmmmmmmmm..",
+  "muuuuuuuuuummm",
+  "muuuuuuuuuum.m",
+  "muuuuuuuuuum.m",
+  "muuuuuuuuuummm",
+  ".mmmmmmmmmmm..",
+  "..mmmmmmmmm...",
+];
+
+const CAT_GAMEPAD: Grid = [
+  "..c........c..",
+  ".cchhhhhhhhcc.",
+  ".ccchcccchccc.",
+  ".cccccccccccc.",
+  "hhcccccccccchh",
+  "hhckkcccckkchh",
+  "hhcwkcccckwchh",
+  "hhcccccccccchh",
+  "ccpccckkcccpcc",
+  ".cccccccccccc.",
+  ".ccrrrrrrrrcc.",
+  ".crrwrrrrwrrc.",
+  ".crrrrrrrrrrc.",
+  ".dd.rr..rr.dd.",
+];
+
+const CAT_CROWN: Grid = [
+  "..c..y..y..c..",
+  ".cc..yyyy..cc.",
+  ".ccc.yyyy.ccc.",
+  ".cccccccccccc.",
+  "cccccccccccccc",
+  "cckwcccccckwcc",
+  "cccccckkcccccc",
+  "ccpccccccccpcc",
+  ".cccccccccccc.",
+  ".cccccccccccc.",
+  ".ccc.cccc.ccc.",
+  ".ddd.dddd.ddd.",
+];
+
+const CAT_BANDANA: Grid = [
+  "..c........c..",
+  ".cc........cc.",
+  ".ccc......ccc.",
+  ".cccccccccccc.",
+  "cccccccccccccc",
+  "cckwcccccckwcc",
+  "cccccckkcccccc",
+  "ccpccccccccpcc",
+  ".bbbbbbbbbbbb.",
+  ".cccbbbbbbccc.",
+  ".ccccbbbbcccc.",
+  ".ccc.cbbc.ccc.",
+  ".ddd.dddd.ddd.",
+];
+
+const CAT_SLEEP: Grid = [
+  "...c......c.....",
+  "..cc......cc....",
+  "..cccccccccc....",
+  ".cccccccccccccc.",
+  ".ckkccccckkccccc",
+  ".ccpcckkccpccccc",
+  ".cccccccccccccc.",
+  "..cccccccccccc..",
+  "..dddddddddddd..",
 ];
 
 /* ---- neon symbol sprites (single colour "x" = currentColor) ---- */
@@ -199,6 +294,17 @@ const SPRITES: Sprite[] = [
   { id: "cat-laptop-grey", grid: CAT_LAPTOP, palette: GREY, kind: "cat" },
   { id: "cat-headphones-white", grid: CAT_HEADPHONES, palette: WHITE, kind: "cat" },
   { id: "cat-headphones-cream", grid: CAT_HEADPHONES, palette: CREAM, kind: "cat" },
+  { id: "cat-loaf-cream", grid: CAT_LOAF, palette: CREAM, kind: "cat" },
+  { id: "cat-loaf-grey", grid: CAT_LOAF, palette: GREY, kind: "cat" },
+  { id: "cat-cup-white", grid: CAT_CUP, palette: WHITE, kind: "cat" },
+  { id: "cat-cup-cream", grid: CAT_CUP, palette: CREAM, kind: "cat" },
+  { id: "cat-gamepad-grey", grid: CAT_GAMEPAD, palette: GREY, kind: "cat" },
+  { id: "cat-gamepad-white", grid: CAT_GAMEPAD, palette: WHITE, kind: "cat" },
+  { id: "cat-crown-cream", grid: CAT_CROWN, palette: CREAM, kind: "cat" },
+  { id: "cat-bandana-white", grid: CAT_BANDANA, palette: WHITE, kind: "cat" },
+  { id: "cat-bandana-cream", grid: CAT_BANDANA, palette: CREAM, kind: "cat" },
+  { id: "cat-sleep-grey", grid: CAT_SLEEP, palette: GREY, kind: "cat" },
+  { id: "cat-sleep-cream", grid: CAT_SLEEP, palette: CREAM, kind: "cat" },
   { id: "heart", grid: HEART, kind: "neon" },
   { id: "star", grid: STAR, kind: "neon" },
   { id: "paw", grid: PAW, kind: "neon" },
@@ -284,13 +390,13 @@ export function FloatingCats({
     () =>
       Array.from({ length: count }, (_, i) => {
         // roughly 1 in 3 floaters is a cat, the rest are neon doodles
-        const isCat = seeded(i, 8) < 0.34;
+        const isCat = seeded(i, 8) < 0.4;
         const pool = SPRITES.filter((s) => s.kind === (isCat ? "cat" : "neon"));
         const sprite = pool[Math.floor(seeded(i, 7) * pool.length)];
         const w = sprite.grid[0].length;
         const h = sprite.grid.length;
-        // cats render at ~3–4.5 px per cell, doodles at ~2.6–4 px per cell
-        const cell = isCat ? 3 + seeded(i, 2) * 1.5 : 2.6 + seeded(i, 2) * 1.4;
+        // cats render at ~2.1–3 px per cell (≈30–45 px wide), doodles at ~2.6–4 px per cell
+        const cell = isCat ? 2.1 + seeded(i, 2) * 0.9 : 2.6 + seeded(i, 2) * 1.4;
         return {
           id: i,
           sprite,
