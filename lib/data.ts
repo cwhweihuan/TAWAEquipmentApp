@@ -107,10 +107,11 @@ export async function getCatalogStats() {
 }
 
 export async function getStores() {
-  return prisma.store.findMany({
-    orderBy: { createdAt: "asc" },
+  const stores = await prisma.store.findMany({
     include: { _count: { select: { items: true } } },
   });
+  const order = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
+  return stores.sort((a, b) => order.compare(a.number.trim(), b.number.trim()) || order.compare(a.name, b.name) || a.id.localeCompare(b.id));
 }
 
 export async function getStore(id: string) {
