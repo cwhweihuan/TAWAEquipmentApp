@@ -88,29 +88,23 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Native cursor assets match the neon pixel backdrop; the X centre is the hotspot.
- * Keep text selection, resize, disabled and drag cursors meaningful. */
-@media (hover: hover) and (pointer: fine) {
-  body {
-    cursor: url("/cursors/y2k-x.svg?v=2") 15 15, crosshair;
+/* Apply the X to every app surface, including disabled fieldsets, form controls,
+ * drag handles and pseudo-elements. Override browser defaults and cursor utilities. */
+@media (any-hover: hover) and (any-pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: url("/cursors/y2k-x.svg?v=2") 15 15, crosshair !important;
   }
 
-  :is(a[href], button:not(:disabled), summary, select:not(:disabled),
-      [role="button"]:not([aria-disabled="true"]),
-      input[type="button"], input[type="submit"], input[type="reset"],
-      input[type="checkbox"], input[type="radio"]):not(:disabled):not([aria-disabled="true"]):not(.cursor-grab):not(.cursor-grabbing) {
-    cursor: url("/cursors/y2k-x-link.svg?v=2") 15 15, pointer;
+  ::file-selector-button {
+    cursor: url("/cursors/y2k-x.svg?v=2") 15 15, crosshair !important;
   }
 
-  :is(input:not([type]), input[type="text"], input[type="search"], input[type="number"],
-      input[type="email"], input[type="url"], input[type="password"], textarea,
-      [contenteditable="true"]):not(:disabled) {
-    cursor: text;
-  }
-
-  :is(button, input, select, textarea):disabled,
-  [aria-disabled="true"] {
-    cursor: not-allowed;
+  ::-webkit-scrollbar,
+  ::-webkit-scrollbar-thumb,
+  ::-webkit-scrollbar-track {
+    cursor: url("/cursors/y2k-x.svg?v=2") 15 15, crosshair !important;
   }
 }
 
