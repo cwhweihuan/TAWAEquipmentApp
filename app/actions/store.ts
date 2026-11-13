@@ -5,6 +5,30 @@ import { prisma } from "@/lib/prisma";
 import { ensurePdfBucket, uploadPdf, deletePdf, pdfPublicUrl } from "@/lib/supabase";
 import type { Subtenant } from "@/lib/types";
 
+/** Rename rooms and their assigned rows together; reject stale room edits. */
+export async function saveStoreRooms(storeId: string, expected: string[], entries: { original: string | null; name: string }[]) {
+  const names = entries.map((entry) => entry.name.trim());
+  if (names.some((name) => !name || name.length > 120) || new Set(names.map((name) => name.toLowerCase())).size !== names.length) {
+    throw new Error("Room names must be unique, non-empty, and at most 120 characters.");
+  }
+  const originals = entries.flatMap((entry) => entry.original === null ? [] : [entry.original]);
+  if (new Set(originals).size !== originals.length || originals.some((name) => !expected.includes(name))) throw new Error("Invalid room changes.");
+  const result = await prisma.$transaction(async (tx) => {
+    const updated = await tx.store.updateMany({ where: { id: storeId, rooms: { equals: expected } }, data: { rooms: names } });
+    if (updated.count !== 1) throw new Error("Rooms changed. Reload the store before saving.");
+    const assigned = await tx.storeItem.findMany({ where: { storeId, room: { not: null } }, select: { id: true, room: true } });
+    const mapping = new Map(entries.filter((entry) => entry.original !== null).map((entry) => [entry.original!, entry.name.trim()]));
+    for (const item of assigned) {
+      const next = mapping.get(item.room!);
+      if (next === undefined) throw new Error(`Room "${item.room}" is in use. Move its equipment before removing it.`);
+      if (next !== item.room) await tx.storeItem.update({ where: { id: item.id }, data: { room: next } });
+    }
+    return names;
+  });
+  revalidatePath(`/stores/${storeId}`);
+  return result;
+}
+
 export async function createStore(fd: FormData) {
   const number = (fd.get("number") as string)?.trim() || "NEW";
   const location = (fd.get("location") as string)?.trim() || "";
@@ -113,11 +137,31 @@ export async function addCustomItem(storeId: string, description: string) {
   return item.id;
 }
 
+/** A zero-quantity schedule placeholder, detached from the equipment catalog. */
+export async function addOmittedItem(storeId: string) {
+  const max = await prisma.storeItem.aggregate({ where: { storeId }, _max: { position: true } });
+  const item = await prisma.storeItem.create({
+    data: { storeId, description: "Omitted", quantity: 0, position: (max._max.position ?? -1) + 1 },
+  });
+  revalidatePath(`/stores/${storeId}`);
+  return item.id;
+}
+
 export async function updateStoreItem(
   itemId: string,
   patch: { quantity?: number; room?: string | null; proposeNew?: string | null; scheduleNo?: string | null }
 ) {
-  const item = await prisma.storeItem.update({ where: { id: itemId }, data: patch });
+  if (patch.quantity !== undefined && (!Number.isFinite(patch.quantity) || patch.quantity < 0)) throw new Error("Quantity must be zero or greater.");
+  const item = await prisma.$transaction(async (tx) => {
+    const existing = await tx.storeItem.findUniqueOrThrow({ where: { id: itemId }, select: { storeId: true } });
+    if (patch.room !== undefined) {
+      // Serialize room assignment against project room renames/removals.
+      await tx.$queryRaw`SELECT id FROM "Store" WHERE id = ${existing.storeId} FOR UPDATE`;
+      const store = await tx.store.findUniqueOrThrow({ where: { id: existing.storeId }, select: { rooms: true } });
+      if (patch.room && !store.rooms.includes(patch.room)) throw new Error("Choose a room created for this store.");
+    }
+    return tx.storeItem.update({ where: { id: itemId }, data: patch });
+  });
   revalidatePath(`/stores/${item.storeId}`);
 }
 

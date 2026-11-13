@@ -165,6 +165,7 @@ export function toStoreView(store: StoreWithItems): StoreView {
     floorplanUrl: store.floorplanPath ? pdfPublicUrl(store.floorplanPath) : null,
     floorplanName: store.floorplanName,
     subtenants: parseSubtenants(store.subtenants),
+    rooms: store.rooms,
     items: store.items.map(toStoreItemDTO),
   };
 }

@@ -1,0 +1,59 @@
+{
+  "itemNo": 198,
+  "equipmentId": "cmq7rhohx00btrzbvakbdjc0z",
+  "pdfUrl": "https://zlhmnmtfpvingqtwxcvs.supabase.co/storage/v1/object/public/pdfs/1TiNRJXD-BVF03pvpLTTJhJHbFD7dxBup.pdf",
+  "sha256": "e4aa79da4ecf4536a7174d78310f171b4c0985ff8dfa43613ab42cb91c2a9bfb",
+  "status": "updated_verified",
+  "scope": "Explicitly conditional TWT-60-HC source specifications; catalog model/use remains unconfirmed. Existing dimensions and identity preserved.",
+  "evidence": [
+    {
+      "field": "power",
+      "page": 1,
+      "quote": "TWT-60-HC ... 1/4 ... 115/60/1 ... 4.0"
+    },
+    {
+      "field": "power",
+      "page": 2,
+      "quote": "115/60/1 phase, 15 amp dedicated outlet"
+    },
+    {
+      "field": "nema",
+      "page": 1,
+      "quote": "5-15P"
+    },
+    {
+      "field": "nema",
+      "page": 2,
+      "quote": "NEMA-5-15R"
+    },
+    {
+      "field": "remarks",
+      "page": 1,
+      "quote": "Solid Door Refrigerator with Hydrocarbon Refrigerant"
+    },
+    {
+      "field": "remarks",
+      "page": 1,
+      "quote": "Height does not include 6 1/4\" (159 mm) for castors or 6\" (153 mm) for optional legs."
+    },
+    {
+      "field": "remarks",
+      "page": 2,
+      "quote": "36\" (915 mm) work surface height."
+    }
+  ],
+  "changes": {
+    "power": {
+      "before": "",
+      "after": "Attached TWT-60-HC PDF (confirm HC variant): 115 V / 60 Hz / 1 phase; 4.0 A; 1/4 HP; 15 amp dedicated outlet."
+    },
+    "nema": {
+      "before": "",
+      "after": "Attached TWT-60-HC PDF (confirm HC variant): NEMA 5-15P plug / 5-15R receptacle."
+    },
+    "remarks": {
+      "before": "",
+      "after": "PDF source: True TWT-60-HC, 6/18-A, pp. 1-2. Model/use requires confirmation: catalog model is TWT-60 and description says refrigerated sandwich table; attached sheet identifies a solid-door worktop refrigerator, not a prep-pan sandwich unit. Electrical/NEMA values entered here apply to the attached HC model only. Refrigeration (HC model): self-contained R290; cabinet 33 F to 38 F (0.5 C to 3.3 C). Existing listed cabinet height excludes 6 1/4 in castors or optional 6 in legs; depth excludes 1 in rear bumpers. Standard work surface height is 36 in. 7 ft cord; two doors, four adjustable shelves. No model, description, dimensions or installation connection height changed."
+    }
+  }
+}

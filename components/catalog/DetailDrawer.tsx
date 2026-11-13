@@ -2,7 +2,7 @@
 
 import { sentenceCase } from "@/lib/utils";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -42,6 +42,8 @@ export function DetailDrawer({
   position,
   total,
   readOnly = false,
+  onEdit,
+  children,
 }: {
   item: EquipmentDTO | null;
   onClose: () => void;
@@ -51,6 +53,8 @@ export function DetailDrawer({
   position?: number;
   total?: number;
   readOnly?: boolean;
+  onEdit?: () => void;
+  children?: ReactNode;
 }) {
   const router = useRouter();
   const [dim, setDim] = useState(item?.dimension ?? "");
@@ -154,9 +158,9 @@ export function DetailDrawer({
                 <CopyPlus size={16} />
               </button>
             )}
-            {!readOnly && !isEditing && (
+            {(!readOnly || onEdit) && !isEditing && (
               <button
-                onClick={() => setIsEditing(true)}
+                onClick={() => onEdit ? onEdit() : setIsEditing(true)}
                 className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
                 title="Edit equipment"
                 aria-label="Edit equipment"
@@ -207,6 +211,7 @@ export function DetailDrawer({
             />
           ) : (
             <>
+              {children}
               {/* duplicate-as-variant panel */}
               {dupOpen && (
             <div className="mb-5 rounded-xl border border-brand-200 bg-brand-50/50 p-4 animate-fade-in">

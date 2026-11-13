@@ -62,5 +62,6 @@ export type StoreView = {
   floorplanUrl: string | null;
   floorplanName: string | null;
   subtenants: Subtenant[];
+  rooms: string[];
   items: StoreItemDTO[];
 };

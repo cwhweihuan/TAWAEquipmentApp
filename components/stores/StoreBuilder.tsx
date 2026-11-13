@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -49,12 +49,14 @@ import { CustomItemEditDrawer } from "./CustomItemEditDrawer";
 import {
   addItemToStore,
   addCustomItem,
+  addOmittedItem,
   removeStoreItem,
   duplicateAsCustom,
   reorderStoreItems,
   updateStoreItem,
 } from "@/app/actions/store";
 import { StoreDetailsDrawer } from "./StoreDetailsDrawer";
+import { StoreRoomsDrawer } from "./StoreRoomsDrawer";
 import { PdfPreviewDrawer, type PreviewTarget } from "./PdfPreviewDrawer";
 
 /** Mutable header fields the details drawer can edit in place. */
@@ -72,9 +74,10 @@ export function StoreBuilder({
 }) {
   const router = useRouter();
   const [items, setItems] = useState<StoreItemDTO[]>(store.items);
-  const [previewEquipmentId, setPreviewEquipmentId] = useState<string | null>(null);
-  const [previewCustom, setPreviewCustom] = useState<StoreItemDTO | null>(null);
-  const previewEquipment = equipment.find((eq) => eq.id === previewEquipmentId) ?? null;
+  const [previewTarget, setPreviewTarget] = useState<{ source: "catalog" | "store"; id: string } | null>(null);
+  const [rooms, setRooms] = useState(store.rooms);
+  const [roomsOpen, setRoomsOpen] = useState(false);
+  const [itemError, setItemError] = useState<string | null>(null);
   const [editingEq, setEditingEq] = useState<EquipmentDTO | null>(null);
   const [editingCustom, setEditingCustom] = useState<StoreItemDTO | null>(null);
   const [meta, setMeta] = useState<StoreMeta>({
@@ -102,9 +105,18 @@ export function StoreBuilder({
     return equipment.filter((e) => matchesEquipmentSearch(e, needle));
   }, [equipment, q]);
 
+  const previewList = previewTarget?.source === "catalog" ? filteredCatalog : items;
+  const previewIndex = previewList.findIndex((item) => item.id === previewTarget?.id);
+  const previewRow = previewTarget?.source === "store" ? items.find((item) => item.id === previewTarget.id) ?? null : null;
+  const previewEquipment = equipment.find((eq) => eq.id === (previewTarget?.source === "catalog" ? previewTarget.id : previewRow?.equipmentId)) ?? null;
+  const previewCustom = previewRow && !previewRow.equipmentId ? previewRow : null;
+  function movePreview(offset: number) {
+    const next = previewList[previewIndex + offset];
+    if (previewTarget && next) setPreviewTarget({ ...previewTarget, id: next.id });
+  }
+
   function previewEquipmentItem(item: StoreItemDTO) {
-    if (item.equipmentId) setPreviewEquipmentId(item.equipmentId);
-    else setPreviewCustom(item);
+    setPreviewTarget({ source: "store", id: item.id });
   }
 
   function previewItem(it: { description: string; manufacturer: string | null; pdfUrl: string | null; pdfDownloaded: boolean }) {
@@ -141,10 +153,10 @@ export function StoreBuilder({
     setItems((cur) => cur.map((i) => (i.id === temp.id ? { ...i, id: realId } : i)));
   }
 
-  async function addCustom() {
-    const desc = prompt("Custom item description:");
+  async function addCustom(omitted = false) {
+    const desc = omitted ? "Omitted" : prompt("Custom item description:");
     if (!desc) return;
-    const id = await addCustomItem(store.id, desc);
+    const id = omitted ? await addOmittedItem(store.id) : await addCustomItem(store.id, desc);
     setItems((cur) => [
       ...cur,
       {
@@ -154,7 +166,7 @@ export function StoreBuilder({
         manufacturer: null,
         model: null,
         dimension: null,
-        quantity: 1,
+        quantity: omitted ? 0 : 1,
         room: null,
         proposeNew: null,
         scheduleNo: null,
@@ -224,6 +236,7 @@ export function StoreBuilder({
       ...(description ? { description } : {}),
     };
     setItems((cur) => cur.map((i) => (i.equipmentId === eqId ? { ...i, ...p } : i)));
+    setEditingEq(null);
     router.refresh(); // refresh server data so the catalog pane + specs stay in sync
   }
 
@@ -233,8 +246,16 @@ export function StoreBuilder({
     value: string
   ) {
     if (id.startsWith("temp-")) return;
-    if (field === "quantity") await updateStoreItem(id, { quantity: parseFloat(value) || 1 });
-    else await updateStoreItem(id, { [field]: value || null });
+    setItemError(null);
+    try {
+      const quantity = value.trim() === "" ? 1 : Number(value);
+      if (field === "quantity") await updateStoreItem(id, { quantity });
+      else await updateStoreItem(id, { [field]: value || null });
+      patch(id, { [field]: field === "quantity" ? quantity : value || null });
+    } catch (error) {
+      setItemError(error instanceof Error ? error.message : "Could not save item.");
+      throw error;
+    }
   }
 
   function onDragStart(e: DragStartEvent) {
@@ -301,6 +322,7 @@ export function StoreBuilder({
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">{items.length} items</span>
+            <button type="button" onClick={() => setRoomsOpen(true)} className="flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"><Settings2 size={15} /> Rooms</button>
             <button
               onClick={() => setDetailsOpen(true)}
               className="flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 shadow-sm transition hover:bg-brand-50"
@@ -321,6 +343,8 @@ export function StoreBuilder({
             </a>
           </div>
         </div>
+
+        {itemError && <p role="alert" className="pb-2 text-sm text-red-600">{itemError}</p>}
 
         {/* two panes */}
         <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 pb-4 lg:grid-cols-[360px_1fr]">
@@ -344,7 +368,7 @@ export function StoreBuilder({
                   eq={eq}
                   added={addedIds.has(eq.id)}
                   onAdd={() => addEquipment(eq)}
-                  onPreview={() => setPreviewEquipmentId(eq.id)}
+                  onPreview={() => setPreviewTarget({ source: "catalog", id: eq.id })}
                 />
               ))}
             </div>
@@ -353,11 +377,13 @@ export function StoreBuilder({
           {/* store */}
           <StoreDropZone
             items={items}
+            rooms={rooms}
             onRemove={remove}
             onDuplicate={duplicate}
             onPatch={patch}
             onPersist={persistField}
-            onAddCustom={addCustom}
+            onAddCustom={() => addCustom()}
+            onAddOmitted={() => addCustom(true)}
             onPreview={previewItem}
             onOpenEquipment={previewEquipmentItem}
             onEdit={editItem}
@@ -381,16 +407,30 @@ export function StoreBuilder({
           onPreview={setPreview}
         />
       )}
+      {roomsOpen && <StoreRoomsDrawer storeId={store.id} rooms={rooms} onClose={() => setRoomsOpen(false)} onSaved={(next, renames) => {
+        setRooms(next);
+        setItems((current) => current.map((item) => ({ ...item, room: item.room ? renames.get(item.room) ?? item.room : null })));
+        router.refresh();
+      }} />}
       {previewEquipment && (
         <DetailDrawer
           key={previewEquipment.id}
           item={previewEquipment}
           readOnly
-          onClose={() => setPreviewEquipmentId(null)}
-        />
+          position={previewIndex + 1}
+          total={previewList.length}
+          onPrevious={() => movePreview(-1)}
+          onNext={() => movePreview(1)}
+          onEdit={() => { setPreviewTarget(null); setEditingEq(previewEquipment); }}
+          onClose={() => setPreviewTarget(null)}
+        >
+          {previewRow && <StoreRoomSelect key={previewRow.id} room={previewRow.room} rooms={rooms} onSave={(value) => persistField(previewRow.id, "room", value)} />}
+        </DetailDrawer>
       )}
       {previewCustom && (
-        <CustomItemPreviewDrawer item={previewCustom} onClose={() => setPreviewCustom(null)} />
+        <CustomItemPreviewDrawer item={previewCustom} onClose={() => setPreviewTarget(null)} position={previewIndex + 1} total={previewList.length} onPrevious={() => movePreview(-1)} onNext={() => movePreview(1)} onEdit={() => { setPreviewTarget(null); editItem(previewCustom); }}>
+          <StoreRoomSelect key={previewCustom.id} room={previewCustom.room} rooms={rooms} onSave={(value) => persistField(previewCustom.id, "room", value)} />
+        </CustomItemPreviewDrawer>
       )}
       <PdfPreviewDrawer target={preview} onClose={() => setPreview(null)} />
 
@@ -412,6 +452,29 @@ export function StoreBuilder({
         />
       )}
     </DndContext>
+  );
+}
+
+function StoreRoomSelect({ room, rooms, onSave }: { room: string | null; rooms: string[]; onSave: (value: string) => Promise<void> }) {
+  const [pending, startSave] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <label className="mb-3 flex min-w-0 flex-col gap-1">
+      <span className="sr-only">Room</span>
+      <select aria-label="Room" value={room ?? ""} disabled={pending} onChange={(event) => {
+        const value = event.target.value;
+        setError(null);
+        startSave(async () => {
+          try { await onSave(value); }
+          catch (err) { setError(err instanceof Error ? err.message : "Could not save room."); }
+        });
+      }} className="w-full rounded-md border border-gray-200 bg-white px-2 py-1 text-sm outline-none focus:border-brand-400 disabled:opacity-50">
+        <option value="">Room / area…</option>
+        {rooms.map((name) => <option key={name} value={name}>{name}</option>)}
+        {room && !rooms.includes(room) && <option value={room}>{room}</option>}
+      </select>
+      {error && <span role="alert" className="text-xs text-red-600">{error}</span>}
+    </label>
   );
 }
 
@@ -485,16 +548,19 @@ function canonicalStatus(v: string | null): string {
 
 function StoreDropZone({
   items,
+  rooms,
   onRemove,
   onDuplicate,
   onPatch,
   onPersist,
   onAddCustom,
+  onAddOmitted,
   onPreview,
   onOpenEquipment,
   onEdit,
 }: {
   items: StoreItemDTO[];
+  rooms: string[];
   onRemove: (id: string) => void;
   onDuplicate: (it: StoreItemDTO) => void;
   onPatch: (id: string, p: Partial<StoreItemDTO>) => void;
@@ -502,8 +568,9 @@ function StoreDropZone({
     id: string,
     field: "quantity" | "room" | "proposeNew" | "scheduleNo",
     value: string
-  ) => void;
+  ) => Promise<void>;
   onAddCustom: () => void;
+  onAddOmitted: () => void;
   onPreview: (it: StoreItemDTO) => void;
   onOpenEquipment: (it: StoreItemDTO) => void;
   onEdit: (it: StoreItemDTO) => void;
@@ -519,12 +586,15 @@ function StoreDropZone({
     >
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
+        <div className="flex items-center gap-3">
+        <button type="button" onClick={onAddOmitted} className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-brand-600"><Plus size={14} /> Omitted</button>
         <button
           onClick={onAddCustom}
           className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-brand-600"
         >
           <PackagePlus size={14} /> Custom item
         </button>
+        </div>
       </div>
 
       {items.length === 0 ? (
@@ -553,6 +623,7 @@ function StoreDropZone({
               <SortableStoreRow
                 key={it.id}
                 item={it}
+                rooms={rooms}
                 index={idx + 1}
                 onRemove={() => onRemove(it.id)}
                 onDuplicate={() => onDuplicate(it)}
@@ -572,6 +643,7 @@ function StoreDropZone({
 
 function SortableStoreRow({
   item,
+  rooms,
   index,
   onRemove,
   onDuplicate,
@@ -582,11 +654,12 @@ function SortableStoreRow({
   onEdit,
 }: {
   item: StoreItemDTO;
+  rooms: string[];
   index: number;
   onRemove: () => void;
   onDuplicate: () => void;
   onPatch: (p: Partial<StoreItemDTO>) => void;
-  onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => void;
+  onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => Promise<void>;
   onPreview: () => void;
   onOpenEquipment: () => void;
   onEdit: () => void;
@@ -666,12 +739,7 @@ function SortableStoreRow({
         onBlur={(e) => onPersist("quantity", e.target.value)}
         className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-center text-sm outline-none focus:border-brand-400"
       />
-      <input
-        defaultValue={item.room ?? ""}
-        placeholder="Room / area…"
-        onBlur={(e) => onPersist("room", e.target.value)}
-        className="w-full rounded-md border border-gray-200 px-2 py-1 text-sm outline-none focus:border-brand-400"
-      />
+      <StoreRoomSelect room={item.room} rooms={rooms} onSave={async (value) => { await onPersist("room", value); }} />
       <div className="flex items-center gap-1">
         {(() => {
           const status = canonicalStatus(item.proposeNew);

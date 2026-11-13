@@ -85,6 +85,7 @@ model Store {
   name     String
   location String?
   status   String  @default("active")
+  rooms    String[] @default([])
 
   floorplanPath String? // path inside the Supabase Storage bucket for the floor-plan PDF
   floorplanName String? // original filename of the floor-plan PDF
