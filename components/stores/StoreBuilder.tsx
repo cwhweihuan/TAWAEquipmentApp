@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition, useOptimistic } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -493,18 +493,20 @@ function FloorPlanNumber({ value, onSave, compact = false }: { value: string | n
 function StoreRoomSelect({ selected, rooms, onSave }: { selected: string[]; rooms: string[]; onSave: (value: string[]) => Promise<void> }) {
   const [pending, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [displayed, setDisplayed] = useOptimistic(selected);
   const options = [...new Set([...rooms, ...selected])];
   return <div className="mb-3 min-w-0">
     <details className="rounded-md border border-gray-200 bg-white text-sm">
-      <summary className="px-2 py-1" aria-label="Choose rooms">{selected.length ? selected.join(", ") : "Room / area…"}</summary>
+      <summary className="px-2 py-1" aria-label="Choose rooms">{displayed.length ? displayed.join(", ") : "Room / area…"}</summary>
       <fieldset disabled={pending} className="flex flex-col gap-2 border-t border-gray-100 p-2 disabled:opacity-50">
         <legend className="sr-only">Rooms (select multiple)</legend>
         {options.length === 0 && <p className="text-xs text-gray-500">Create rooms using the Rooms button.</p>}
         {options.map((name) => <label key={name} className="flex items-start gap-2">
-          <input type="checkbox" checked={selected.includes(name)} onChange={(event) => {
+          <input type="checkbox" checked={displayed.includes(name)} onChange={(event) => {
             const next = event.target.checked ? [...selected, name] : selected.filter((room) => room !== name);
             setError(null);
             startSave(async () => {
+              setDisplayed(next);
               try { await onSave(next); }
               catch (err) { setError(err instanceof Error ? err.message : "Could not save rooms."); }
             });
