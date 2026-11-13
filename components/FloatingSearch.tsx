@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { Plus, Search, X } from "lucide-react";
+import { ArrowUp, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 
 export function FloatingSearch({ value, onChange, resultCount, onShowResults }: {
@@ -59,6 +59,18 @@ export function FloatingSearch({ value, onChange, resultCount, onShowResults }: 
         </form>
       )}
       <div className="flex items-center justify-end gap-2">
+      <button
+        type="button"
+        aria-label="Back to top"
+        title="Back to top"
+        onClick={() => window.scrollTo({
+          top: 0,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        })}
+        className="flex min-h-12 min-w-12 items-center justify-center rounded-full border border-brand-300 bg-brand-600 text-white shadow-lg hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+      >
+        <ArrowUp size={20} aria-hidden="true" />
+      </button>
       <Link
         href="/catalog/new"
         className="flex min-h-12 items-center gap-1.5 rounded-full border border-brand-300 bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
