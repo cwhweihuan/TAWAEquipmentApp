@@ -5,28 +5,35 @@ import { prisma } from "@/lib/prisma";
 import { ensurePdfBucket, uploadPdf, deletePdf, pdfPublicUrl } from "@/lib/supabase";
 import type { Subtenant } from "@/lib/types";
 
+class RoomValidationError extends Error {}
+
 /** Rename rooms and their assigned rows together; reject stale room edits. */
 export async function saveStoreRooms(storeId: string, expected: string[], entries: { original: string | null; name: string }[]) {
   const names = entries.map((entry) => entry.name.trim());
   if (names.some((name) => !name || name.length > 120) || new Set(names.map((name) => name.toLowerCase())).size !== names.length) {
-    throw new Error("Room names must be unique, non-empty, and at most 120 characters.");
+    return { error: "Room names must be unique, non-empty, and at most 120 characters." };
   }
   const originals = entries.flatMap((entry) => entry.original === null ? [] : [entry.original]);
-  if (new Set(originals).size !== originals.length || originals.some((name) => !expected.includes(name))) throw new Error("Invalid room changes.");
-  const result = await prisma.$transaction(async (tx) => {
-    const updated = await tx.store.updateMany({ where: { id: storeId, rooms: { equals: expected } }, data: { rooms: names } });
-    if (updated.count !== 1) throw new Error("Rooms changed. Reload the store before saving.");
-    const assigned = await tx.storeItem.findMany({ where: { storeId, room: { not: null } }, select: { id: true, room: true } });
-    const mapping = new Map(entries.filter((entry) => entry.original !== null).map((entry) => [entry.original!, entry.name.trim()]));
-    for (const item of assigned) {
-      const next = mapping.get(item.room!);
-      if (next === undefined) throw new Error(`Room "${item.room}" is in use. Move its equipment before removing it.`);
-      if (next !== item.room) await tx.storeItem.update({ where: { id: item.id }, data: { room: next } });
-    }
-    return names;
-  });
-  revalidatePath(`/stores/${storeId}`);
-  return result;
+  if (new Set(originals).size !== originals.length || originals.some((name) => !expected.includes(name))) return { error: "Invalid room changes." };
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const updated = await tx.store.updateMany({ where: { id: storeId, rooms: { equals: expected } }, data: { rooms: names } });
+      if (updated.count !== 1) throw new RoomValidationError("Rooms changed. Reload the store before saving.");
+      const assigned = await tx.storeItem.findMany({ where: { storeId, room: { not: null } }, select: { id: true, room: true } });
+      const mapping = new Map(entries.filter((entry) => entry.original !== null).map((entry) => [entry.original!, entry.name.trim()]));
+      for (const item of assigned) {
+        const next = mapping.get(item.room!);
+        if (next === undefined) throw new RoomValidationError(`Room "${item.room}" is in use. Move its equipment before removing it.`);
+        if (next !== item.room) await tx.storeItem.update({ where: { id: item.id }, data: { room: next } });
+      }
+      return names;
+    });
+    revalidatePath(`/stores/${storeId}`);
+    return { rooms: result };
+  } catch (error) {
+    if (error instanceof RoomValidationError) return { error: error.message };
+    throw error;
+  }
 }
 
 export async function createStore(fd: FormData) {

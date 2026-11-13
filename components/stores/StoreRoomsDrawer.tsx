@@ -34,7 +34,8 @@ export function StoreRoomsDrawer({ storeId, rooms, onClose, onSaved }: {
           startSave(async () => {
             try {
               const saved = await saveStoreRooms(storeId, rooms, entries);
-              onSaved(saved, new Map(entries.filter((entry) => entry.original !== null).map((entry) => [entry.original!, entry.name.trim()])));
+              if (saved.error !== undefined) { setError(saved.error); return; }
+              onSaved(saved.rooms, new Map(entries.filter((entry) => entry.original !== null).map((entry) => [entry.original!, entry.name.trim()])));
               onClose();
             } catch (err) { setError(err instanceof Error ? err.message : "Could not save rooms."); }
           });
