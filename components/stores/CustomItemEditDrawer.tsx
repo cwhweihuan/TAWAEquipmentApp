@@ -42,6 +42,7 @@ export function CustomItemEditDrawer({
       manufacturer: val("manufacturer"),
       model: val("model"),
       dimension: val("dimension"),
+      remarks: val("remarks"),
     };
     start(async () => {
       try {
@@ -111,6 +112,11 @@ export function CustomItemEditDrawer({
                 placeholder='e.g. 48"W x 30"D x 36"H'
                 className={inputCls}
               />
+            </label>
+
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-gray-600">Remarks</span>
+              <textarea name="remarks" defaultValue={item.remarks ?? ""} rows={4} className={inputCls} />
             </label>
 
             {error && (

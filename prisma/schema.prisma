@@ -112,6 +112,7 @@ model StoreItem {
   manufacturer String?
   model        String?
   dimension    String?
+  remarks      String?
   quantity   Float   @default(1)
   room       String?
   proposeNew String?

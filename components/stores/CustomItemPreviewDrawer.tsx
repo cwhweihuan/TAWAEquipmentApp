@@ -64,6 +64,11 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
               </div>
             ))}
           </dl>
+          {item.remarks && (
+            <div className="mt-5 whitespace-pre-wrap break-words rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-inset ring-amber-100">
+              <span className="font-medium">Remarks: </span>{sentenceCase(item.remarks)}
+            </div>
+          )}
           <p className="mt-6 rounded-lg border border-dashed border-gray-200 p-6 text-center text-sm text-gray-400">No spec sheet attached</p>
         </div>
       </aside>

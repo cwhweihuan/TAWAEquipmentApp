@@ -36,6 +36,7 @@ export type StoreItemDTO = {
   manufacturer: string | null;
   model: string | null;
   dimension: string | null;
+  remarks: string | null;
   quantity: number;
   room: string | null;
   proposeNew: string | null;

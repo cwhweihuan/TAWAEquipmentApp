@@ -178,6 +178,7 @@ export type CustomItemFields = {
   manufacturer: string | null;
   model: string | null;
   dimension: string | null;
+  remarks: string | null;
 };
 
 /**
@@ -200,6 +201,7 @@ export async function updateCustomItem(itemId: string, fields: CustomItemFields)
       manufacturer: clean(fields.manufacturer),
       model: clean(fields.model),
       dimension: clean(fields.dimension),
+      remarks: clean(fields.remarks),
     },
   });
   revalidatePath(`/stores/${item.storeId}`);
@@ -232,6 +234,7 @@ export async function duplicateAsCustom(itemId: string) {
         manufacturer: eq?.manufacturer ?? src.manufacturer ?? null,
         model: eq?.model ?? src.model ?? null,
         dimension: eq?.dimension ?? src.dimension ?? null,
+        remarks: eq?.remarks ?? src.remarks ?? null,
         quantity: src.quantity,
         room: src.room,
         proposeNew: src.proposeNew,

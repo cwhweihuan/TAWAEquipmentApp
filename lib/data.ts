@@ -136,6 +136,7 @@ export function toStoreItemDTO(it: StoreWithItems["items"][number]): StoreItemDT
     manufacturer: eq?.manufacturer ?? it.manufacturer ?? null,
     model: eq?.model ?? it.model ?? null,
     dimension: eq?.dimension ?? it.dimension ?? null,
+    remarks: eq?.remarks ?? it.remarks ?? null,
     quantity: it.quantity,
     room: it.room,
     proposeNew: it.proposeNew,

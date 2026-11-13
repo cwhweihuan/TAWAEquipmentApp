@@ -138,6 +138,7 @@ export function StoreBuilder({
       manufacturer: eq.manufacturer,
       model: eq.model,
       dimension: eq.dimension,
+      remarks: eq.remarks,
       quantity: 1,
       room: null,
       proposeNew: null,
@@ -166,6 +167,7 @@ export function StoreBuilder({
         manufacturer: null,
         model: null,
         dimension: null,
+        remarks: null,
         quantity: omitted ? 0 : 1,
         room: null,
         proposeNew: null,
@@ -232,6 +234,7 @@ export function StoreBuilder({
       manufacturer: val("manufacturer"),
       model: val("model"),
       dimension: val("dimension"),
+      remarks: val("remarks"),
       departments: DEPARTMENTS.filter((d) => fd.get(`dept:${d}`) === "on"),
       ...(description ? { description } : {}),
     };
