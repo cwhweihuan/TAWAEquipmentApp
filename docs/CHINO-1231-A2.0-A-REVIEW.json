@@ -1200,12 +1200,6 @@
       "reason": "Exact manufacturer PDF not retrieved; do not substitute another model."
     },
     {
-      "scheduleNo": "164",
-      "masterItemNo": 250,
-      "model": "THA-803S",
-      "reason": "Exact manufacturer PDF not retrieved; do not substitute another model."
-    },
-    {
       "scheduleNo": "214",
       "masterItemNo": 253,
       "model": "ZW-C-223F",
@@ -1232,5 +1226,19 @@
       "currentQuantity": 5
     },
     "policy": "Preserved the later live store change; original schedule quantity remains in source entries."
+  },
+  "subsequentMerges": [
+    {
+      "sourceMasterItemNo": 250,
+      "targetMasterItemNo": 167,
+      "scheduleNo": "164",
+      "reason": "User confirmed duplicate; target THA-603 and its PDF retained. Source card removed after all references moved."
+    }
+  ],
+  "activeSummaryAfterMerge": {
+    "rows": 30,
+    "quantity": 52,
+    "pdfRows": 24,
+    "missingPdfRows": 6
   }
 }

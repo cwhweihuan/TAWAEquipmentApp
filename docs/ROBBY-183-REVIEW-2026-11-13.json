@@ -56,5 +56,6 @@
     }
   ],
   "untouched": "Other identity, PDF association, electrical connection height, utility connections, departments and store records unchanged.",
-  "status": "saved_pending_browser_readback"
+  "status": "updated_verified",
+  "verification": "Website edit form reloaded and all four changed fields matched; electrical connection height remained empty."
 }

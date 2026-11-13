@@ -1,0 +1,93 @@
+{
+  "sourceNo": 250,
+  "targetNo": 167,
+  "authorization": "User confirmed #250 and #167 are the same item and requested all store references use #167.",
+  "beforeEquipment": [
+    {
+      "id": "cmq7rhdwp00a3rzbvkdsef0ex",
+      "masterItemNo": 167,
+      "description": "RICE WAMER",
+      "manufacturer": "ZOJIRUSHI",
+      "model": "THA-603",
+      "supplyBy": "OWNER",
+      "installBy": "OWNER",
+      "power": "120-20A",
+      "height": "20” OC",
+      "nema": "5-15R",
+      "dataPhone": null,
+      "waterCold": null,
+      "waterHot": null,
+      "waterElev": null,
+      "gasPipe": null,
+      "gasBtu": null,
+      "gasElev": null,
+      "floorSink": null,
+      "remarks": "Electrical product rating: 120 V, 77 W. THA-603 capacity 6.0 L; do not use taller THA-803 dimensions.",
+      "departments": [
+        "HOT DELI"
+      ],
+      "departmentItems": {
+        "HOT DELI": "HD#33"
+      },
+      "pdfId": "cmqhufk1t003usbodwyuxle2t",
+      "createdAt": "2026-06-10 07:42:54.889",
+      "updatedAt": "2026-11-13 01:31:34.519",
+      "dimension": "18 1/8\"W x 15\"D x 12 5/8\"H",
+      "specUrl": null,
+      "bimModelUrl": null,
+      "bimStatus": "NOT_CREATED"
+    },
+    {
+      "id": "chino1231-equipment-164",
+      "masterItemNo": 250,
+      "description": "RICE WARMER",
+      "manufacturer": "ZOJIRUSHI",
+      "model": "THA-803S",
+      "supplyBy": "OWNER",
+      "installBy": "OWNER",
+      "power": null,
+      "height": null,
+      "nema": null,
+      "dataPhone": null,
+      "waterCold": null,
+      "waterHot": null,
+      "waterElev": null,
+      "gasPipe": null,
+      "gasBtu": null,
+      "gasElev": null,
+      "floorSink": null,
+      "remarks": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #164. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. Catalog THA-603 differs from drawing THA-803S.",
+      "departments": [
+        "HOT DELI"
+      ],
+      "departmentItems": null,
+      "pdfId": null,
+      "createdAt": "2026-11-13 22:48:44.821",
+      "updatedAt": "2026-11-13 22:48:44.821",
+      "dimension": null,
+      "specUrl": null,
+      "bimModelUrl": null,
+      "bimStatus": "NOT_CREATED"
+    }
+  ],
+  "preservedTarget": "All existing #167 specifications, model THA-603 and PDF unchanged. No source-only non-empty specification was missing from the target.",
+  "affectedStoreItems": [
+    {
+      "id": "chino1231-a20a-164",
+      "storeNo": "1231",
+      "floorPlanNo": "164",
+      "quantity": 1,
+      "room": "Hot Deli",
+      "position": 16,
+      "beforeEquipmentId": "chino1231-equipment-164",
+      "afterEquipmentId": "cmq7rhdwp00a3rzbvkdsef0ex"
+    }
+  ],
+  "verification": {
+    "duplicateCards": 0,
+    "oldReferences": 0,
+    "chinoRows": 30,
+    "chinoQuantity": 52
+  },
+  "status": "merged_verified"
+}
