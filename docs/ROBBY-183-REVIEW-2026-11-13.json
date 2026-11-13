@@ -1,0 +1,60 @@
+{
+  "itemNo": 183,
+  "equipmentId": "cmq7rhjdw00azrzbvyh3i68zx",
+  "source": {
+    "pdfUrl": "https://zlhmnmtfpvingqtwxcvs.supabase.co/storage/v1/object/public/pdfs/uploads/1794611311129-Spec_Robby_US.pdf",
+    "filename": "Spec_Robby_US.pdf",
+    "pages": 5,
+    "sha256": "6f575264a546487753955c3fa7a86951bf7d396abb834a94f0528d95a599d838"
+  },
+  "before": {
+    "model": "MAX5.0",
+    "dimension": "32.6\" x 25.6\" x 37.6\"",
+    "power": "208–240 V, 3 phase, 50/60 Hz; 12 kW",
+    "remarks": "Water supply pressure maximum 0.8 MPa; connection size and drain are not specified in this sheet. Main unit IPX4."
+  },
+  "after": {
+    "model": "Robby One",
+    "dimension": "Main unit: 31.1\"W x 29.3\"D x 40.1\"H; assembly drawing: 31.1\"W x 39.3\"D x 68.5\"H (verify depth against nameplate).",
+    "power": "208-240 V, 3 phase, 50/60 Hz; 15 kW rated. Software-adjustable to lower power (12 kW, 10 kW and more); installed setting not confirmed.",
+    "remarks": "Water supply pressure maximum 0.8 MPa; connection size and drain are not specified in this sheet. Main unit IPX4.\nPDF: Spec_Robby_US.pdf, pp. 2-5, NEXT ROBOT Robby One. Replaces legacy MAX5.0 identification/specifications for this newly attached Robby document; model shown on p. 2 and nameplate p. 5 is Robby One. Main unit dimensions p. 3: 31.1 x 29.3 x 40.1 in; base listed separately: 31.1 x 36.7 x 28.4 in. Assembly drawing p. 4: 31.1 in wide, 39.3 in deep, 68.5 in high. DEPTH CONFLICT: p. 5 nameplate lists 31.1 x 29.3 x 68.5 in; verify assembled footprint with manufacturer before layout. CAPACITY CONFLICT: p. 3 states <=17.64 lb, p. 5 nameplate states <=30 lb; no single capacity assumed. Weights p. 3: main unit 330 lb, base 220 lb; nameplate p. 5 lists net 551.2 lb. Nameplate electrical: 220 V, 3-phase, 3-wire, 50/60 Hz, 15 kW; p. 2 gives 208-240 V supply range and software power reduction options. Pot outer diameter 14 in; spices 42 fl oz x5, sauces 29 fl oz x6, starch water 52 fl oz x1, four customizable oversize containers. Certifications listed: NSF/ANSI 169, UL 197, CSA C22.2, FCC Part 15, IC ICES-003. No NEMA, inlet diameter, drain connection or electrical connection mounting height specified."
+  },
+  "evidence": [
+    {
+      "field": "model",
+      "pages": [
+        2,
+        5
+      ],
+      "quote": "Product Name Robby One; Model: Robby One"
+    },
+    {
+      "field": "power",
+      "page": 2,
+      "quote": "15kw; Adjustable in software to lower power (12kw, 10kw and more); 208-240v, 3 Phase, 50/60Hz"
+    },
+    {
+      "field": "dimension",
+      "page": 4,
+      "quote": "Assembly drawing labels 31.1 in width, 39.3 in depth, 68.5 in height; main unit 31.1 x 29.3 x 40.1 in."
+    }
+  ],
+  "conflicts": [
+    {
+      "field": "depth",
+      "drawingPage": 4,
+      "drawing": "39.3 in",
+      "nameplatePage": 5,
+      "nameplate": "29.3 in"
+    },
+    {
+      "field": "cooking capacity",
+      "tablePage": 3,
+      "table": "<=17.64 lb",
+      "nameplatePage": 5,
+      "nameplate": "<=30 lb"
+    }
+  ],
+  "untouched": "Other identity, PDF association, electrical connection height, utility connections, departments and store records unchanged.",
+  "status": "saved_pending_browser_readback"
+}

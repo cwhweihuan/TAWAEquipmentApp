@@ -306,9 +306,9 @@ export function StoreBuilder({
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
     >
-      <div className="mx-auto flex h-[calc(100vh-3.5rem)] max-w-[1500px] flex-col px-4 sm:px-6">
+      <div className="mx-auto flex h-[calc(100dvh-3.5rem-1px)] min-h-0 max-w-[1500px] flex-col overflow-hidden px-4 sm:px-6">
         {/* header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 py-4">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 py-4">
           <div className="min-w-0">
             <Link
               href="/stores"
@@ -355,9 +355,9 @@ export function StoreBuilder({
         {itemError && <p role="alert" className="pb-2 text-sm text-red-600">{itemError}</p>}
 
         {/* two panes */}
-        <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 pb-4 lg:grid-cols-[360px_1fr]">
+        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 grid-rows-2 gap-4 overflow-hidden pb-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:grid-rows-1">
           {/* catalog */}
-          <div className="flex min-h-0 flex-col rounded-2xl border border-white/60 bg-white/55 shadow-sm backdrop-blur-md backdrop-saturate-150">
+          <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-white/60 bg-white/55 shadow-sm backdrop-blur-md backdrop-saturate-150">
             <div className="border-b border-gray-100 p-3">
               <div className="relative">
                 <Search size={15} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -369,7 +369,7 @@ export function StoreBuilder({
                 />
               </div>
             </div>
-            <div className="scroll-thin flex-1 space-y-1.5 overflow-y-auto p-2">
+            <div className="scroll-thin min-h-0 min-w-0 flex-1 space-y-1.5 overflow-y-auto p-2">
               {filteredCatalog.map((eq) => (
                 <CatalogItem
                   key={eq.id}
@@ -613,7 +613,7 @@ function StoreDropZone({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-h-0 flex-col rounded-2xl border-2 shadow-sm backdrop-blur-md backdrop-saturate-150 transition",
+        "flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border-2 shadow-sm backdrop-blur-md backdrop-saturate-150 transition",
         isOver ? "border-brand-400 bg-brand-50/40" : "border-white/60 bg-white/55"
       )}
     >
@@ -635,7 +635,7 @@ function StoreDropZone({
           Drag equipment here, or click + on a catalog item
         </div>
       ) : (
-        <div className="scroll-thin flex-1 overflow-auto p-2">
+        <div className="scroll-thin min-h-0 min-w-0 flex-1 overflow-auto p-2">
           {/* header row */}
           <div
             className={cn(
