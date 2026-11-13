@@ -10,7 +10,7 @@ export function sentenceCase(value: string | null | undefined): string {
   return (value ?? "").toLowerCase().replace(/\p{L}/u, (letter) => letter.toUpperCase());
 }
 
-/** The nine departments in the master equipment sheet, in canonical order. */
+/** Equipment departments, in canonical display order. */
 export const DEPARTMENTS = [
   "MEAT",
   "SEAFOOD",
@@ -18,6 +18,7 @@ export const DEPARTMENTS = [
   "GROCERY",
   "BAKERY",
   "HOT DELI",
+  "SUSHI",
   "WAREHOUSE",
   "GENERAL MARKET",
   "SUBTENANTS",
@@ -33,6 +34,7 @@ export const DEPT_STYLE: Record<string, { dot: string; chip: string }> = {
   GROCERY: { dot: "bg-amber-500", chip: "bg-amber-500/15 text-amber-300 ring-amber-500/30" },
   BAKERY: { dot: "bg-orange-500", chip: "bg-orange-500/15 text-orange-300 ring-orange-500/30" },
   "HOT DELI": { dot: "bg-red-500", chip: "bg-red-500/15 text-red-300 ring-red-500/30" },
+  SUSHI: { dot: "bg-pink-500", chip: "bg-pink-500/15 text-pink-300 ring-pink-500/30" },
   WAREHOUSE: { dot: "bg-slate-400", chip: "bg-slate-400/15 text-slate-300 ring-slate-400/30" },
   "GENERAL MARKET": { dot: "bg-violet-500", chip: "bg-violet-500/15 text-violet-300 ring-violet-500/30" },
   SUBTENANTS: { dot: "bg-teal-500", chip: "bg-teal-500/15 text-teal-300 ring-teal-500/30" },
@@ -50,6 +52,7 @@ export const DEPT_HEX: Record<string, string> = {
   GROCERY: "#f59e0b",
   BAKERY: "#f97316",
   "HOT DELI": "#dc2626",
+  SUSHI: "#ec4899",
   WAREHOUSE: "#64748b",
   "GENERAL MARKET": "#8b5cf6",
   SUBTENANTS: "#14b8a6",
