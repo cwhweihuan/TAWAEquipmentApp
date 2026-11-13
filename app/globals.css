@@ -88,6 +88,32 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Native cursor assets match the neon pixel backdrop; the X centre is the hotspot.
+ * Keep text selection, resize, disabled and drag cursors meaningful. */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: url("/cursors/y2k-x.svg") 16 16, crosshair;
+  }
+
+  :is(a[href], button:not(:disabled), summary, select:not(:disabled),
+      [role="button"]:not([aria-disabled="true"]),
+      input[type="button"], input[type="submit"], input[type="reset"],
+      input[type="checkbox"], input[type="radio"]):not(:disabled):not([aria-disabled="true"]):not(.cursor-grab):not(.cursor-grabbing) {
+    cursor: url("/cursors/y2k-x-link.svg") 16 16, pointer;
+  }
+
+  :is(input:not([type]), input[type="text"], input[type="search"], input[type="number"],
+      input[type="email"], input[type="url"], input[type="password"], textarea,
+      [contenteditable="true"]):not(:disabled) {
+    cursor: text;
+  }
+
+  :is(button, input, select, textarea):disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
 /* thin, unobtrusive scrollbars for the panels */
 .scroll-thin::-webkit-scrollbar {
   width: 8px;
