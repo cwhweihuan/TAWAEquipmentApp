@@ -92,14 +92,14 @@ body {
  * Keep text selection, resize, disabled and drag cursors meaningful. */
 @media (hover: hover) and (pointer: fine) {
   body {
-    cursor: url("/cursors/y2k-x.svg") 16 16, crosshair;
+    cursor: url("/cursors/y2k-x.svg") 11 11, crosshair;
   }
 
   :is(a[href], button:not(:disabled), summary, select:not(:disabled),
       [role="button"]:not([aria-disabled="true"]),
       input[type="button"], input[type="submit"], input[type="reset"],
       input[type="checkbox"], input[type="radio"]):not(:disabled):not([aria-disabled="true"]):not(.cursor-grab):not(.cursor-grabbing) {
-    cursor: url("/cursors/y2k-x-link.svg") 16 16, pointer;
+    cursor: url("/cursors/y2k-x-link.svg") 11 11, pointer;
   }
 
   :is(input:not([type]), input[type="text"], input[type="search"], input[type="number"],
