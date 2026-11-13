@@ -26,6 +26,6 @@
 ---
 
 ## 🔜 待办（已知但未排期）
-- #1231 Chino Hill：待取得 `2026-06-03 Demo & Proposed.pdf`，核對第 2 頁 A2.0-A 左上 equipment schedule；按廠商／型號／描述匹配目錄設備，圖面編號寫 StoreItem.scheduleNo，按圖面順序匯入本店。2026-11-13 查核時門店 floorplanPath 為空、Storage 未找到平面圖；使用者提供的 Windows 本機路徑未掛載至工作區，尚未匯入任何設備。
+- #1231 Chino Hill：已按 A2.0-A 排入 30 列／53 件，13 張既有卡片＋17 張新卡片；缺失或無法下載的精確規格與型號差異見 CHINO-1231-A2.0-A-REVIEW.json。99B 的 5092C／5029C 尚待確認。
 - 逐项核实有规格表设备的厂商官方产品页，把已确认的官方网址补进目录（卡片及编辑表单字段已就绪；不能用未核实的猜测链接代替）。
 - 各门店文件夹（`/Volumes/Work/Wei_Huan/2026-TAWA/` 下 #92 Edmonds / #1695 Portland 等）的 store-specific 设备清单 + floor plan 对应到 `Store`。

@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Store, Plus, Trash2, Package, Loader2 } from "lucide-react";
+import { Store, Plus, Trash2, Package, Loader2, LayoutGrid, List } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { createStore, deleteStore } from "@/app/actions/store";
 
 type StoreRow = {
@@ -17,6 +18,7 @@ type StoreRow = {
 export function StoreList({ stores }: { stores: StoreRow[] }) {
   const router = useRouter();
   const [creating, setCreating] = useState(false);
+  const [view, setView] = useState<"cards" | "list">("cards");
   const [pending, start] = useTransition();
 
   function onCreate(e: React.FormEvent<HTMLFormElement>) {
@@ -40,10 +42,18 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
 
   return (
     <div className="mx-auto max-w-[1100px] px-4 py-6 sm:px-6">
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-gray-900">Stores</h1>
           <p className="text-sm text-gray-500">{stores.length} store buildouts</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+        <div role="group" aria-label="Stores display" className="flex rounded-lg border border-gray-200 bg-white p-1">
+          {(["cards", "list"] as const).map((mode) => (
+            <button key={mode} type="button" aria-pressed={view === mode} onClick={() => setView(mode)} className={cn("flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-brand-400", view === mode ? "bg-brand-50 text-brand-700" : "text-gray-500 hover:bg-gray-50")}>
+              {mode === "cards" ? <LayoutGrid size={15} /> : <List size={15} />}{mode === "cards" ? "Cards" : "List"}
+            </button>
+          ))}
         </div>
         <button
           onClick={() => setCreating((v) => !v)}
@@ -51,6 +61,7 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
         >
           <Plus size={16} /> New store
         </button>
+        </div>
       </div>
 
       {creating && (
@@ -88,6 +99,27 @@ export function StoreList({ stores }: { stores: StoreRow[] }) {
       {stores.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gray-200 py-20 text-center text-sm text-gray-400">
           No stores yet. Create one to start adding equipment.
+        </div>
+      ) : view === "list" ? (
+        <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white/45">
+          <table className="w-full min-w-[650px] text-left text-sm">
+            <caption className="sr-only">Stores</caption>
+            <thead className="border-b border-gray-200 bg-white/70 text-xs text-gray-500">
+              <tr>{["Store no.", "Store name", "Location", "Equipment", "Actions"].map((label) => <th key={label} scope="col" className="px-4 py-3 font-semibold">{label}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {stores.map((s) => <tr key={s.id} className="hover:bg-white/50">
+                <td className="px-4 py-3 font-mono text-gray-500">#{s.number}</td>
+                <td className="px-4 py-3"><Link href={`/stores/${s.id}`} className="font-semibold text-gray-900 hover:text-brand-600">{s.name}</Link></td>
+                <td className="px-4 py-3 text-gray-500">{s.location || "—"}</td>
+                <td className="px-4 py-3 tabular-nums text-gray-500">{s._count.items}</td>
+                <td className="px-4 py-3"><div className="flex items-center gap-3">
+                  <Link href={`/stores/${s.id}`} className="font-medium text-brand-600 hover:underline">Open</Link>
+                  <button type="button" onClick={(e) => onDelete(e, s.id, s.name)} disabled={pending} aria-label={`Delete store ${s.number}`} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 disabled:opacity-50"><Trash2 size={15} /></button>
+                </div></td>
+              </tr>)}
+            </tbody>
+          </table>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">

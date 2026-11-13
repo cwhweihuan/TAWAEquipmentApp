@@ -1,0 +1,713 @@
+{
+  "storeId": "cmwfjkgcx0000jw08j4vxp9b2",
+  "storeNo": "1231",
+  "source": {
+    "filename": "2026-06-03 Demo & Proposed.pdf",
+    "path": "floorplans/cmwfjkgcx0000jw08j4vxp9b2/606fab89-8412-4970-a1f7-1c6da02a362c-2026-06-03_Demo___Proposed.pdf",
+    "page": 2,
+    "sheet": "A2.0-A",
+    "scope": "Equipment schedule, left column top-to-bottom, then right column top-to-bottom; quantities from schedule, not counted symbols.",
+    "sha256": "6ef8181aea529db4af880790084a828675cf18522af8ffa055f96027ab604494"
+  },
+  "status": "imported_verified_30_rows_53_units",
+  "entries": [
+    {
+      "position": 0,
+      "scheduleNo": "80B",
+      "quantity": 2,
+      "description": "SOLID DOOR REFRIGERATOR",
+      "manufacturer": "TRUE",
+      "model": "TWT-60",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rhohx00btrzbvakbdjc0z",
+          "masterItemNo": 198,
+          "description": "60\"W REFRIGERATED SANDWICH TABLE",
+          "manufacturer": "True",
+          "model": "TWT-60",
+          "dimension": "603/8\"W x 301/8\"D x 333/8\"H"
+        },
+        "reason": "Exact TWT-60 model; catalog title says sandwich table but manufacturer's sheet identifies worktop refrigerator. Catalog title remains unchanged."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    },
+    {
+      "position": 1,
+      "scheduleNo": "81",
+      "quantity": 1,
+      "description": "PREP TOP REFRIG. COLD TABLE",
+      "manufacturer": "TRUE",
+      "model": "TSSU-60-16-HC",
+      "room": null,
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rgmt8005nrzbvl5y7cjue",
+          "masterItemNo": 87,
+          "description": "PREP TOP REFRIG. COLD TABLE",
+          "manufacturer": "True",
+          "model": "TSSU-60-16-HC",
+          "dimension": "60 3/8\" W x 30 1/8\" D x  36 3/4\" H"
+        },
+        "reason": "Exact manufacturer/model. Tag appears in Bakery and Hot Deli; schedule quantity is 1. Preserve table quantity; room/duplicate callouts need confirmation."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    },
+    {
+      "position": 2,
+      "scheduleNo": "84",
+      "quantity": 1,
+      "description": "STOCK POT RANGE",
+      "manufacturer": "COOKTEK",
+      "model": "STOCK POT",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No CookTek stock pot range in catalog; do not substitute gas stock-pot ranges.",
+        "equipmentId": "chino1231-equipment-84"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 3,
+      "scheduleNo": "88",
+      "quantity": 1,
+      "description": "EXISTING ICE MAKER",
+      "manufacturer": "ICE-O-MATIC",
+      "model": "ICEU300",
+      "room": "Bakery",
+      "proposeNew": "Existing",
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rgou4005zrzbvbq2iqnkc",
+          "masterItemNo": 93,
+          "description": "ICE CUBER SELF CONTAINED – 300LBS W/ FILTER",
+          "manufacturer": "ICE-O-MATIC",
+          "model": "ICEU-300",
+          "dimension": "30\"W x 29\"D x 39\"H (standard adjustable-leg setting)"
+        },
+        "reason": "Manufacturer and ICEU300/ICEU-300 match; punctuation-only model variation."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 4,
+      "scheduleNo": "90",
+      "quantity": 2,
+      "description": "WALL MOUNT HAND SINK W/ PAPER TOWEL & SOAP DISPENSER. 12\" MIN. SPLASH GUARD",
+      "manufacturer": "GSW",
+      "model": "HS-1615KS",
+      "room": null,
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact GSW model; catalog Advance Tabco sinks are different. Multiple room locations; retain quantity 2.",
+        "equipmentId": "chino1231-equipment-90"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 5,
+      "scheduleNo": "94",
+      "quantity": 1,
+      "description": "1 COMP SINK W/ 1 DRAIN BOARD (LEFT) W/ 12\" MIN. SPLASH GUARD - SMALL",
+      "manufacturer": "AERO",
+      "model": "MF1-2418-18L",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rgrj7006frzbvxxrqnk48",
+          "masterItemNo": 101,
+          "description": "1COMP-SINK W/ 1 DRAIN BOARD (LEFT) – SMALL",
+          "manufacturer": "AREO",
+          "model": "MF1-2418-18L",
+          "dimension": null
+        },
+        "reason": "Exact model and left-drain configuration; catalog manufacturer AREO is a spelling transposition of plan AERO."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 6,
+      "scheduleNo": "98",
+      "quantity": 2,
+      "description": "3 COMP SINK W/ 2 DRAIN BOARD & 12\" MIN. SPLASH GUARD - SMALL",
+      "manufacturer": "AERO",
+      "model": "MF3-2418-18LR",
+      "room": null,
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rgsvp006nrzbvzxk1ji07",
+          "masterItemNo": 105,
+          "description": "3COMP SINK /W 2 DRAIN BOARD - SMALL",
+          "manufacturer": "AREO",
+          "model": "MF3-2418-18LR",
+          "dimension": "93”L x 30\"W x 34-1/2”H"
+        },
+        "reason": "Exact model and two-drainboard configuration; catalog AREO spelling differs. Bakery and Hot Deli callouts; preserve shared row."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 7,
+      "scheduleNo": "99A",
+      "quantity": 1,
+      "description": "SOUP WELL SELF-SERVE ISLAND",
+      "manufacturer": "INTERTEK",
+      "model": "99R-MS5029S-SGO",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipmentId": "cms6jtnk50006jo04hnicl53h",
+        "masterItemNo": 211,
+        "reason": "User corrected drawing model to existing 99R-MS5029S-SGO."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER / E.C.",
+      "drawnModel": "99R-MS5092S-SGO"
+    },
+    {
+      "position": 8,
+      "scheduleNo": "99B",
+      "quantity": 1,
+      "description": "COLD PAN SELF-SERVE ISLAND",
+      "manufacturer": "INTERTEK",
+      "model": "99R-MS5092C-SGO",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "Catalog #212 is 99R-MS5029C-SGO; 5092 versus 5029 must be confirmed.",
+        "equipmentId": "chino1231-equipment-99b"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER / E.C."
+    },
+    {
+      "position": 9,
+      "scheduleNo": "99C",
+      "quantity": 8,
+      "description": "SINGLE-WELL DROP-FOOD WARMER",
+      "manufacturer": "WELLS",
+      "model": "MOD100TD",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact MOD100TD card; do not substitute multi-well assemblies.",
+        "equipmentId": "chino1231-equipment-99c"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER / E.C."
+    },
+    {
+      "position": 10,
+      "scheduleNo": "99D",
+      "quantity": 4,
+      "description": "THREE-WELL DROP-FOOD WARMER",
+      "manufacturer": "WELLS",
+      "model": "MOD300TDM",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact MOD300TDM card; generic 300D-400D-500D record is a different assembly.",
+        "equipmentId": "chino1231-equipment-99d"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER / E.C."
+    },
+    {
+      "position": 11,
+      "scheduleNo": "99E",
+      "quantity": 1,
+      "description": "REFRIGERATED DROP-IN WELL",
+      "manufacturer": "HATCO",
+      "model": "CWBP-3",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No standalone CWBP-3 card; cold-pan island records represent complete assemblies.",
+        "equipmentId": "chino1231-equipment-99e"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER / E.C."
+    },
+    {
+      "position": 12,
+      "scheduleNo": "99F",
+      "quantity": 3,
+      "description": "TOP-MOUNT, ROUND DROP-IN WARMER",
+      "manufacturer": "WELLS",
+      "model": "SS10TDU-120",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact standalone SS10TDU-120 card.",
+        "equipmentId": "chino1231-equipment-99f"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER / E.C."
+    },
+    {
+      "position": 13,
+      "scheduleNo": "147",
+      "quantity": 1,
+      "description": "DOUBLE STOCK POT RANGE",
+      "manufacturer": "AMERICAN RANGE",
+      "model": "ARSP-J-2",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rh7s10093rzbvea9rgjjw",
+          "masterItemNo": 149,
+          "description": "DOUBLE STOCK POT RANGE",
+          "manufacturer": "AMERICAN RANGE",
+          "model": "ARSP-J-2",
+          "dimension": "18 in W x 42 in D x 24 in H"
+        },
+        "reason": "Exact manufacturer/model."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 14,
+      "scheduleNo": "160",
+      "quantity": 1,
+      "description": "BBQ DISPLAY CASE - 3 PAN (PROVIDE FILL FAUCET & FILL LINE)",
+      "manufacturer": "ACE",
+      "model": "RM-BBQ3654",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact ACE RM-BBQ3654 card; generic CUSTOM three-pan case cannot confirm this model.",
+        "equipmentId": "chino1231-equipment-160"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 15,
+      "scheduleNo": "163",
+      "quantity": 1,
+      "description": "GRIDDLE W/ 4 BURNER RANGE",
+      "manufacturer": "IMPERIAL",
+      "model": "IR-4-G12",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact Imperial IR-4-G12; American Range AR24G-2B is a different manufacturer/configuration.",
+        "equipmentId": "chino1231-equipment-163"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C."
+    },
+    {
+      "position": 16,
+      "scheduleNo": "164",
+      "quantity": 1,
+      "description": "RICE WARMER",
+      "manufacturer": "ZOJIRUSHI",
+      "model": "THA-803S",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "Catalog THA-603 differs from drawing THA-803S.",
+        "equipmentId": "chino1231-equipment-164"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER"
+    },
+    {
+      "position": 17,
+      "scheduleNo": "166",
+      "quantity": 1,
+      "description": "HOT WATER BOILER WITH FILTER",
+      "manufacturer": "BUNN",
+      "model": "H5X",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rhp6g00bxrzbv1hmlke0g",
+          "masterItemNo": 200,
+          "description": "WATER HEATER",
+          "manufacturer": "BUNN",
+          "model": "H5X",
+          "dimension": "7.4 in W x 17.6 in D x 28.5 in H"
+        },
+        "reason": "Exact Bunn H5X model; catalog name WATER HEATER is generic."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C. / E.C."
+    },
+    {
+      "position": 18,
+      "scheduleNo": "173",
+      "quantity": 1,
+      "description": "ROTATING DOUBLE RACK OVEN",
+      "manufacturer": "BAXTER",
+      "model": "OV500G2-EE",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No Baxter OV500G2-EE card; LRO-2G6, LBC and Blodgett ovens are not equivalents.",
+        "equipmentId": "chino1231-equipment-173"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C. / E.C."
+    },
+    {
+      "position": 19,
+      "scheduleNo": "174",
+      "quantity": 1,
+      "description": "SINGLE WIDE RETARDER PROOFER",
+      "manufacturer": "BAXTER",
+      "model": "RPW1S-60.5\"D",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rhfnm00adrzbv4y4qneys",
+          "masterItemNo": 172,
+          "description": "SINGLE RETARDER PROOFER",
+          "manufacturer": "BAXTER",
+          "model": "RPW1S",
+          "dimension": null
+        },
+        "reason": "Catalog RPW1S PDF pp. 1-2 explicitly lists 60.5\"D configuration; depth is a project selection, not a different model."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "P.C. / E.C."
+    },
+    {
+      "position": 20,
+      "scheduleNo": "180",
+      "quantity": 1,
+      "description": "20 Q BENCH MIXER",
+      "manufacturer": "HOBART",
+      "model": "HL200",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rhgc500ahrzbvl258u3ao",
+          "masterItemNo": 174,
+          "description": "20 Q MIXER",
+          "manufacturer": "HOBART",
+          "model": "HL200",
+          "dimension": null
+        },
+        "reason": "Exact manufacturer/model."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    },
+    {
+      "position": 21,
+      "scheduleNo": "190",
+      "quantity": 1,
+      "description": "COFFEE GRINDER",
+      "manufacturer": "BUNN",
+      "model": "G9-2T",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rhi0w00arrzbvc4sq6xd2",
+          "masterItemNo": 179,
+          "description": "COFFEE GRINDER",
+          "manufacturer": "BUNN",
+          "model": "33700.0",
+          "dimension": "8.3 in W x 19.4 in D x 27.1 in H"
+        },
+        "reason": "Catalog PDF p.1 identifies G9-2T DBC SST and Product #33700.0000 (catalog numeric 33700.0)."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER"
+    },
+    {
+      "position": 22,
+      "scheduleNo": "191",
+      "quantity": 1,
+      "description": "COFFEE BREWER W/ WATER FILTER",
+      "manufacturer": "BUNN",
+      "model": "SINGLE SH 120V",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cmq7rhidb00atrzbvdydapcgf",
+          "masterItemNo": 180,
+          "description": "COFFEE BREWER W/ WATER FILTER",
+          "manufacturer": "BUNN",
+          "model": "27800.0009",
+          "dimension": "9.3\"W x 20.0\"D x 35.8\"H"
+        },
+        "reason": "Catalog scanned PDF p.1 identifies SINGLE SH 120V and Product #27800.0009."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER"
+    },
+    {
+      "position": 23,
+      "scheduleNo": "211",
+      "quantity": 6,
+      "description": "SELF-SERVICE OPEN MULTI-DECK MERCHANDISER",
+      "manufacturer": "HILLPHOENIX",
+      "model": "PF-51-R",
+      "room": null,
+      "proposeNew": null,
+      "match": {
+        "type": "catalog",
+        "equipment": {
+          "id": "cms6okw7o0002jm0464lk7jxd",
+          "masterItemNo": 217,
+          "description": "SELF-SERVICE OPEN MULTI-DECK MERCHANDISER",
+          "manufacturer": "HILLPHOENIX",
+          "model": "PF-R-51",
+          "dimension": "4', 6', 8', 10' & 12' W x 42\" D x 51\" H"
+        },
+        "reason": "Catalog field PF-R-51 transposes label order; linked manufacturer PDF explicitly identifies PF-51-R. Selected case lengths and room distribution remain unspecified."
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    },
+    {
+      "position": 24,
+      "scheduleNo": "212",
+      "quantity": 1,
+      "description": "SERVICE MULTI-DECK MERCHANDISER W/ FLAT LIFT GLASS",
+      "manufacturer": "HILLPHOENIX",
+      "model": "SMD-R",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No SMD-R card; BLF/BLF-R/PF series are different models.",
+        "equipmentId": "chino1231-equipment-212"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    },
+    {
+      "position": 25,
+      "scheduleNo": "214",
+      "quantity": 2,
+      "description": "BAKERY CASE",
+      "manufacturer": "KINGDOM",
+      "model": "ZW-C-223F",
+      "room": "Bakery",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No Kingdom ZW-C-223F card; Turbo Air and other bakery cases are not equivalents.",
+        "equipmentId": "chino1231-equipment-214"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    },
+    {
+      "position": 26,
+      "scheduleNo": "215",
+      "quantity": 2,
+      "description": "FLAT TOP WORK TABLE",
+      "manufacturer": "GSW",
+      "model": "WT-EE3060",
+      "room": null,
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact GSW WT-EE3060; catalog Eagle/True worktables differ. Bakery and Hot Deli locations share this row.",
+        "equipmentId": "chino1231-equipment-215"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER"
+    },
+    {
+      "position": 27,
+      "scheduleNo": "216",
+      "quantity": 1,
+      "description": "CHOPPING TABLE",
+      "manufacturer": "ATL EQUIPMENT",
+      "model": "99R-CTN-3636-CHOP 2",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact ATL model; generic CUSTOM 30x42 table does not establish 36x36 configuration.",
+        "equipmentId": "chino1231-equipment-216"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER"
+    },
+    {
+      "position": 28,
+      "scheduleNo": "217",
+      "quantity": 1,
+      "description": "DRY STORAGE SHELVING",
+      "manufacturer": "ISS SHELVING",
+      "model": "S3746* - GOLD BOND Y",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "Catalog P74NY is a post component; it does not identify this full S3746* shelving assembly. Preserve asterisk as drawn.",
+        "equipmentId": "chino1231-equipment-217"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "OWNER"
+    },
+    {
+      "position": 29,
+      "scheduleNo": "218",
+      "quantity": 2,
+      "description": "HEATED SHELF MERCHANDISER",
+      "manufacturer": "ALTO-SHAAM",
+      "model": "HSM-48/5S/T",
+      "room": "Hot Deli",
+      "proposeNew": null,
+      "match": {
+        "type": "new_catalog",
+        "reason": "No exact Alto-Shaam HSM-48/5S/T card; Hatco and ServIt warmers are different products.",
+        "equipmentId": "chino1231-equipment-218"
+      },
+      "supplyBy": "OWNER",
+      "installBy": "E.C."
+    }
+  ],
+  "importSummary": {
+    "rows": 30,
+    "quantity": 53,
+    "existingCards": 13,
+    "newCards": 17,
+    "unlinkedCustomRows": 0
+  },
+  "specSearch": [
+    {
+      "scheduleNo": "84",
+      "url": "https://cooktek.com/wp-content/uploads/2018/07/DOC-1599B-Stock-Pot-Range-EN-1.pdf",
+      "path": "/tmp/chino-specs/84.pdf",
+      "sha256": "af980b3d89725dee55416670cb4bc2472b40efd42c46352262beaf9f2edc5ac6",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "90",
+      "url": "https://gsw-usa.com/attachment?id_attachment=115",
+      "status": "failed",
+      "error": "HTTP Error 406: Not Acceptable"
+    },
+    {
+      "scheduleNo": "99C",
+      "url": "https://wells-mfg.com/wp-content/uploads/2017/04/S_MOD100-Modular-Warmer_Spec-Sheet-03-2018_-1.pdf",
+      "path": "/tmp/chino-specs/99C.pdf",
+      "sha256": "adaeeb9d8c32dc477ae0c40bcb797f246f3e72551c3c89135683ab500ef8a435",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "99D",
+      "url": "https://wells-mfg.com/wp-content/uploads/2016/08/C_MOD-300_T_TD_TDM-Install-Sheet.pdf",
+      "path": "/tmp/chino-specs/99D.pdf",
+      "sha256": "b9d54a3592dff30b03c1d4faad04dfa8e66651d741e9292f36a4691ead4d8949",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "173",
+      "url": "https://www.hobart.ca/wp-content/uploads/pdfs/baking/BX56068-OV500G2EE.pdf",
+      "path": "/tmp/chino-specs/173.pdf",
+      "sha256": "e7c490ed97282ef40d518597b8ae2a3f2d419f64efb1145d05affc738d0a8fce",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "215",
+      "url": "https://gsw-usa.com/attachment?id_attachment=6",
+      "status": "failed",
+      "error": "HTTP Error 406: Not Acceptable"
+    },
+    {
+      "scheduleNo": "163",
+      "url": "https://www.imperialrange.com/wp-content/uploads/2025/04/2025-Catalog-Rev-03.28.25.pdf",
+      "path": "/tmp/chino-specs/163-excerpt.pdf",
+      "sha256": "dc3066cd67a12e7f463ebcf4a85dd152fc1b4f1e3a0e4c9468065508d584e8f2",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "99F",
+      "url": "https://wells-mfg.com/wp-content/uploads/2017/04/S_SS10-SERIES_2M-Z21335_REV_B_01-22.pdf",
+      "path": "/tmp/chino-specs/99F.pdf",
+      "sha256": "3b03997002ed4f1a2ad898f76aaeb7e65a072f9516637b0ba2c78c760d0c2df4",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "164",
+      "url": "https://www.zojirushi.com/servicesupport/manuals/manual_pdf/tha.pdf",
+      "status": "failed",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "scheduleNo": "99E",
+      "url": "https://www.hatcocorp.com/cms/SPECSHEETS/000000040167903-00000-20231031.PDF",
+      "path": "/tmp/chino-specs/99E.pdf",
+      "sha256": "4e940c35c3bb1bd4ffa2e1d419571d9f3dd3dd6792150f4ef3aa7d6eb99e4ec9",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "218",
+      "url": "https://altoshaam.widen.net/content/jrq8frh7gp/pdf/Spec-Sheet_Heated-Merchandiser_HSM48_HSM-SPC-0009_EN.pdf",
+      "status": "failed",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "scheduleNo": "212",
+      "url": "https://hillrmtstoragedev.blob.core.windows.net/hilldrive/Resources/Products/Resources/Technical%20Reference/SMD-R-BAKERY-display-case-tech-reference-sheet-rv7.pdf",
+      "path": "/tmp/chino-specs/212.pdf",
+      "sha256": "7621cc3e981e31fdf77f3fe0cdaad23f84b312e584c72a7f373873a475eb964a",
+      "status": "downloaded"
+    },
+    {
+      "scheduleNo": "164",
+      "url": "https://www.zojirushi.com/servicesupport/manuals/manual_pdf/tha_603_803.pdf",
+      "status": "failed",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "scheduleNo": "218",
+      "url": "https://altoshaam.widen.net/content/l41zov34ob/original/Spec-Sheet_Heated-Merchandiser_HSM48_HSM-SPC-0009_EN.pdf?download=true&u=dr4uqt",
+      "path": "/tmp/chino-specs/218.pdf",
+      "sha256": "54a9be682fdf18288aed6ee6671e8fc7d89eea9d6f4714e3f10188f83c2a3ee8",
+      "status": "downloaded"
+    }
+  ]
+}

@@ -20,7 +20,6 @@ import {
   useSortable,
   arrayMove,
   verticalListSortingStrategy,
-  rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -37,8 +36,6 @@ import {
   PackagePlus,
   Settings2,
   Ruler,
-  LayoutGrid,
-  List,
 } from "lucide-react";
 import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
@@ -612,7 +609,6 @@ function StoreDropZone({
   onEdit: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
-  const [view, setView] = useState<"cards" | "list">("list");
   return (
     <div
       ref={setNodeRef}
@@ -623,11 +619,6 @@ function StoreDropZone({
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
-        <div role="group" aria-label="Store equipment display" className="flex rounded-lg border border-gray-200 bg-white p-1">
-          {(["cards", "list"] as const).map((mode) => <button key={mode} type="button" aria-pressed={view === mode} onClick={() => setView(mode)} className={cn("flex items-center gap-1.5 rounded-md px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-brand-400", view === mode ? "bg-brand-50 text-brand-700" : "text-gray-500 hover:bg-gray-50")}>
-            {mode === "cards" ? <LayoutGrid size={15} /> : <List size={15} />}{mode === "cards" ? "Cards" : "List"}
-          </button>)}
-        </div>
         <div className="flex items-center gap-3">
         <button type="button" onClick={onAddOmitted} className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-brand-600"><Plus size={14} /> Omitted</button>
         <button
@@ -648,8 +639,7 @@ function StoreDropZone({
           {/* header row */}
           <div
             className={cn(
-              "sticky top-0 z-10 mb-1 min-w-[1000px] items-center gap-2 bg-white/70 px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400 backdrop-blur",
-              view === "list" ? "grid" : "hidden",
+              "sticky top-0 z-10 mb-1 grid min-w-[1000px] items-center gap-2 bg-white/70 px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400 backdrop-blur",
               COLS
             )}
           >
@@ -662,13 +652,12 @@ function StoreDropZone({
             <span>Room</span>
             <span>Status</span>
           </div>
-          <SortableContext items={items.map((i) => i.id)} strategy={view === "cards" ? rectSortingStrategy : verticalListSortingStrategy}>
-            <div className={view === "cards" ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3" : "min-w-[1000px]"}>
+          <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+            <div className="min-w-[1000px]">
             {items.map((it, idx) => (
               <SortableStoreRow
                 key={it.id}
                 item={it}
-                view={view}
                 rooms={rooms}
                 index={idx + 1}
                 onRemove={() => onRemove(it.id)}
@@ -690,7 +679,6 @@ function StoreDropZone({
 
 function SortableStoreRow({
   item,
-  view,
   rooms,
   index,
   onRemove,
@@ -702,7 +690,6 @@ function SortableStoreRow({
   onEdit,
 }: {
   item: StoreItemDTO;
-  view: "cards" | "list";
   rooms: string[];
   index: number;
   onRemove: () => void;
@@ -724,7 +711,7 @@ function SortableStoreRow({
       style={style}
       className={cn(
         "group mb-1 grid items-start gap-2 rounded-lg border border-white/50 bg-white/45 px-2 py-2 hover:border-brand-200 hover:bg-white/65",
-        view === "list" ? COLS : "grid-cols-[20px_minmax(0,1fr)] [&>div]:col-span-2 [&>label]:col-span-2",
+        COLS,
         isDragging && "z-20 opacity-80 shadow-md"
       )}
     >
@@ -737,7 +724,7 @@ function SortableStoreRow({
         <GripVertical size={15} />
       </button>
       <span className="mt-1 font-mono text-xs text-gray-400">{index}</span>
-      <FloorPlanNumber value={item.scheduleNo} compact={view === "list"} onSave={(value) => onPersist("scheduleNo", value)} />
+      <FloorPlanNumber value={item.scheduleNo} compact onSave={(value) => onPersist("scheduleNo", value)} />
 
       {/* equipment: description, manufacturer, ALL department tags, pdf preview */}
       <div className="min-w-0">
@@ -782,7 +769,7 @@ function SortableStoreRow({
       </div>
 
       <label className="flex min-w-0 flex-col gap-1">
-      <span className={view === "list" ? "sr-only" : "text-xs text-gray-500"}>Quantity</span>
+      <span className="sr-only">Quantity</span>
       <input
         type="number"
         min={0}
