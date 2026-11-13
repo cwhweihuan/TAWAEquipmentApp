@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf, ensurePdfBucket, createSignedUploadUrl } from "@/lib/supabase";
-import { BIM_STATUS_OPTIONS } from "@/lib/types";
 import { DEPARTMENTS } from "@/lib/utils";
 
 const FIELDS = [
@@ -15,7 +14,6 @@ const FIELDS = [
   "installBy",
   "dimension",
   "specUrl",
-  "bimModelUrl",
   "power",
   "height",
   "nema",
@@ -37,24 +35,18 @@ function readFields(fd: FormData) {
     data[f] = v ? v : null;
   }
   const departments = DEPARTMENTS.filter((d) => fd.get(`dept:${d}`) === "on");
-  for (const field of ["specUrl", "bimModelUrl"] as const) {
-    const value = data[field];
-    if (value) {
-      let url: URL;
-      try {
-        url = new URL(value);
-      } catch {
-        throw new Error(`${field === "specUrl" ? "Official product URL" : "BIM model URL"} must be a valid URL`);
-      }
-      if (url.protocol !== "http:" && url.protocol !== "https:") {
-        throw new Error(`${field === "specUrl" ? "Official product URL" : "BIM model URL"} must use HTTP or HTTPS`);
-      }
+  if (data.specUrl) {
+    let url: URL;
+    try {
+      url = new URL(data.specUrl);
+    } catch {
+      throw new Error("Official product URL must be a valid URL");
+    }
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      throw new Error("Official product URL must use HTTP or HTTPS");
     }
   }
-  const rawStatus = fd.get("bimStatus");
-  const bimStatus = BIM_STATUS_OPTIONS.find(({ value }) => value === rawStatus)?.value;
-  if (rawStatus !== null && !bimStatus) throw new Error("Invalid BIM model status");
-  return { data, departments, bimStatus: bimStatus ?? "NOT_CREATED" };
+  return { data, departments };
 }
 
 function specStoragePath(filename: string) {
@@ -116,7 +108,7 @@ async function maybeUploadPdf(fd: FormData): Promise<string | null> {
 }
 
 export async function createEquipment(fd: FormData) {
-  const { data, departments, bimStatus } = readFields(fd);
+  const { data, departments } = readFields(fd);
   if (!data.description) throw new Error("Description is required");
 
   const pdfId = await maybeUploadPdf(fd);
@@ -133,8 +125,6 @@ export async function createEquipment(fd: FormData) {
       installBy: data.installBy,
       dimension: data.dimension,
       specUrl: data.specUrl,
-      bimModelUrl: data.bimModelUrl,
-      bimStatus,
       power: data.power,
       height: data.height,
       nema: data.nema,
@@ -156,7 +146,7 @@ export async function createEquipment(fd: FormData) {
 }
 
 export async function updateEquipment(id: string, fd: FormData) {
-  const { data, departments, bimStatus } = readFields(fd);
+  const { data, departments } = readFields(fd);
   const pdfId = await maybeUploadPdf(fd);
 
   await prisma.equipment.update({
@@ -164,7 +154,6 @@ export async function updateEquipment(id: string, fd: FormData) {
     data: {
       ...data,
       departments,
-      bimStatus,
       ...(pdfId ? { pdfId } : {}),
     },
   });
@@ -202,8 +191,6 @@ export async function duplicateEquipment(
       installBy: src.installBy,
       dimension: overrides.dimension?.trim() || null,
       specUrl: src.specUrl,
-      bimModelUrl: src.bimModelUrl,
-      bimStatus: src.bimStatus,
       power: src.power,
       height: src.height,
       nema: src.nema,

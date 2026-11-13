@@ -17,8 +17,6 @@ export function toEquipmentDTO(e: EquipmentWithPdf): EquipmentDTO {
     installBy: e.installBy,
     dimension: e.dimension,
     specUrl: e.specUrl,
-    bimModelUrl: e.bimModelUrl,
-    bimStatus: e.bimStatus,
     power: e.power,
     height: e.height,
     nema: e.nema,

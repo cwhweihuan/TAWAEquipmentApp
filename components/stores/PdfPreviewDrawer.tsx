@@ -1,5 +1,7 @@
 "use client";
 
+import { sentenceCase } from "@/lib/utils";
+
 import { useEffect } from "react";
 import { X, FileText, ExternalLink } from "lucide-react";
 
@@ -34,10 +36,10 @@ export function PdfPreviewDrawer({
         <div className="flex items-start justify-between gap-3 border-b border-brand-100 px-5 py-4">
           <div className="min-w-0">
             <h2 className="flex items-center gap-1.5 truncate text-base font-semibold text-gray-900">
-              <FileText size={16} className="shrink-0 text-brand-500" /> {target.title}
+              <FileText size={16} className="shrink-0 text-brand-500" /> {sentenceCase(target.title)}
             </h2>
             {target.subtitle && (
-              <p className="truncate text-sm text-gray-500">{target.subtitle}</p>
+              <p className="truncate text-sm text-gray-500">{sentenceCase(target.subtitle)}</p>
             )}
           </div>
           <div className="flex items-center gap-1">
@@ -63,7 +65,7 @@ export function PdfPreviewDrawer({
             <iframe
               src={target.url}
               className="h-full w-full rounded-lg border border-gray-200 bg-white"
-              title={target.title}
+              title={sentenceCase(target.title)}
             />
           ) : (
             <a

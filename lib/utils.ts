@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Display text with its first letter uppercase; leave stored values untouched. */
+export function sentenceCase(value: string | null | undefined): string {
+  return (value ?? "").toLowerCase().replace(/\p{L}/u, (letter) => letter.toUpperCase());
+}
+
 /** The nine departments in the master equipment sheet, in canonical order. */
 export const DEPARTMENTS = [
   "MEAT",

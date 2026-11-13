@@ -39,7 +39,9 @@ import {
 } from "lucide-react";
 import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
-import { cn, DEPARTMENTS } from "@/lib/utils";
+import { cn, DEPARTMENTS, sentenceCase } from "@/lib/utils";
+import { DetailDrawer } from "@/components/catalog/DetailDrawer";
+import { CustomItemPreviewDrawer } from "./CustomItemPreviewDrawer";
 import { EquipmentEditDrawer } from "./EquipmentEditDrawer";
 import { CustomItemEditDrawer } from "./CustomItemEditDrawer";
 import {
@@ -68,6 +70,9 @@ export function StoreBuilder({
 }) {
   const router = useRouter();
   const [items, setItems] = useState<StoreItemDTO[]>(store.items);
+  const [previewEquipmentId, setPreviewEquipmentId] = useState<string | null>(null);
+  const [previewCustom, setPreviewCustom] = useState<StoreItemDTO | null>(null);
+  const previewEquipment = equipment.find((eq) => eq.id === previewEquipmentId) ?? null;
   const [editingEq, setEditingEq] = useState<EquipmentDTO | null>(null);
   const [editingCustom, setEditingCustom] = useState<StoreItemDTO | null>(null);
   const [meta, setMeta] = useState<StoreMeta>({
@@ -98,6 +103,11 @@ export function StoreBuilder({
         .includes(needle)
     );
   }, [equipment, q]);
+
+  function previewEquipmentItem(item: StoreItemDTO) {
+    if (item.equipmentId) setPreviewEquipmentId(item.equipmentId);
+    else setPreviewCustom(item);
+  }
 
   function previewItem(it: { description: string; manufacturer: string | null; pdfUrl: string | null; pdfDownloaded: boolean }) {
     if (!it.pdfUrl) return;
@@ -333,6 +343,7 @@ export function StoreBuilder({
                   eq={eq}
                   added={addedIds.has(eq.id)}
                   onAdd={() => addEquipment(eq)}
+                  onPreview={() => setPreviewEquipmentId(eq.id)}
                 />
               ))}
             </div>
@@ -347,6 +358,7 @@ export function StoreBuilder({
             onPersist={persistField}
             onAddCustom={addCustom}
             onPreview={previewItem}
+            onOpenEquipment={previewEquipmentItem}
             onEdit={editItem}
           />
         </div>
@@ -355,7 +367,7 @@ export function StoreBuilder({
       <DragOverlay>
         {activeDrag ? (
           <div className="w-[340px] rounded-xl border border-brand-300 bg-white p-2.5 text-sm font-medium text-gray-800 shadow-lg">
-            {activeDrag.description}
+            {sentenceCase(activeDrag.description)}
           </div>
         ) : null}
       </DragOverlay>
@@ -367,6 +379,17 @@ export function StoreBuilder({
           onSaved={(p) => setMeta((m) => ({ ...m, ...p }))}
           onPreview={setPreview}
         />
+      )}
+      {previewEquipment && (
+        <DetailDrawer
+          key={previewEquipment.id}
+          item={previewEquipment}
+          readOnly
+          onClose={() => setPreviewEquipmentId(null)}
+        />
+      )}
+      {previewCustom && (
+        <CustomItemPreviewDrawer item={previewCustom} onClose={() => setPreviewCustom(null)} />
       )}
       <PdfPreviewDrawer target={preview} onClose={() => setPreview(null)} />
 
@@ -395,10 +418,12 @@ function CatalogItem({
   eq,
   added,
   onAdd,
+  onPreview,
 }: {
   eq: EquipmentDTO;
   added: boolean;
   onAdd: () => void;
+  onPreview: () => void;
 }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: `cat:${eq.id}` });
   return (
@@ -417,14 +442,14 @@ function CatalogItem({
       >
         <GripVertical size={16} />
       </button>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-gray-800">{eq.description}</p>
+      <button type="button" onClick={onPreview} className="min-w-0 flex-1 rounded text-left hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400" aria-label={`Preview ${sentenceCase(eq.description)}`}>
+        <p className="truncate text-sm font-medium">{sentenceCase(eq.description)}</p>
         <p className="truncate text-xs text-gray-400">
           #{eq.masterItemNo}
-          {eq.manufacturer ? ` · ${eq.manufacturer}` : ""}
-          {eq.dimension ? ` · ${eq.dimension}` : ""}
+          {eq.manufacturer ? ` · ${sentenceCase(eq.manufacturer)}` : ""}
+          {eq.dimension ? ` · ${sentenceCase(eq.dimension)}` : ""}
         </p>
-      </div>
+      </button>
       {eq.pdfUrl && <FileText size={13} className="shrink-0 text-brand-400" />}
       <button
         onClick={onAdd}
@@ -464,6 +489,7 @@ function StoreDropZone({
   onPersist,
   onAddCustom,
   onPreview,
+  onOpenEquipment,
   onEdit,
 }: {
   items: StoreItemDTO[];
@@ -477,6 +503,7 @@ function StoreDropZone({
   ) => void;
   onAddCustom: () => void;
   onPreview: (it: StoreItemDTO) => void;
+  onOpenEquipment: (it: StoreItemDTO) => void;
   onEdit: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
@@ -530,6 +557,7 @@ function StoreDropZone({
                 onPatch={(p) => onPatch(it.id, p)}
                 onPersist={(field, value) => onPersist(it.id, field, value)}
                 onPreview={() => onPreview(it)}
+                onOpenEquipment={() => onOpenEquipment(it)}
                 onEdit={() => onEdit(it)}
               />
             ))}
@@ -548,6 +576,7 @@ function SortableStoreRow({
   onPatch,
   onPersist,
   onPreview,
+  onOpenEquipment,
   onEdit,
 }: {
   item: StoreItemDTO;
@@ -557,6 +586,7 @@ function SortableStoreRow({
   onPatch: (p: Partial<StoreItemDTO>) => void;
   onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => void;
   onPreview: () => void;
+  onOpenEquipment: () => void;
   onEdit: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -586,9 +616,9 @@ function SortableStoreRow({
       {/* equipment: description, manufacturer, ALL department tags, pdf preview */}
       <div className="min-w-0">
         <div className="flex items-start gap-1.5">
-          <p className="min-w-0 flex-1 text-sm font-medium leading-snug text-gray-800">
-            {item.description}
-          </p>
+          <button type="button" onClick={onOpenEquipment} aria-label={`Preview ${sentenceCase(item.description)}`} className="min-w-0 flex-1 rounded text-left text-sm font-medium leading-snug text-gray-800 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400">
+            {sentenceCase(item.description)}
+          </button>
           {item.pdfUrl && (
             <button
               onClick={onPreview}
@@ -601,7 +631,7 @@ function SortableStoreRow({
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-1">
           {item.manufacturer && (
-            <span className="truncate text-xs text-gray-400">{item.manufacturer}</span>
+            <span className="truncate text-xs text-gray-400">{sentenceCase(item.manufacturer)}</span>
           )}
           {item.departments.map((d) => (
             <DeptChip key={d} dept={d} />
@@ -617,7 +647,7 @@ function SortableStoreRow({
         {item.dimension ? (
           <span className="flex items-start gap-1 text-xs text-gray-600">
             <Ruler size={12} className="mt-0.5 shrink-0 text-gray-300" />
-            <span className="break-words">{item.dimension}</span>
+            <span className="break-words">{sentenceCase(item.dimension)}</span>
           </span>
         ) : (
           <span className="text-xs text-gray-300">—</span>

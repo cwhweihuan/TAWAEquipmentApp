@@ -1,11 +1,12 @@
 "use client";
 
+import { sentenceCase } from "@/lib/utils";
+
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  Box,
   X,
   FileText,
   ExternalLink,
@@ -17,7 +18,6 @@ import {
   Check,
 } from "lucide-react";
 import type { EquipmentDTO } from "@/lib/types";
-import { BIM_STATUS_OPTIONS } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
 import { updateEquipmentDimension, duplicateEquipment } from "@/app/actions/equipment";
 import { EquipmentForm } from "./EquipmentForm";
@@ -26,8 +26,8 @@ function Spec({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-400">{label}</dt>
-      <dd className="text-sm text-gray-800">{value}</dd>
+      <dt className="text-[11px] font-medium tracking-wide text-gray-400">{sentenceCase(label)}</dt>
+      <dd className="text-sm text-gray-800">{sentenceCase(value)}</dd>
     </div>
   );
 }
@@ -40,6 +40,7 @@ export function DetailDrawer({
   onNext,
   position,
   total,
+  readOnly = false,
 }: {
   item: EquipmentDTO | null;
   onClose: () => void;
@@ -48,6 +49,7 @@ export function DetailDrawer({
   onNext?: () => void;
   position?: number;
   total?: number;
+  readOnly?: boolean;
 }) {
   const router = useRouter();
   const [dim, setDim] = useState(item?.dimension ?? "");
@@ -108,10 +110,10 @@ export function DetailDrawer({
                 <DeptChip key={d} dept={d} />
               ))}
             </div>
-            <h2 className="truncate text-lg font-semibold text-gray-900">{item.description}</h2>
+            <h2 className="truncate text-lg font-semibold text-gray-900">{sentenceCase(item.description)}</h2>
             {(item.manufacturer || item.model) && (
               <p className="text-sm text-gray-500">
-                {[item.manufacturer, item.model].filter(Boolean).join(" · ")}
+                {[item.manufacturer, item.model].filter(Boolean).map(sentenceCase).join(" · ")}
               </p>
             )}
           </div>
@@ -141,7 +143,7 @@ export function DetailDrawer({
                 </button>
               </>
             )}
-            {!isEditing && (
+            {!readOnly && !isEditing && (
               <button
                 onClick={() => setDupOpen((v) => !v)}
                 className="rounded-lg p-2 text-gray-400 hover:bg-brand-50 hover:text-brand-700"
@@ -150,7 +152,7 @@ export function DetailDrawer({
                 <CopyPlus size={16} />
               </button>
             )}
-            {!isEditing && (
+            {!readOnly && !isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
                 className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
@@ -252,10 +254,13 @@ export function DetailDrawer({
               {/* dimension — quick inline editor */}
               <div className="mb-5 rounded-xl border border-brand-100 bg-brand-50/40 p-3">
             <div className="mb-1.5 flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-700">
+              <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-brand-700">
                 <Ruler size={13} /> Dimension
               </span>
             </div>
+            {readOnly ? (
+              <p className="text-sm text-gray-800">{sentenceCase(item.dimension) || "—"}</p>
+            ) : (
             <div className="flex items-center gap-2">
               <input
                 value={dim}
@@ -274,6 +279,7 @@ export function DetailDrawer({
                 {savingDim ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />} Save
               </button>
             </div>
+            )}
             {dimMsg && <p className="mt-1 text-xs text-gray-500">{dimMsg}</p>}
               </div>
 
@@ -296,7 +302,7 @@ export function DetailDrawer({
               {item.remarks && (
             <div className="mt-5 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-inset ring-amber-100">
               <span className="font-medium">Remarks: </span>
-              {item.remarks}
+              {sentenceCase(item.remarks)}
             </div>
               )}
 
@@ -348,30 +354,6 @@ export function DetailDrawer({
               <div className="rounded-lg border border-dashed border-gray-200 px-4 py-8 text-center text-sm text-gray-400">
                 No spec sheet attached
               </div>
-            )}
-              </div>
-              <div className="mt-5 rounded-xl border border-brand-100 bg-brand-50/40 p-4">
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-gray-700">
-                <Box size={15} className="text-brand-600" /> 3D / BIM model
-              </h3>
-              <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-brand-700 ring-1 ring-inset ring-brand-100">
-                {BIM_STATUS_OPTIONS.find((status) => status.value === item.bimStatus)?.label ?? "未建立"}
-              </span>
-            </div>
-            {item.bimModelUrl ? (
-              <a
-                href={item.bimModelUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex min-h-24 items-center justify-center gap-2 rounded-lg border border-dashed border-brand-200 bg-white px-4 py-5 text-sm font-medium text-brand-700 hover:bg-brand-50"
-              >
-                <Box size={20} /> Open 3D Preview <ExternalLink size={14} />
-              </a>
-            ) : (
-              <p className="rounded-lg border border-dashed border-brand-200 bg-white px-4 py-5 text-center text-sm text-gray-500">
-                No BIM / 3D model URL added
-              </p>
             )}
               </div>
             </>

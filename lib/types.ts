@@ -9,8 +9,6 @@ export type EquipmentDTO = {
   installBy: string | null;
   dimension: string | null;
   specUrl: string | null;
-  bimModelUrl: string | null;
-  bimStatus: BimStatus;
   power: string | null;
   height: string | null;
   nema: string | null;
@@ -28,15 +26,6 @@ export type EquipmentDTO = {
   pdfUrl: string | null;
   pdfDownloaded: boolean;
 };
-
-export type BimStatus = "NOT_CREATED" | "CREATED" | "IN_PROGRESS" | "CUSTOM";
-
-export const BIM_STATUS_OPTIONS: { value: BimStatus; label: string }[] = [
-  { value: "NOT_CREATED", label: "未建立" },
-  { value: "CREATED", label: "已建立" },
-  { value: "IN_PROGRESS", label: "建立中" },
-  { value: "CUSTOM", label: "客製化" },
-];
 
 export type StoreItemDTO = {
   id: string;
