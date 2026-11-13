@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Search, FileText, X, Plus, LayoutGrid, List } from "lucide-react";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import type { EquipmentDTO } from "@/lib/types";
 import { DEPARTMENTS, deptStyle, deptHex, cn } from "@/lib/utils";
 import { deleteEquipment } from "@/app/actions/equipment";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
+import { FloatingSearch } from "@/components/FloatingSearch";
 import { EquipmentCard } from "./EquipmentCard";
 import { EquipmentList } from "./EquipmentList";
 import { DetailDrawer } from "./DetailDrawer";
@@ -19,6 +20,7 @@ export function CatalogBrowser({
   equipment: EquipmentDTO[];
   deptCounts: Record<string, number>;
 }) {
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [q, setQ] = useState("");
   const [activeDepts, setActiveDepts] = useState<string[]>([]);
   const [pdfOnly, setPdfOnly] = useState(false);
@@ -55,7 +57,7 @@ export function CatalogBrowser({
   };
 
   return (
-    <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-[1500px] px-4 pt-6 pb-28 sm:px-6">
       {/* toolbar */}
       <div className="mb-5 flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -167,6 +169,17 @@ export function CatalogBrowser({
           )}
         </div>
       </div>
+
+      <div ref={resultsRef} className="scroll-mt-20" />
+      <FloatingSearch
+        value={q}
+        onChange={(value) => {
+          setQ(value);
+          setSelectedId(null);
+        }}
+        resultCount={filtered.length}
+        onShowResults={() => resultsRef.current?.scrollIntoView({ block: "start" })}
+      />
 
       {/* grid */}
       {filtered.length === 0 ? (
