@@ -141,7 +141,7 @@ export function StoreBuilder({
       dimension: eq.dimension,
       remarks: eq.remarks,
       quantity: 1,
-      room: null,
+      rooms: [],
       proposeNew: null,
       scheduleNo: null,
       position: items.length,
@@ -170,7 +170,7 @@ export function StoreBuilder({
         dimension: null,
         remarks: null,
         quantity: omitted ? 0 : 1,
-        room: null,
+        rooms: [],
         proposeNew: null,
         scheduleNo: null,
         position: cur.length,
@@ -246,16 +246,18 @@ export function StoreBuilder({
 
   async function persistField(
     id: string,
-    field: "quantity" | "room" | "proposeNew" | "scheduleNo",
-    value: string
+    field: "quantity" | "rooms" | "proposeNew" | "scheduleNo",
+    value: string | string[]
   ) {
     if (id.startsWith("temp-")) return;
     setItemError(null);
     try {
-      const quantity = value.trim() === "" ? 1 : Number(value);
+      const text = typeof value === "string" ? value : "";
+      const quantity = text.trim() === "" ? 1 : Number(text);
       if (field === "quantity") await updateStoreItem(id, { quantity });
-      else await updateStoreItem(id, { [field]: value || null });
-      patch(id, { [field]: field === "quantity" ? quantity : value || null });
+      else if (field === "rooms") await updateStoreItem(id, { rooms: value as string[] });
+      else await updateStoreItem(id, { [field]: text || null });
+      patch(id, { [field]: field === "quantity" ? quantity : field === "rooms" ? value : text || null });
     } catch (error) {
       setItemError(error instanceof Error ? error.message : "Could not save item.");
       throw error;
@@ -417,7 +419,7 @@ export function StoreBuilder({
       )}
       {roomsOpen && <StoreRoomsDrawer storeId={store.id} rooms={rooms} onClose={() => setRoomsOpen(false)} onSaved={(next, renames) => {
         setRooms(next);
-        setItems((current) => current.map((item) => ({ ...item, room: item.room ? renames.get(item.room) ?? item.room : null })));
+        setItems((current) => current.map((item) => ({ ...item, rooms: item.rooms.map((room) => renames.get(room) ?? room) })));
         router.refresh();
       }} />}
       {previewEquipment && (
@@ -463,10 +465,10 @@ export function StoreBuilder({
   );
 }
 
-function StorePlacement({ item, rooms, onPersist }: { item: StoreItemDTO; rooms: string[]; onPersist: (field: "room" | "scheduleNo", value: string) => Promise<void> }) {
+function StorePlacement({ item, rooms, onPersist }: { item: StoreItemDTO; rooms: string[]; onPersist: (field: "rooms" | "scheduleNo", value: string | string[]) => Promise<void> }) {
   return <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
     <FloorPlanNumber value={item.scheduleNo} onSave={(value) => onPersist("scheduleNo", value)} />
-    <StoreRoomSelect room={item.room} rooms={rooms} onSave={(value) => onPersist("room", value)} />
+    <StoreRoomSelect selected={item.rooms} rooms={rooms} onSave={(value) => onPersist("rooms", value)} />
   </div>;
 }
 
@@ -488,27 +490,31 @@ function FloorPlanNumber({ value, onSave, compact = false }: { value: string | n
   </label>;
 }
 
-function StoreRoomSelect({ room, rooms, onSave }: { room: string | null; rooms: string[]; onSave: (value: string) => Promise<void> }) {
+function StoreRoomSelect({ selected, rooms, onSave }: { selected: string[]; rooms: string[]; onSave: (value: string[]) => Promise<void> }) {
   const [pending, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  return (
-    <label className="mb-3 flex min-w-0 flex-col gap-1">
-      <span className="sr-only">Room</span>
-      <select aria-label="Room" value={room ?? ""} disabled={pending} onChange={(event) => {
-        const value = event.target.value;
-        setError(null);
-        startSave(async () => {
-          try { await onSave(value); }
-          catch (err) { setError(err instanceof Error ? err.message : "Could not save room."); }
-        });
-      }} className="w-full rounded-md border border-gray-200 bg-white px-2 py-1 text-sm outline-none focus:border-brand-400 disabled:opacity-50">
-        <option value="">Room / area…</option>
-        {rooms.map((name) => <option key={name} value={name}>{name}</option>)}
-        {room && !rooms.includes(room) && <option value={room}>{room}</option>}
-      </select>
-      {error && <span role="alert" className="text-xs text-red-600">{error}</span>}
-    </label>
-  );
+  const options = [...new Set([...rooms, ...selected])];
+  return <div className="mb-3 min-w-0">
+    <details className="rounded-md border border-gray-200 bg-white text-sm">
+      <summary className="px-2 py-1" aria-label="Choose rooms">{selected.length ? selected.join(", ") : "Room / area…"}</summary>
+      <fieldset disabled={pending} className="flex flex-col gap-2 border-t border-gray-100 p-2 disabled:opacity-50">
+        <legend className="sr-only">Rooms (select multiple)</legend>
+        {options.length === 0 && <p className="text-xs text-gray-500">Create rooms using the Rooms button.</p>}
+        {options.map((name) => <label key={name} className="flex items-start gap-2">
+          <input type="checkbox" checked={selected.includes(name)} onChange={(event) => {
+            const next = event.target.checked ? [...selected, name] : selected.filter((room) => room !== name);
+            setError(null);
+            startSave(async () => {
+              try { await onSave(next); }
+              catch (err) { setError(err instanceof Error ? err.message : "Could not save rooms."); }
+            });
+          }} className="mt-0.5 accent-brand-600" />
+          <span>{name}</span>
+        </label>)}
+      </fieldset>
+    </details>
+    {error && <span role="alert" className="text-xs text-red-600">{error}</span>}
+  </div>;
 }
 
 function CatalogItem({
@@ -599,8 +605,8 @@ function StoreDropZone({
   onPatch: (id: string, p: Partial<StoreItemDTO>) => void;
   onPersist: (
     id: string,
-    field: "quantity" | "room" | "proposeNew" | "scheduleNo",
-    value: string
+    field: "quantity" | "rooms" | "proposeNew" | "scheduleNo",
+    value: string | string[]
   ) => Promise<void>;
   onAddCustom: () => void;
   onAddOmitted: () => void;
@@ -695,7 +701,7 @@ function SortableStoreRow({
   onRemove: () => void;
   onDuplicate: () => void;
   onPatch: (p: Partial<StoreItemDTO>) => void;
-  onPersist: (field: "quantity" | "room" | "proposeNew" | "scheduleNo", value: string) => Promise<void>;
+  onPersist: (field: "quantity" | "rooms" | "proposeNew" | "scheduleNo", value: string | string[]) => Promise<void>;
   onPreview: () => void;
   onOpenEquipment: () => void;
   onEdit: () => void;
@@ -780,7 +786,7 @@ function SortableStoreRow({
         className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-center text-sm outline-none focus:border-brand-400"
       />
       </label>
-      <StoreRoomSelect room={item.room} rooms={rooms} onSave={async (value) => { await onPersist("room", value); }} />
+      <StoreRoomSelect selected={item.rooms} rooms={rooms} onSave={async (value) => { await onPersist("rooms", value); }} />
       <div className="flex items-center gap-1">
         {(() => {
           const status = canonicalStatus(item.proposeNew);

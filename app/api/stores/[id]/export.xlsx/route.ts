@@ -51,7 +51,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     ws.addRow([
       i + 1,
       deptCode,
-      it.room ?? "",
+      it.rooms.join(", "),
       it.proposeNew ?? "",
       it.quantity,
       eq?.description ?? it.description ?? "",

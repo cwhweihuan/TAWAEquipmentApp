@@ -19,12 +19,15 @@ export async function saveStoreRooms(storeId: string, expected: string[], entrie
     const result = await prisma.$transaction(async (tx) => {
       const updated = await tx.store.updateMany({ where: { id: storeId, rooms: { equals: expected } }, data: { rooms: names } });
       if (updated.count !== 1) throw new RoomValidationError("Rooms changed. Reload the store before saving.");
-      const assigned = await tx.storeItem.findMany({ where: { storeId, room: { not: null } }, select: { id: true, room: true } });
+      const assigned = await tx.storeItem.findMany({ where: { storeId, rooms: { isEmpty: false } }, select: { id: true, rooms: true } });
       const mapping = new Map(entries.filter((entry) => entry.original !== null).map((entry) => [entry.original!, entry.name.trim()]));
       for (const item of assigned) {
-        const next = mapping.get(item.room!);
-        if (next === undefined) throw new RoomValidationError(`Room "${item.room}" is in use. Move its equipment before removing it.`);
-        if (next !== item.room) await tx.storeItem.update({ where: { id: item.id }, data: { room: next } });
+        const next = item.rooms.map((room) => {
+          const renamed = mapping.get(room);
+          if (renamed === undefined) throw new RoomValidationError(`Room "${room}" is in use. Move its equipment before removing it.`);
+          return renamed;
+        });
+        if (next.some((room, index) => room !== item.rooms[index])) await tx.storeItem.update({ where: { id: item.id }, data: { rooms: next } });
       }
       return names;
     });
@@ -161,16 +164,17 @@ export async function addOmittedItem(storeId: string) {
 
 export async function updateStoreItem(
   itemId: string,
-  patch: { quantity?: number; room?: string | null; proposeNew?: string | null; scheduleNo?: string | null }
+  patch: { quantity?: number; rooms?: string[]; proposeNew?: string | null; scheduleNo?: string | null }
 ) {
   if (patch.quantity !== undefined && (!Number.isFinite(patch.quantity) || patch.quantity < 0)) throw new Error("Quantity must be zero or greater.");
   const item = await prisma.$transaction(async (tx) => {
     const existing = await tx.storeItem.findUniqueOrThrow({ where: { id: itemId }, select: { storeId: true } });
-    if (patch.room !== undefined) {
+    if (patch.rooms !== undefined) {
       // Serialize room assignment against project room renames/removals.
       await tx.$queryRaw`SELECT id FROM "Store" WHERE id = ${existing.storeId} FOR UPDATE`;
       const store = await tx.store.findUniqueOrThrow({ where: { id: existing.storeId }, select: { rooms: true } });
-      if (patch.room && !store.rooms.includes(patch.room)) throw new Error("Choose a room created for this store.");
+      if (!Array.isArray(patch.rooms) || patch.rooms.some((room) => typeof room !== "string" || !store.rooms.includes(room))) throw new Error("Choose rooms created for this store.");
+      patch = { ...patch, rooms: [...new Set(patch.rooms)] };
     }
     return tx.storeItem.update({ where: { id: itemId }, data: patch });
   });
@@ -241,7 +245,7 @@ export async function duplicateAsCustom(itemId: string) {
         dimension: eq?.dimension ?? src.dimension ?? null,
         remarks: eq?.remarks ?? src.remarks ?? null,
         quantity: src.quantity,
-        room: src.room,
+        rooms: src.rooms,
         proposeNew: src.proposeNew,
         scheduleNo: src.scheduleNo,
         position: src.position + 1,

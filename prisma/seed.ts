@@ -151,7 +151,7 @@ async function seedStores(stores: StoreSeed[], codeToId: Map<string, string>) {
           manufacturer: equipmentId ? null : (it.manufacturer ?? null),
           model: equipmentId ? null : (it.model ?? null),
           quantity: it.quantity ? parseFloat(it.quantity) || 1 : 1,
-          room: it.room ?? null,
+          rooms: it.room ? [it.room] : [],
           proposeNew: it.proposeNew ?? null,
           scheduleNo: it.scheduleNo ?? null,
           position: pos++,

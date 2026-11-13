@@ -139,7 +139,7 @@ export function toStoreItemDTO(it: StoreWithItems["items"][number]): StoreItemDT
     dimension: eq?.dimension ?? it.dimension ?? null,
     remarks: eq?.remarks ?? it.remarks ?? null,
     quantity: it.quantity,
-    room: it.room,
+    rooms: it.rooms,
     proposeNew: it.proposeNew,
     scheduleNo: it.scheduleNo,
     position: it.position,

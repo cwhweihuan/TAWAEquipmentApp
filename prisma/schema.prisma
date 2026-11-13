@@ -114,7 +114,8 @@ model StoreItem {
   dimension    String?
   remarks      String?
   quantity   Float   @default(1)
-  room       String?
+  room       String? // Legacy single-room value; assignments use rooms.
+  rooms      String[] @default([])
   proposeNew String?
   scheduleNo String?
   position   Int     @default(0)

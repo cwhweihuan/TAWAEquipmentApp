@@ -55,7 +55,7 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
               ["Model", item.model],
               ["Dimension", item.dimension],
               ["Quantity", String(item.quantity)],
-              ["Room", item.room],
+              ["Rooms", item.rooms.join(", ")],
               ["Status", item.proposeNew],
             ].map(([label, value]) => (
               <div key={label}>

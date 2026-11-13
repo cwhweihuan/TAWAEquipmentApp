@@ -38,7 +38,7 @@ export type StoreItemDTO = {
   dimension: string | null;
   remarks: string | null;
   quantity: number;
-  room: string | null;
+  rooms: string[];
   proposeNew: string | null;
   scheduleNo: string | null;
   position: number;
