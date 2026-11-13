@@ -37,7 +37,13 @@ let failed = 0;
 for (const e of items) {
   const label = `#${e.masterItemNo} ${e.description.slice(0, 40)}`;
   try {
-    const res = await fetch(pdfPublicUrl(e.pdf!.storagePath!));
+    const pdfUrl = pdfPublicUrl(e.pdf?.storagePath ?? null);
+    if (!pdfUrl) {
+      failed++;
+      console.log(`  ✗ ${label} — missing PDF public URL`);
+      continue;
+    }
+    const res = await fetch(pdfUrl);
     if (!res.ok) {
       failed++;
       console.log(`  ✗ ${label} — fetch ${res.status}`);

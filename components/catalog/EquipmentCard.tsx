@@ -2,6 +2,7 @@
 
 import { ExternalLink, FileText, Link2, Ruler } from "lucide-react";
 import type { EquipmentDTO } from "@/lib/types";
+import { PdfCaption } from "./PdfCaption";
 import { DeptChip } from "@/components/DeptChip";
 import { cn, sentenceCase } from "@/lib/utils";
 
@@ -28,9 +29,18 @@ export function EquipmentCard({
         aria-label={`Open equipment #${item.masterItemNo}, ${sentenceCase(item.description)}`}
       >
         <div className="flex items-start justify-between gap-2">
-          <span className="rounded-full bg-brand-50 px-2 py-0.5 font-mono text-[11px] font-medium text-brand-600">
-            #{item.masterItemNo}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-brand-50 px-2 py-0.5 font-mono text-[11px] font-medium text-brand-600">
+              #{item.masterItemNo}
+            </span>
+            <time
+              dateTime={item.createdAt}
+              title="Equipment creation date (UTC)"
+              className="text-[10px] text-gray-500"
+            >
+              Created {item.createdAt.slice(0, 10)}
+            </time>
+          </div>
           {item.pdfUrl ? (
             item.pdfDownloaded ? (
               <FileText size={14} className="text-brand-600" aria-label="Spec PDF stored" />
@@ -43,6 +53,7 @@ export function EquipmentCard({
         <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900">
           {sentenceCase(item.description)}
         </h3>
+        <PdfCaption filename={item.pdfFilename} />
 
         {(item.manufacturer || item.model) && (
           <p className="line-clamp-1 text-xs text-gray-500">

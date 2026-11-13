@@ -3,21 +3,25 @@
  * Avoids the realtime/WebSocket dependency, so it runs on any Node version
  * (local Node 20.9 and Vercel alike).
  */
-const URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const URL = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "") ?? null;
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? null;
 export const PDF_BUCKET = process.env.SUPABASE_PDF_BUCKET || "pdfs";
 
 function adminHeaders(extra: Record<string, string> = {}) {
+  if (!SERVICE_KEY) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
   return {
-    apikey: SERVICE_KEY!,
-    Authorization: `Bearer ${SERVICE_KEY!}`,
+    apikey: SERVICE_KEY,
+    Authorization: `Bearer ${SERVICE_KEY}`,
     ...extra,
   };
 }
 
 /** Public URL for a stored PDF object. */
-export function pdfPublicUrl(storagePath: string) {
-  return `${URL}/storage/v1/object/public/${PDF_BUCKET}/${storagePath}`;
+export function pdfPublicUrl(storagePath: string | null | undefined) {
+  const path = storagePath?.trim();
+  if (!URL || !path || path === "/") return null;
+  const normalized = path.replace(/^\/+/, "");
+  return `${URL}/storage/v1/object/public/${PDF_BUCKET}/${normalized}`;
 }
 
 /** Create the PDF bucket (public) if it does not already exist. */

@@ -10,7 +10,7 @@
 | 数据 | Supabase Postgres，经 Prisma 访问 |
 | 文件 | Supabase Storage（规格 PDF / floor plan） |
 | 导出 | exceljs（Excel）、jszip（PDF 打包） |
-| AI | Google Gemini（从规格 PDF 抽取尺寸） |
+| PDF 规格 | 当前 Codex 核对 + 表单回填；Gemini 批次工具可选 |
 | 部署 | Vercel |
 
 ## ⚠️ 头号约定
@@ -24,6 +24,8 @@ npx prisma migrate dev    # 建表
 npm run db:seed           # 灌 209 设备 + 3 样板门店 + 上传 PDF 到 Storage
 npm run dev               # http://localhost:3000
 ```
+PDF 规格批次补全：`npm run extract:specs`（预览）/ `npm run extract:specs -- --apply`（补空值/明确占位符，保留实际规格并追加来源备注）；配置、字段对应与审计报告见 [PDF-SPEC-BACKFILL.md](./PDF-SPEC-BACKFILL.md)。`height` 是电气接点高度；设备本体高度放在 `dimension`。
+
 其它脚本：`npm run db:push` / `npm run extract:dimensions`（Gemini 回填尺寸）。
 
 ## 数据模型（prisma/schema.prisma）

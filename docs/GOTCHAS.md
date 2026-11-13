@@ -2,6 +2,11 @@
 
 > 已经踩过的坑，避免下次重踩。新坑往上加，带日期。
 
+## 2026-11-13
+
+### G-007 height 是电气接点高度，不是设备本体高度
+原 schedule 的 `height` 值包含 `48" AFF`、`CEILING DROP`、`WALKER DUCT`，属于电气接点位置。**设备本体长宽高写入 `dimension`，不要把 PDF 的 overall height 写入 `height`。** 表单与详情已明确标示 Electrical connection height。
+
 ## 2026-10-26
 
 ### G-006 规格 PDF 不能塞进 server action 的 FormData

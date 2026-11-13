@@ -32,7 +32,7 @@ model Equipment {
 
   // electrical
   power     String?
-  height    String?
+  height    String? // electrical connection/outlet mounting height or location; overall equipment height belongs in dimension
   nema      String?
   dataPhone String?
 

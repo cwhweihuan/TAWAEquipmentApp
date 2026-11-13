@@ -20,6 +20,7 @@ import {
 import type { EquipmentDTO } from "@/lib/types";
 import { DeptChip } from "@/components/DeptChip";
 import { updateEquipmentDimension, duplicateEquipment } from "@/app/actions/equipment";
+import { PdfCaption } from "./PdfCaption";
 import { EquipmentForm } from "./EquipmentForm";
 
 function Spec({ label, value }: { label: string; value: string | null }) {
@@ -111,6 +112,7 @@ export function DetailDrawer({
               ))}
             </div>
             <h2 className="truncate text-lg font-semibold text-gray-900">{sentenceCase(item.description)}</h2>
+            <PdfCaption filename={item.pdfFilename} className="mt-1" />
             {(item.manufacturer || item.model) && (
               <p className="text-sm text-gray-500">
                 {[item.manufacturer, item.model].filter(Boolean).map(sentenceCase).join(" · ")}
@@ -287,7 +289,7 @@ export function DetailDrawer({
             <Spec label="Supply by" value={item.supplyBy} />
             <Spec label="Install by" value={item.installBy} />
             <Spec label="Power" value={item.power} />
-            <Spec label="Height" value={item.height} />
+            <Spec label="Electrical connection height" value={item.height} />
             <Spec label="NEMA" value={item.nema} />
             <Spec label="Data / Phone" value={item.dataPhone} />
             <Spec label="Water — cold" value={item.waterCold} />

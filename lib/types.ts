@@ -1,6 +1,7 @@
 /** Plain, client-safe shape of an equipment item (serialized from Prisma). */
 export type EquipmentDTO = {
   id: string;
+  createdAt: string;
   masterItemNo: number;
   description: string;
   manufacturer: string | null;
@@ -23,6 +24,7 @@ export type EquipmentDTO = {
   remarks: string | null;
   departments: string[];
   departmentItems: Record<string, string>;
+  pdfFilename: string | null;
   pdfUrl: string | null;
   pdfDownloaded: boolean;
 };
@@ -40,6 +42,7 @@ export type StoreItemDTO = {
   scheduleNo: string | null;
   position: number;
   departments: string[];
+  pdfFilename: string | null;
   pdfUrl: string | null;
   pdfDownloaded: boolean;
 };

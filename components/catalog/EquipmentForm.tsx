@@ -184,7 +184,7 @@ export function EquipmentForm({
           <h2 className="mb-3 text-sm font-semibold text-gray-700">Technical specs</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field label="Power" name="power" defaultValue={item?.power} />
-            <Field label="Height" name="height" defaultValue={item?.height} />
+            <Field label="Electrical connection height" name="height" defaultValue={item?.height} />
             <Field label="NEMA" name="nema" defaultValue={item?.nema} />
             <Field label="Data / Phone" name="dataPhone" defaultValue={item?.dataPhone} />
             <Field label="Water — cold" name="waterCold" defaultValue={item?.waterCold} />

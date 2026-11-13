@@ -38,6 +38,8 @@ import {
   Ruler,
 } from "lucide-react";
 import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
+import { matchesEquipmentSearch } from "@/lib/equipment-search";
+import { PdfCaption } from "@/components/catalog/PdfCaption";
 import { DeptChip } from "@/components/DeptChip";
 import { cn, DEPARTMENTS, sentenceCase } from "@/lib/utils";
 import { DetailDrawer } from "@/components/catalog/DetailDrawer";
@@ -97,11 +99,7 @@ export function StoreBuilder({
   const filteredCatalog = useMemo(() => {
     const needle = q.trim().toLowerCase();
     if (!needle) return equipment;
-    return equipment.filter((e) =>
-      `${e.description} ${e.manufacturer ?? ""} ${e.model ?? ""} ${e.masterItemNo}`
-        .toLowerCase()
-        .includes(needle)
-    );
+    return equipment.filter((e) => matchesEquipmentSearch(e, needle));
   }, [equipment, q]);
 
   function previewEquipmentItem(item: StoreItemDTO) {
@@ -134,6 +132,7 @@ export function StoreBuilder({
       scheduleNo: null,
       position: items.length,
       departments: eq.departments,
+      pdfFilename: eq.pdfFilename,
       pdfUrl: eq.pdfUrl,
       pdfDownloaded: eq.pdfDownloaded,
     };
@@ -161,6 +160,7 @@ export function StoreBuilder({
         scheduleNo: null,
         position: cur.length,
         departments: [],
+        pdfFilename: null,
         pdfUrl: null,
         pdfDownloaded: false,
       },
@@ -178,6 +178,7 @@ export function StoreBuilder({
         id: newId,
         equipmentId: null,
         departments: [],
+        pdfFilename: null,
         pdfUrl: null,
         pdfDownloaded: false,
       };
@@ -331,7 +332,7 @@ export function StoreBuilder({
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search equipment…"
+                  placeholder="Search equipment or PDF name…"
                   className="w-full rounded-lg border border-gray-200 py-2 pl-8 pr-3 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
                 />
               </div>
@@ -444,6 +445,7 @@ function CatalogItem({
       </button>
       <button type="button" onClick={onPreview} className="min-w-0 flex-1 rounded text-left hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400" aria-label={`Preview ${sentenceCase(eq.description)}`}>
         <p className="truncate text-sm font-medium">{sentenceCase(eq.description)}</p>
+        <PdfCaption filename={eq.pdfFilename} className="mt-0.5" />
         <p className="truncate text-xs text-gray-400">
           #{eq.masterItemNo}
           {eq.manufacturer ? ` · ${sentenceCase(eq.manufacturer)}` : ""}
@@ -629,6 +631,7 @@ function SortableStoreRow({
             </button>
           )}
         </div>
+        <PdfCaption filename={item.pdfFilename} className="mt-0.5" />
         <div className="mt-1 flex flex-wrap items-center gap-1">
           {item.manufacturer && (
             <span className="truncate text-xs text-gray-400">{sentenceCase(item.manufacturer)}</span>

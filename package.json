@@ -11,7 +11,9 @@
     "db:seed": "prisma db seed",
     "db:push": "prisma db push",
     "extract:dimensions": "tsx scripts/extract-dimensions.mts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "extract:specs": "node --import tsx scripts/extract-specs.mts",
+    "extract:reviewed": "node --import tsx scripts/apply-reviewed-specs.mts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

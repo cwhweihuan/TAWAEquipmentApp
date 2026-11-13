@@ -1,3 +1,4 @@
+import { searchTerms } from "./equipment-search";
 import { prisma } from "./prisma";
 import { pdfPublicUrl } from "./supabase";
 import type { Prisma } from "@prisma/client";
@@ -9,6 +10,7 @@ export type EquipmentWithPdf = Prisma.EquipmentGetPayload<{ include: { pdf: true
 export function toEquipmentDTO(e: EquipmentWithPdf): EquipmentDTO {
   return {
     id: e.id,
+    createdAt: e.createdAt.toISOString(),
     masterItemNo: e.masterItemNo,
     description: e.description,
     manufacturer: e.manufacturer,
@@ -31,6 +33,7 @@ export function toEquipmentDTO(e: EquipmentWithPdf): EquipmentDTO {
     remarks: e.remarks,
     departments: e.departments,
     departmentItems: (e.departmentItems as Record<string, string>) ?? {},
+    pdfFilename: e.pdf?.filename ?? null,
     pdfUrl: pdfUrlFor(e.pdf),
     pdfDownloaded: e.pdf?.downloaded ?? false,
   };
@@ -39,8 +42,12 @@ export function toEquipmentDTO(e: EquipmentWithPdf): EquipmentDTO {
 /** Resolve the best viewable URL for an equipment's spec PDF (stored file preferred). */
 export function pdfUrlFor(pdf: { storagePath: string | null; driveUrl: string | null } | null) {
   if (!pdf) return null;
-  if (pdf.storagePath) return pdfPublicUrl(pdf.storagePath);
-  return pdf.driveUrl ?? null;
+
+  const storagePath = pdf.storagePath?.trim();
+  if (storagePath) return pdfPublicUrl(storagePath) ?? null;
+
+  const driveUrl = pdf.driveUrl?.trim();
+  return driveUrl || null;
 }
 
 export async function getEquipment(opts: {
@@ -51,13 +58,16 @@ export async function getEquipment(opts: {
   const where: Prisma.EquipmentWhereInput = { AND: [] };
   const and = where.AND as Prisma.EquipmentWhereInput[];
 
-  if (opts.q?.trim()) {
-    const q = opts.q.trim();
+  for (const term of searchTerms(opts.q ?? "")) {
     and.push({
       OR: [
-        { description: { contains: q, mode: "insensitive" } },
-        { manufacturer: { contains: q, mode: "insensitive" } },
-        { model: { contains: q, mode: "insensitive" } },
+        { description: { contains: term, mode: "insensitive" } },
+        { manufacturer: { contains: term, mode: "insensitive" } },
+        { model: { contains: term, mode: "insensitive" } },
+        { pdf: { is: { filename: { contains: term, mode: "insensitive" } } } },
+        ...(/^\d+$/.test(term) && Number.isSafeInteger(Number(term)) && Number(term) <= 2147483647
+          ? [{ masterItemNo: Number(term) }]
+          : []),
       ],
     });
   }
@@ -132,6 +142,7 @@ export function toStoreItemDTO(it: StoreWithItems["items"][number]): StoreItemDT
     scheduleNo: it.scheduleNo,
     position: it.position,
     departments: eq?.departments ?? [],
+    pdfFilename: eq?.pdf?.filename ?? null,
     pdfUrl: eq ? pdfUrlFor(eq.pdf) : null,
     pdfDownloaded: eq?.pdf?.downloaded ?? false,
   };

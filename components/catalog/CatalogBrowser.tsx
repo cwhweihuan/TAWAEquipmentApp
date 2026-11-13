@@ -2,12 +2,14 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, FileText, X, Plus } from "lucide-react";
+import { Search, FileText, X, Plus, LayoutGrid, List } from "lucide-react";
 import Link from "next/link";
 import type { EquipmentDTO } from "@/lib/types";
 import { DEPARTMENTS, deptStyle, deptHex, cn } from "@/lib/utils";
 import { deleteEquipment } from "@/app/actions/equipment";
+import { matchesEquipmentSearch } from "@/lib/equipment-search";
 import { EquipmentCard } from "./EquipmentCard";
+import { EquipmentList } from "./EquipmentList";
 import { DetailDrawer } from "./DetailDrawer";
 
 export function CatalogBrowser({
@@ -20,6 +22,7 @@ export function CatalogBrowser({
   const [q, setQ] = useState("");
   const [activeDepts, setActiveDepts] = useState<string[]>([]);
   const [pdfOnly, setPdfOnly] = useState(false);
+  const [view, setView] = useState<"cards" | "list">("cards");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const router = useRouter();
   const [, startDelete] = useTransition();
@@ -38,10 +41,7 @@ export function CatalogBrowser({
     return equipment.filter((e) => {
       if (pdfOnly && !e.pdfUrl) return false;
       if (activeDepts.length && !activeDepts.some((d) => e.departments.includes(d))) return false;
-      if (needle) {
-        const hay = `${e.description} ${e.manufacturer ?? ""} ${e.model ?? ""} ${e.masterItemNo}`.toLowerCase();
-        if (!hay.includes(needle)) return false;
-      }
+      if (!matchesEquipmentSearch(e, needle)) return false;
       return true;
     });
   }, [equipment, q, activeDepts, pdfOnly]);
@@ -82,7 +82,7 @@ export function CatalogBrowser({
                 setQ(e.target.value);
                 setSelectedId(null);
               }}
-              placeholder="Search description, manufacturer, model…"
+              placeholder="Search equipment, PDF name, manufacturer, model…"
               className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-9 text-sm shadow-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
             />
             {q && (
@@ -108,6 +108,23 @@ export function CatalogBrowser({
           >
             <FileText size={15} /> Has spec
           </button>
+          <div role="group" aria-label="Equipment display" className="flex rounded-lg border border-gray-200 bg-white p-1">
+            {(["cards", "list"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={view === mode}
+                onClick={() => setView(mode)}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-brand-400",
+                  view === mode ? "bg-brand-50 text-brand-700" : "text-gray-500 hover:bg-gray-50"
+                )}
+              >
+                {mode === "cards" ? <LayoutGrid size={15} /> : <List size={15} />}
+                {mode === "cards" ? "Cards" : "List"}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* department filter */}
@@ -156,6 +173,8 @@ export function CatalogBrowser({
         <div className="rounded-xl border border-dashed border-gray-200 py-20 text-center text-sm text-gray-400">
           No equipment matches your filters.
         </div>
+      ) : view === "list" ? (
+        <EquipmentList items={filtered} onSelect={setSelectedId} />
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {filtered.map((item) => (
