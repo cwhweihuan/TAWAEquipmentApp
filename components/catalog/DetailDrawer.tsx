@@ -99,7 +99,7 @@ export function DetailDrawer({
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30 animate-fade-in" onClick={onClose} />
-      <aside className="relative flex h-full w-full max-w-2xl animate-fade-in flex-col bg-white shadow-2xl">
+      <aside className="relative flex h-full w-full animate-fade-in flex-col bg-white shadow-2xl lg:w-2/3">
         {/* header */}
         <div className="flex items-start justify-between gap-3 border-b border-gray-200 px-6 py-4">
           <div className="min-w-0">

@@ -1,7 +1,8 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { Search, X } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
+import Link from "next/link";
 
 export function FloatingSearch({ value, onChange, resultCount, onShowResults }: {
   value: string;
@@ -57,17 +58,25 @@ export function FloatingSearch({ value, onChange, resultCount, onShowResults }: 
           </div>
         </form>
       )}
+      <div className="flex items-center justify-end gap-2">
+      <Link
+        href="/catalog/new"
+        className="flex min-h-12 items-center gap-1.5 rounded-full border border-brand-300 bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+      >
+        <Plus size={20} aria-hidden="true" /> Add equipment
+      </Link>
       <button
         ref={triggerRef}
         type="button"
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
         onClick={() => setOpen((current) => !current)}
-        className="ml-auto flex min-h-12 items-center gap-2 rounded-full border border-brand-300 bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+        className="flex min-h-12 items-center gap-2 rounded-full border border-brand-300 bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
       >
         {open ? <X size={20} /> : <Search size={20} />}
         {open ? "Close" : "Search"}
       </button>
+      </div>
     </div>
   );
 }
