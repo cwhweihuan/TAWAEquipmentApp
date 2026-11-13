@@ -1223,5 +1223,14 @@
       "model": "99R-CTN-3636-CHOP 2",
       "reason": "Exact manufacturer PDF not retrieved; do not substitute another model."
     }
-  ]
+  ],
+  "liveAfterExternalChange": {
+    "quantity": 52,
+    "difference": {
+      "scheduleNo": "211",
+      "importedQuantity": 6,
+      "currentQuantity": 5
+    },
+    "policy": "Preserved the later live store change; original schedule quantity remains in source entries."
+  }
 }
