@@ -61,6 +61,7 @@ export type StoreView = {
   name: string;
   location: string | null;
   floorplanUrl: string | null;
+  floorplanPath: string | null;
   floorplanName: string | null;
   subtenants: Subtenant[];
   rooms: string[];

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { ensurePdfBucket, uploadPdf, deletePdf, pdfPublicUrl } from "@/lib/supabase";
+import { ensurePdfBucket, createSignedUploadUrl, deletePdf, pdfPublicUrl } from "@/lib/supabase";
 import type { Subtenant } from "@/lib/types";
 
 class RoomValidationError extends Error {}
@@ -81,36 +81,41 @@ export async function updateStoreDetails(
   revalidatePath("/stores");
 }
 
-/** Upload (or replace) the store's floor-plan PDF. Returns its public URL + filename. */
-export async function uploadFloorplan(storeId: string, fd: FormData) {
-  const file = fd.get("floorplan") as File | null;
-  if (!file || file.size === 0) throw new Error("No file selected");
+/** Upload bytes directly from the browser, outside Server Action body limits. */
+export async function prepareFloorplanUpload(storeId: string, filename: string) {
+  await prisma.store.findUniqueOrThrow({ where: { id: storeId }, select: { id: true } });
+  if (!filename.toLowerCase().endsWith(".pdf")) throw new Error("Floor plan must be a PDF");
   await ensurePdfBucket();
-
-  // remove the previous floor-plan file, if any
-  const prev = await prisma.store.findUnique({ where: { id: storeId } });
-  if (prev?.floorplanPath) await deletePdf(prev.floorplanPath);
-
-  const bytes = Buffer.from(await file.arrayBuffer());
-  const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const path = `floorplans/${storeId}-${Date.now()}-${safe}`;
-  await uploadPdf(path, bytes);
-  await prisma.store.update({
-    where: { id: storeId },
-    data: { floorplanPath: path, floorplanName: file.name },
-  });
-  revalidatePath(`/stores/${storeId}`);
-  return { url: pdfPublicUrl(path), name: file.name };
+  const safe = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const path = `floorplans/${storeId}/${crypto.randomUUID()}-${safe}`;
+  return { path, uploadUrl: await createSignedUploadUrl(path) };
 }
 
-/** Remove the store's floor-plan PDF. */
+/** Link a successfully uploaded PDF; preserve the previous plan if anything fails. */
+export async function saveFloorplanUpload(storeId: string, file: { path: string; name: string }, expectedPath: string | null) {
+  if (!file.path.startsWith(`floorplans/${storeId}/`) || file.path.includes("..") || !file.name.toLowerCase().endsWith(".pdf")) throw new Error("Invalid floor plan path");
+  const url = pdfPublicUrl(file.path);
+  if (!url) throw new Error("Storage is unavailable");
+  const response = await fetch(url, { method: "HEAD", cache: "no-store" });
+  if (!response.ok || !response.headers.get("content-type")?.includes("application/pdf")) throw new Error("Uploaded PDF could not be verified");
+  const saved = await prisma.store.updateMany({
+    where: { id: storeId, floorplanPath: expectedPath },
+    data: { floorplanPath: file.path, floorplanName: file.name },
+  });
+  if (saved.count !== 1) throw new Error("Floor plan changed. Reload the store before uploading again.");
+  revalidatePath(`/stores/${storeId}`);
+  return { url, name: file.name, path: file.path };
+}
+
+/** Remove the store's floor-plan link before cleaning up its file. */
 export async function removeFloorplan(storeId: string) {
-  const store = await prisma.store.findUnique({ where: { id: storeId } });
-  if (store?.floorplanPath) await deletePdf(store.floorplanPath);
-  await prisma.store.update({
-    where: { id: storeId },
+  const store = await prisma.store.findUniqueOrThrow({ where: { id: storeId } });
+  const removed = await prisma.store.updateMany({
+    where: { id: storeId, floorplanPath: store.floorplanPath },
     data: { floorplanPath: null, floorplanName: null },
   });
+  if (removed.count !== 1) throw new Error("Floor plan changed. Reload before removing it.");
+  if (store.floorplanPath) await deletePdf(store.floorplanPath);
   revalidatePath(`/stores/${storeId}`);
 }
 

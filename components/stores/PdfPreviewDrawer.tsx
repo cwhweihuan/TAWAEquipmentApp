@@ -32,7 +32,7 @@ export function PdfPreviewDrawer({
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30 animate-fade-in" onClick={onClose} />
-      <aside className="relative flex h-full w-full max-w-2xl animate-fade-in flex-col bg-white shadow-2xl">
+      <aside role="dialog" aria-modal="true" aria-label={target.title} className="relative flex h-full w-full animate-fade-in flex-col bg-white shadow-2xl lg:w-2/3">
         <div className="flex items-start justify-between gap-3 border-b border-brand-100 px-5 py-4">
           <div className="min-w-0">
             <h2 className="flex items-center gap-1.5 truncate text-base font-semibold text-gray-900">
@@ -53,6 +53,7 @@ export function PdfPreviewDrawer({
             </a>
             <button
               onClick={onClose}
+              aria-label="Close PDF preview"
               className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
             >
               <X size={18} />
@@ -60,7 +61,7 @@ export function PdfPreviewDrawer({
           </div>
         </div>
 
-        <div className="flex-1 bg-gray-50 p-3">
+        <div className="min-h-0 flex-1 bg-gray-50 p-3">
           {target.downloaded ? (
             <iframe
               src={target.url}

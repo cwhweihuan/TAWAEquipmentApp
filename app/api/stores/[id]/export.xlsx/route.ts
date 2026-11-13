@@ -14,7 +14,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const ws = wb.addWorksheet(`#${store.number}`.slice(0, 31));
 
   // title
-  ws.mergeCells("A1:N1");
+  ws.mergeCells("A1:O1");
   const title = ws.getCell("A1");
   title.value = `${store.name} — Equipment Schedule`;
   title.font = { size: 14, bold: true };
@@ -35,6 +35,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     "NEMA",
     "DATA/PHONE",
     "REMARKS",
+    "FLOOR PLAN NO.",
   ];
   ws.addRow(header).eachCell((cell) => {
     cell.font = { bold: true, size: 10, color: { argb: "FFFFFFFF" } };
@@ -62,10 +63,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       eq?.nema ?? "",
       eq?.dataPhone ?? "",
       eq?.remarks ?? it.remarks ?? "",
+      it.scheduleNo ?? "",
     ]);
   });
 
-  const widths = [6, 14, 10, 12, 6, 38, 18, 18, 12, 12, 14, 10, 12, 24];
+  const widths = [6, 14, 10, 12, 6, 38, 18, 18, 12, 12, 14, 10, 12, 24, 16];
   ws.columns.forEach((col, i) => {
     col.width = widths[i] ?? 12;
   });

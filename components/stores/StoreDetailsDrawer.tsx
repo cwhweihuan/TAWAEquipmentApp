@@ -12,7 +12,7 @@ import {
   Store as StoreIcon,
 } from "lucide-react";
 import type { Subtenant } from "@/lib/types";
-import { updateStoreDetails, uploadFloorplan, removeFloorplan } from "@/app/actions/store";
+import { updateStoreDetails, prepareFloorplanUpload, saveFloorplanUpload, removeFloorplan } from "@/app/actions/store";
 import type { PreviewTarget } from "./PdfPreviewDrawer";
 
 type Editable = {
@@ -21,6 +21,7 @@ type Editable = {
   number: string;
   location: string | null;
   floorplanUrl: string | null;
+  floorplanPath: string | null;
   floorplanName: string | null;
   subtenants: Subtenant[];
 };
@@ -43,10 +44,13 @@ export function StoreDetailsDrawer({
     store.subtenants.length ? store.subtenants : []
   );
   const [floorplanUrl, setFloorplanUrl] = useState(store.floorplanUrl);
+  const [floorplanPath, setFloorplanPath] = useState(store.floorplanPath);
   const [floorplanName, setFloorplanName] = useState(store.floorplanName);
 
   const [saving, startSave] = useTransition();
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -75,14 +79,23 @@ export function StoreDetailsDrawer({
   async function onFloorplanChosen(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setUploadError(null);
+    setUploadSuccess(false);
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("floorplan", file);
-      const { url, name: fname } = await uploadFloorplan(store.id, fd);
+      if (file.size === 0) throw new Error("The selected PDF is empty.");
+      if (!file.name.toLowerCase().endsWith(".pdf") || (file.type && file.type !== "application/pdf")) throw new Error("Please choose a PDF file.");
+      const { path, uploadUrl } = await prepareFloorplanUpload(store.id, file.name);
+      const response = await fetch(uploadUrl, { method: "PUT", headers: { "Content-Type": "application/pdf" }, body: file });
+      if (!response.ok) throw new Error(`PDF upload failed (${response.status}). Please try again.`);
+      const { url, name: fname } = await saveFloorplanUpload(store.id, { path, name: file.name }, floorplanPath);
       setFloorplanUrl(url);
+      setFloorplanPath(path);
       setFloorplanName(fname);
-      onSaved({ floorplanUrl: url, floorplanName: fname });
+      setUploadSuccess(true);
+      onSaved({ floorplanUrl: url, floorplanPath: path, floorplanName: fname });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "PDF upload failed. Please try again.");
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -90,10 +103,18 @@ export function StoreDetailsDrawer({
   }
 
   async function dropFloorplan() {
-    await removeFloorplan(store.id);
-    setFloorplanUrl(null);
-    setFloorplanName(null);
-    onSaved({ floorplanUrl: null, floorplanName: null });
+    setUploadError(null);
+    setUploading(true);
+    try {
+      await removeFloorplan(store.id);
+      setFloorplanUrl(null);
+      setFloorplanPath(null);
+      setFloorplanName(null);
+      setUploadSuccess(false);
+      onSaved({ floorplanUrl: null, floorplanPath: null, floorplanName: null });
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Could not remove PDF.");
+    } finally { setUploading(false); }
   }
 
   return (
@@ -169,6 +190,7 @@ export function StoreDetailsDrawer({
                 </button>
                 <button
                   onClick={dropFloorplan}
+                  disabled={uploading}
                   className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
                   title="Remove floor plan"
                 >
@@ -185,9 +207,12 @@ export function StoreDetailsDrawer({
                   accept="application/pdf"
                   className="sr-only"
                   onChange={onFloorplanChosen}
+                  disabled={uploading}
                 />
               </label>
             )}
+            {uploadError && <p role="alert" className="mt-2 text-sm text-red-600">{uploadError}</p>}
+            {uploadSuccess && <p role="status" className="mt-2 text-sm text-brand-600">Floor plan uploaded and saved.</p>}
           </div>
 
           {/* subtenants */}

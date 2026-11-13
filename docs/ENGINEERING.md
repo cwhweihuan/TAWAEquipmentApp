@@ -33,6 +33,7 @@ PDF 规格批次补全：`npm run extract:specs`（预览）/ `npm run extract:s
 - `Pdf` — 规格表。**`storagePath`**=Supabase 内路径（首选），`driveUrl`=旧 Google Drive 链接（回退）。`driveId` 唯一、也用作存储文件名。
 - `Store` / `StoreItem` — 门店搭建，StoreItem 引用 Equipment 或自定义条目。自定义条目（`equipmentId` 为空）的 description / manufacturer / model / dimension 存在 StoreItem 自身列上；关联行这些字段一律来自 Equipment。
 - `Store.rooms` — 門店共用 Room 名稱清單；設備列及預覽卡使用同一選單。改名透過交易同步更新 StoreItem.room，使用中的區域不可直接移除；既有指派在 migration 中保留。Omitted 是數量 0、沒有設備關聯的自訂佔位列，會包含在 Excel 編號中。
+- `StoreItem.scheduleNo` — 本店 Floor plan no.，與 Equipment.masterItemNo、清單列序號及 departmentItems 分開。圖面匹配需核對廠商／型號／描述，不可按 master 編號直接對號。Store 平面圖使用 prepareFloorplanUpload 簽名直傳，saveFloorplanUpload 確認公開 PDF 可讀後，以原 floorplanPath 比對儲存，避免覆蓋同時上傳。
 
 ## PDF 解析逻辑（重要）
 `lib/data.ts` 的 `pdfUrlFor(pdf)`：**有 `storagePath` 就用 Supabase 公网 URL，否则回退 `driveUrl`**。

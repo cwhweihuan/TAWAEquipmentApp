@@ -20,6 +20,7 @@ import {
   useSortable,
   arrayMove,
   verticalListSortingStrategy,
+  rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -36,6 +37,8 @@ import {
   PackagePlus,
   Settings2,
   Ruler,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
@@ -62,7 +65,7 @@ import { PdfPreviewDrawer, type PreviewTarget } from "./PdfPreviewDrawer";
 /** Mutable header fields the details drawer can edit in place. */
 type StoreMeta = Pick<
   StoreView,
-  "name" | "number" | "location" | "floorplanUrl" | "floorplanName" | "subtenants"
+  "name" | "number" | "location" | "floorplanUrl" | "floorplanPath" | "floorplanName" | "subtenants"
 >;
 
 export function StoreBuilder({
@@ -85,6 +88,7 @@ export function StoreBuilder({
     number: store.number,
     location: store.location,
     floorplanUrl: store.floorplanUrl,
+    floorplanPath: store.floorplanPath,
     floorplanName: store.floorplanName,
     subtenants: store.subtenants,
   });
@@ -323,9 +327,13 @@ export function StoreBuilder({
               )}
             </h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-gray-500">{items.length} items</span>
             <button type="button" onClick={() => setRoomsOpen(true)} className="flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"><Settings2 size={15} /> Rooms</button>
+            <button type="button" onClick={() => {
+              if (meta.floorplanUrl) setPreview({ title: "Floor plan", subtitle: meta.floorplanName, url: meta.floorplanUrl, downloaded: true });
+              else setDetailsOpen(true);
+            }} className="flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"><FileText size={15} /> Floor Plan</button>
             <button
               onClick={() => setDetailsOpen(true)}
               className="flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-3 py-2 text-sm font-semibold text-brand-700 shadow-sm transition hover:bg-brand-50"
@@ -427,12 +435,12 @@ export function StoreBuilder({
           onEdit={() => { setPreviewTarget(null); setEditingEq(previewEquipment); }}
           onClose={() => setPreviewTarget(null)}
         >
-          {previewRow && <StoreRoomSelect key={previewRow.id} room={previewRow.room} rooms={rooms} onSave={(value) => persistField(previewRow.id, "room", value)} />}
+          {previewRow && <StorePlacement key={previewRow.id} item={previewRow} rooms={rooms} onPersist={(field, value) => persistField(previewRow.id, field, value)} />}
         </DetailDrawer>
       )}
       {previewCustom && (
         <CustomItemPreviewDrawer item={previewCustom} onClose={() => setPreviewTarget(null)} position={previewIndex + 1} total={previewList.length} onPrevious={() => movePreview(-1)} onNext={() => movePreview(1)} onEdit={() => { setPreviewTarget(null); editItem(previewCustom); }}>
-          <StoreRoomSelect key={previewCustom.id} room={previewCustom.room} rooms={rooms} onSave={(value) => persistField(previewCustom.id, "room", value)} />
+          <StorePlacement key={previewCustom.id} item={previewCustom} rooms={rooms} onPersist={(field, value) => persistField(previewCustom.id, field, value)} />
         </CustomItemPreviewDrawer>
       )}
       <PdfPreviewDrawer target={preview} onClose={() => setPreview(null)} />
@@ -456,6 +464,31 @@ export function StoreBuilder({
       )}
     </DndContext>
   );
+}
+
+function StorePlacement({ item, rooms, onPersist }: { item: StoreItemDTO; rooms: string[]; onPersist: (field: "room" | "scheduleNo", value: string) => Promise<void> }) {
+  return <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <FloorPlanNumber value={item.scheduleNo} onSave={(value) => onPersist("scheduleNo", value)} />
+    <StoreRoomSelect room={item.room} rooms={rooms} onSave={(value) => onPersist("room", value)} />
+  </div>;
+}
+
+function FloorPlanNumber({ value, onSave, compact = false }: { value: string | null; onSave: (value: string) => Promise<void>; compact?: boolean }) {
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startSave] = useTransition();
+  return <label className="flex min-w-0 flex-col gap-1">
+    <span className={compact ? "sr-only" : "text-xs text-gray-500"}>Floor plan no.</span>
+    <input key={value ?? ""} aria-label="Floor plan no." defaultValue={value ?? ""} placeholder="e.g. HD-01" disabled={pending} onBlur={(event) => {
+      const next = event.target.value.trim();
+      if (next === (value ?? "")) return;
+      setError(null);
+      startSave(async () => {
+        try { await onSave(next); }
+        catch (err) { setError(err instanceof Error ? err.message : "Could not save floor plan number."); }
+      });
+    }} className="w-full rounded-md border border-gray-200 px-2 py-1 text-sm outline-none focus:border-brand-400 disabled:opacity-50" />
+    {error && <span role="alert" className="text-xs text-red-600">{error}</span>}
+  </label>;
 }
 
 function StoreRoomSelect({ room, rooms, onSave }: { room: string | null; rooms: string[]; onSave: (value: string) => Promise<void> }) {
@@ -537,7 +570,7 @@ function CatalogItem({
 
 // shared column template for the schedule header + rows
 const COLS =
-  "grid-cols-[20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_176px]";
+  "grid-cols-[20px_26px_86px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_176px]";
 
 // equipment-schedule status options (mirror the audit Excel)
 const STATUS_OPTIONS = ["New", "Existing", "(E)Relocate", "Remove"] as const;
@@ -579,6 +612,7 @@ function StoreDropZone({
   onEdit: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
+  const [view, setView] = useState<"cards" | "list">("list");
   return (
     <div
       ref={setNodeRef}
@@ -587,8 +621,13 @@ function StoreDropZone({
         isOver ? "border-brand-400 bg-brand-50/40" : "border-white/60 bg-white/55"
       )}
     >
-      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
+        <div role="group" aria-label="Store equipment display" className="flex rounded-lg border border-gray-200 bg-white p-1">
+          {(["cards", "list"] as const).map((mode) => <button key={mode} type="button" aria-pressed={view === mode} onClick={() => setView(mode)} className={cn("flex items-center gap-1.5 rounded-md px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-brand-400", view === mode ? "bg-brand-50 text-brand-700" : "text-gray-500 hover:bg-gray-50")}>
+            {mode === "cards" ? <LayoutGrid size={15} /> : <List size={15} />}{mode === "cards" ? "Cards" : "List"}
+          </button>)}
+        </div>
         <div className="flex items-center gap-3">
         <button type="button" onClick={onAddOmitted} className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-brand-600"><Plus size={14} /> Omitted</button>
         <button
@@ -605,27 +644,31 @@ function StoreDropZone({
           Drag equipment here, or click + on a catalog item
         </div>
       ) : (
-        <div className="scroll-thin flex-1 overflow-y-auto p-2">
+        <div className="scroll-thin flex-1 overflow-auto p-2">
           {/* header row */}
           <div
             className={cn(
-              "sticky top-0 z-10 mb-1 grid items-center gap-2 bg-white/70 px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400 backdrop-blur",
+              "sticky top-0 z-10 mb-1 min-w-[1000px] items-center gap-2 bg-white/70 px-2 pb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-400 backdrop-blur",
+              view === "list" ? "grid" : "hidden",
               COLS
             )}
           >
             <span />
             <span>#</span>
+            <span>Floor plan no.</span>
             <span>Equipment</span>
             <span>Dimension</span>
             <span>Qty</span>
             <span>Room</span>
             <span>Status</span>
           </div>
-          <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext items={items.map((i) => i.id)} strategy={view === "cards" ? rectSortingStrategy : verticalListSortingStrategy}>
+            <div className={view === "cards" ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3" : "min-w-[1000px]"}>
             {items.map((it, idx) => (
               <SortableStoreRow
                 key={it.id}
                 item={it}
+                view={view}
                 rooms={rooms}
                 index={idx + 1}
                 onRemove={() => onRemove(it.id)}
@@ -637,6 +680,7 @@ function StoreDropZone({
                 onEdit={() => onEdit(it)}
               />
             ))}
+            </div>
           </SortableContext>
         </div>
       )}
@@ -646,6 +690,7 @@ function StoreDropZone({
 
 function SortableStoreRow({
   item,
+  view,
   rooms,
   index,
   onRemove,
@@ -657,6 +702,7 @@ function SortableStoreRow({
   onEdit,
 }: {
   item: StoreItemDTO;
+  view: "cards" | "list";
   rooms: string[];
   index: number;
   onRemove: () => void;
@@ -678,18 +724,20 @@ function SortableStoreRow({
       style={style}
       className={cn(
         "group mb-1 grid items-start gap-2 rounded-lg border border-white/50 bg-white/45 px-2 py-2 hover:border-brand-200 hover:bg-white/65",
-        COLS,
+        view === "list" ? COLS : "grid-cols-[20px_minmax(0,1fr)] [&>div]:col-span-2 [&>label]:col-span-2",
         isDragging && "z-20 opacity-80 shadow-md"
       )}
     >
       <button
         {...attributes}
         {...listeners}
+        aria-label={`Reorder item ${index}`}
         className="mt-1 cursor-grab touch-none text-gray-300 hover:text-gray-500 active:cursor-grabbing"
       >
         <GripVertical size={15} />
       </button>
       <span className="mt-1 font-mono text-xs text-gray-400">{index}</span>
+      <FloorPlanNumber value={item.scheduleNo} compact={view === "list"} onSave={(value) => onPersist("scheduleNo", value)} />
 
       {/* equipment: description, manufacturer, ALL department tags, pdf preview */}
       <div className="min-w-0">
@@ -733,6 +781,8 @@ function SortableStoreRow({
         )}
       </div>
 
+      <label className="flex min-w-0 flex-col gap-1">
+      <span className={view === "list" ? "sr-only" : "text-xs text-gray-500"}>Quantity</span>
       <input
         type="number"
         min={0}
@@ -742,6 +792,7 @@ function SortableStoreRow({
         onBlur={(e) => onPersist("quantity", e.target.value)}
         className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-center text-sm outline-none focus:border-brand-400"
       />
+      </label>
       <StoreRoomSelect room={item.room} rooms={rooms} onSave={async (value) => { await onPersist("room", value); }} />
       <div className="flex items-center gap-1">
         {(() => {
@@ -749,6 +800,7 @@ function SortableStoreRow({
           const extra = status && !STATUS_OPTIONS.includes(status as (typeof STATUS_OPTIONS)[number]);
           return (
             <select
+              aria-label="Status"
               value={status}
               onChange={(e) => {
                 onPatch({ proposeNew: e.target.value || null });
