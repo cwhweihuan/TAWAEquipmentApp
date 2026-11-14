@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-14",
+  "scope": "Equipment remarks for the 30 equipment entries referenced by Chino Hill #1231. Uses #167 in place of merged/deleted #250.",
+  "reviewed": 30,
+  "updated": 16,
+  "unchanged": 14,
+  "verification": "Saved through the production equipment edit form; reloaded each edited form and verified remarks plus every other named non-file input, textarea and select against the before values. No store rows were edited.",
+  "records": [
+    {
+      "id": "chino1231-equipment-84",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #84. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No CookTek stock pot range in catalog; do not substitute gas stock-pot ranges.\nManufacturer document: https://cooktek.com/wp-content/uploads/2018/07/DOC-1599B-Stock-Pot-Range-EN-1.pdf (Stock Pot family reference; drawing does not identify MSP variant.)",
+      "after": "Model variant requires confirmation; attached manufacturer document covers the Stock Pot family. Do not infer utility loads.\nManufacturer document: https://cooktek.com/wp-content/uploads/2018/07/DOC-1599B-Stock-Pot-Range-EN-1.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-90",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #90. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. No exact GSW model; catalog Advance Tabco sinks are different. Multiple room locations; retain quantity 2.",
+      "after": "Exact model specifications require verification. Do not infer utility loads.",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-99b",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #99B. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. Catalog #212 is 99R-MS5029C-SGO; 5092 versus 5029 must be confirmed.",
+      "after": "Model requires confirmation: 5092 versus 5029. Exact specifications require verification; do not infer utility loads.",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-99c",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #99C. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No exact MOD100TD card; do not substitute multi-well assemblies.\nManufacturer document: https://wells-mfg.com/wp-content/uploads/2017/04/S_MOD100-Modular-Warmer_Spec-Sheet-03-2018_-1.pdf",
+      "after": "Manufacturer document attached; confirm model variant and voltage before using utility ratings.\nManufacturer document: https://wells-mfg.com/wp-content/uploads/2017/04/S_MOD100-Modular-Warmer_Spec-Sheet-03-2018_-1.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-99d",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #99D. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No exact MOD300TDM card; generic 300D-400D-500D record is a different assembly.\nManufacturer document: https://wells-mfg.com/wp-content/uploads/2016/08/C_MOD-300_T_TD_TDM-Install-Sheet.pdf",
+      "after": "Manufacturer document attached; confirm model variant and voltage before using utility ratings.\nManufacturer document: https://wells-mfg.com/wp-content/uploads/2016/08/C_MOD-300_T_TD_TDM-Install-Sheet.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-99e",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #99E. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No standalone CWBP-3 card; cold-pan island records represent complete assemblies.\nManufacturer document: https://www.hatcocorp.com/cms/SPECSHEETS/000000040167903-00000-20231031.PDF",
+      "after": "Manufacturer document attached; confirm model variant and voltage before using utility ratings.\nManufacturer document: https://www.hatcocorp.com/cms/SPECSHEETS/000000040167903-00000-20231031.PDF",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-99f",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #99F. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No exact standalone SS10TDU-120 card.\nManufacturer document: https://wells-mfg.com/wp-content/uploads/2017/04/S_SS10-SERIES_2M-Z21335_REV_B_01-22.pdf",
+      "after": "Manufacturer document attached; confirm model variant and voltage before using utility ratings.\nManufacturer document: https://wells-mfg.com/wp-content/uploads/2017/04/S_SS10-SERIES_2M-Z21335_REV_B_01-22.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-160",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #160. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. No exact ACE RM-BBQ3654 card; generic CUSTOM three-pan case cannot confirm this model.",
+      "after": "Exact model specifications require verification. Do not infer utility loads.",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-163",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #163. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No exact Imperial IR-4-G12; American Range AR24G-2B is a different manufacturer/configuration.\nManufacturer document: https://www.imperialrange.com/wp-content/uploads/2025/04/2025-Catalog-Rev-03.28.25.pdf",
+      "after": "Manufacturer document attached; confirm model configuration and utility ratings.\nManufacturer document: https://www.imperialrange.com/wp-content/uploads/2025/04/2025-Catalog-Rev-03.28.25.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-173",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #173. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No Baxter OV500G2-EE card; LRO-2G6, LBC and Blodgett ovens are not equivalents.\nManufacturer document: https://www.hobart.ca/wp-content/uploads/pdfs/baking/BX56068-OV500G2EE.pdf",
+      "after": "Manufacturer document attached; confirm model configuration and utility ratings.\nManufacturer document: https://www.hobart.ca/wp-content/uploads/pdfs/baking/BX56068-OV500G2EE.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-212",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #212. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No SMD-R card; BLF/BLF-R/PF series are different models.\nManufacturer document: https://hillrmtstoragedev.blob.core.windows.net/hilldrive/Resources/Products/Resources/Technical%20Reference/SMD-R-BAKERY-display-case-tech-reference-sheet-rv7.pdf",
+      "after": "Manufacturer document attached; confirm model configuration and utility ratings.\nManufacturer document: https://hillrmtstoragedev.blob.core.windows.net/hilldrive/Resources/Products/Resources/Technical%20Reference/SMD-R-BAKERY-display-case-tech-reference-sheet-rv7.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-214",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #214. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. No Kingdom ZW-C-223F card; Turbo Air and other bakery cases are not equivalents.",
+      "after": "Exact model specifications require verification. Do not infer utility loads.",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-215",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #215. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. No exact GSW WT-EE3060; catalog Eagle/True worktables differ. Bakery and Hot Deli locations share this row.",
+      "after": "Exact model specifications require verification. Do not infer utility loads.",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-216",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #216. Manufacturer/model transcribed from drawing. Exact specifications pending source verification; do not infer utility loads. No exact ATL model; generic CUSTOM 30x42 table does not establish 36x36 configuration.",
+      "after": "Exact model specifications require verification. Do not infer utility loads.",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-217",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #217. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. Catalog P74NY is a post component; it does not identify this full S3746* shelving assembly. Preserve asterisk as drawn.\nManufacturer document: https://snyderequipment.com/wp-content/uploads/2016/04/ISS-wire-shelving.pdf",
+      "after": "Confirm the complete S3746* shelving assembly and component configuration against the manufacturer document.\nManufacturer document: https://snyderequipment.com/wp-content/uploads/2016/04/ISS-wire-shelving.pdf",
+      "status": "updated_verified"
+    },
+    {
+      "id": "chino1231-equipment-218",
+      "before": "Source: Chino Hill #1231 floor plan 2026-06-03 Demo & Proposed.pdf, p.2 A2.0-A schedule #218. Manufacturer/model transcribed from drawing. Manufacturer document attached; variant/voltage options require project confirmation. Do not infer utility loads. No exact Alto-Shaam HSM-48/5S/T card; Hatco and ServIt warmers are different products.\nManufacturer document: https://altoshaam.widen.net/content/l41zov34ob/original/Spec-Sheet_Heated-Merchandiser_HSM48_HSM-SPC-0009_EN.pdf?download=true&u=dr4uqt",
+      "after": "Manufacturer document attached; confirm model configuration and utility ratings.\nManufacturer document: https://altoshaam.widen.net/content/l41zov34ob/original/Spec-Sheet_Heated-Merchandiser_HSM48_HSM-SPC-0009_EN.pdf?download=true&u=dr4uqt",
+      "status": "updated_verified"
+    }
+  ]
+}

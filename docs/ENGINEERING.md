@@ -47,6 +47,7 @@ PDF 规格批次补全：`npm run extract:specs`（预览）/ `npm run extract:s
 - 一次性导入脚本：`scripts/import-spec-pdfs.mts`（NAS PDF → Storage → 链接设备 → 去 Drive）。
 
 ## 约定
+- 共用設備 `remarks` 只寫設備本身的規格、功能、安裝要求與型號／選配待確認事項；不寫門店名稱、平面圖日期／頁碼／schedule 編號、店內數量／Room 或目錄配對過程。門店圖面來源與配對證據保留在 `docs/` 核對紀錄。
 - 改 schema 后 build 会自动 `prisma generate && prisma migrate deploy`（见 package.json `build`）。
 - 写 `.mts` 脚本用 `npx tsx` 跑；import 本地 lib 用 `.js` 后缀（ESM）。
 - 灌库脚本要**幂等**（upsert，按 `masterItemNo` / `driveId`）。
