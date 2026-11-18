@@ -136,6 +136,18 @@ export async function addItemToStore(storeId: string, equipmentId: string) {
   return item.id;
 }
 
+export async function saveStoreItemRemarks(storeId: string, itemId: string, equipmentId: string | null, value: string) {
+  const remarks = value.trim();
+  const result = await prisma.storeItem.updateMany({
+    where: { id: itemId, storeId, equipmentId },
+    data: { remarks },
+  });
+  if (result.count !== 1) return { error: "This row changed. Reload before saving remarks." };
+
+  revalidatePath(`/stores/${storeId}`);
+  return { remarks };
+}
+
 export async function replaceStoreItemEquipment(
   storeId: string,
   itemId: string,
@@ -307,7 +319,7 @@ export async function duplicateAsCustom(itemId: string) {
         manufacturer: eq?.manufacturer ?? src.manufacturer ?? null,
         model: eq?.model ?? src.model ?? null,
         dimension: eq?.dimension ?? src.dimension ?? null,
-        remarks: eq?.remarks ?? src.remarks ?? null,
+        remarks: src.remarks ?? eq?.remarks ?? null,
         quantity: src.quantity,
         rooms: src.rooms,
         proposeNew: src.proposeNew,

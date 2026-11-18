@@ -37,6 +37,7 @@ export type StoreItemDTO = {
   model: string | null;
   dimension: string | null;
   remarks: string | null;
+  hasStoreRemarks?: boolean;
   quantity: number;
   rooms: string[];
   proposeNew: string | null;

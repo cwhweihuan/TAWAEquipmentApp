@@ -62,7 +62,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       eq?.power ?? "",
       eq?.nema ?? "",
       eq?.dataPhone ?? "",
-      eq?.remarks ?? it.remarks ?? "",
+      it.remarks ?? eq?.remarks ?? "",
       it.scheduleNo ?? "",
     ]);
   });

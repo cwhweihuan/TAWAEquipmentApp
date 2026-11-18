@@ -56,6 +56,7 @@ import {
   duplicateAsCustom,
   reorderStoreItems,
   replaceStoreItemEquipment,
+  saveStoreItemRemarks,
   updateStoreItem,
   updateStoreItemPlacements,
   type StoreItemPlacementPatch,
@@ -262,7 +263,7 @@ export function StoreBuilder({
       departments: DEPARTMENTS.filter((d) => fd.get(`dept:${d}`) === "on"),
       ...(description ? { description } : {}),
     };
-    setItems((cur) => cur.map((i) => (i.equipmentId === eqId ? { ...i, ...p } : i)));
+    setItems((cur) => cur.map((i) => (i.equipmentId === eqId ? { ...i, ...p, remarks: i.hasStoreRemarks ? i.remarks : p.remarks ?? null } : i)));
     setEditingEq(null);
     router.refresh(); // refresh server data so the catalog pane + specs stay in sync
   }
@@ -446,6 +447,11 @@ export function StoreBuilder({
             onOpenEquipment={previewEquipmentItem}
             onEdit={editItem}
             onReplace={setReplacing}
+            onSaveRemarks={async (item, value) => {
+              const result = await saveStoreItemRemarks(store.id, item.id, item.equipmentId, value);
+              if (result.error !== undefined) return result.error;
+              patch(item.id, { remarks: result.remarks, hasStoreRemarks: true });
+            }}
           />
         </div>
       </div>
@@ -474,7 +480,7 @@ export function StoreBuilder({
       {previewEquipment && (
         <DetailDrawer
           key={previewEquipment.id}
-          item={previewEquipment}
+          item={previewRow ? { ...previewEquipment, remarks: previewRow.remarks } : previewEquipment}
           readOnly
           position={previewIndex + 1}
           total={previewList.length}
@@ -525,6 +531,7 @@ export function StoreBuilder({
               model: eq.model,
               dimension: eq.dimension,
               remarks: eq.remarks,
+              hasStoreRemarks: false,
               departments: eq.departments,
               pdfFilename: eq.pdfFilename,
               pdfUrl: eq.pdfUrl,
@@ -765,6 +772,7 @@ function StoreDropZone({
   onOpenEquipment,
   onEdit,
   onReplace,
+  onSaveRemarks,
 }: {
   items: StoreItemDTO[];
   sortByNumber: boolean;
@@ -785,6 +793,7 @@ function StoreDropZone({
   onOpenEquipment: (it: StoreItemDTO) => void;
   onEdit: (it: StoreItemDTO) => void;
   onReplace: (it: StoreItemDTO) => void;
+  onSaveRemarks: (item: StoreItemDTO, value: string) => Promise<string | undefined>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
   const [selection, setSelection] = useState<Set<string>>(new Set());
@@ -917,6 +926,7 @@ function StoreDropZone({
                 onOpenEquipment={() => onOpenEquipment(it)}
                 onEdit={() => onEdit(it)}
                 onReplace={() => onReplace(it)}
+                onSaveRemarks={(value) => onSaveRemarks(it, value)}
               />
             ))}
             </div>
@@ -943,6 +953,7 @@ function SortableStoreRow({
   onOpenEquipment,
   onEdit,
   onReplace,
+  onSaveRemarks,
 }: {
   item: StoreItemDTO;
   rooms: string[];
@@ -959,6 +970,7 @@ function SortableStoreRow({
   onOpenEquipment: () => void;
   onEdit: () => void;
   onReplace: () => void;
+  onSaveRemarks: (value: string) => Promise<string | undefined>;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -1109,6 +1121,55 @@ function SortableStoreRow({
           </button>
         </div>
       </div>
+      <StoreItemRemarks key={JSON.stringify([item.equipmentId, item.remarks])} item={item} onSave={onSaveRemarks} />
+    </div>
+  );
+}
+
+
+function StoreItemRemarks({ item, onSave }: {
+  item: StoreItemDTO;
+  onSave: (value: string) => Promise<string | undefined>;
+}) {
+  const [value, setValue] = useState(item.remarks ?? "");
+  const [error, setError] = useState<string>();
+  const [pending, startSave] = useTransition();
+
+  function save() {
+    const next = value.trim();
+    if (pending || next === (item.remarks ?? "")) return;
+    setError(undefined);
+    startSave(async () => {
+      try {
+        setError(await onSave(next));
+      } catch {
+        setError("Could not save remarks.");
+      }
+    });
+  }
+
+  return (
+    <div className="col-start-7 col-span-3 min-w-0">
+      <label className="flex flex-col gap-1">
+        <span className="text-[10px] font-semibold tracking-wide text-gray-500">REMARK/NOTES:</span>
+        <textarea
+          aria-label={`Remarks for ${sentenceCase(item.description)}`}
+          rows={2}
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          onBlur={save}
+          readOnly={pending}
+          disabled={item.id.startsWith("temp-")}
+          className="field-sizing-content min-h-10 max-h-40 w-full resize-y rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 outline-none focus:border-brand-400 disabled:opacity-50"
+        />
+      </label>
+      {pending && <span role="status" className="text-xs text-gray-500">Saving…</span>}
+      {error && (
+        <div className="flex items-center gap-2 text-xs text-red-600">
+          <span role="alert">{error}</span>
+          <button type="button" onClick={save} className="font-medium underline">Retry</button>
+        </div>
+      )}
     </div>
   );
 }
