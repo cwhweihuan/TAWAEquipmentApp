@@ -1,0 +1,582 @@
+[
+  {
+    "id": "596a0665-60dd-4e93-8d83-eda3cdfa11e1",
+    "floorPlanNo": "15",
+    "manufacturer": "MADIX",
+    "model": "GONDOLA",
+    "description": "FREESTANDING TALL GONDOLA SHELVING",
+    "status": "verified",
+    "source": "https://www.madixinc.com/products/gondola-fixtures/",
+    "note": "Manufacturer family reference. Installed series, size and fittings to be confirmed."
+  },
+  {
+    "id": "18d9cbb9-e806-42b1-a7e6-84a91346bdd4",
+    "floorPlanNo": "15A",
+    "manufacturer": "MADIX",
+    "model": "GONDOLA",
+    "description": "FREESTANDING SHORT GONDOLA SHELVING",
+    "status": "verified",
+    "source": "https://www.madixinc.com/products/gondola-fixtures/",
+    "note": "Manufacturer family reference. Installed series, size and fittings to be confirmed."
+  },
+  {
+    "id": "1fdebd9e-a312-49e3-9d58-6a1c10c7c18b",
+    "floorPlanNo": "16",
+    "manufacturer": "MADIX",
+    "model": "WALL",
+    "description": "WALL-MOUNT SHELVING",
+    "status": "verified",
+    "source": "https://www.madixinc.com/products/gondola-fixtures/",
+    "note": "Manufacturer family reference for single-sided wall fixtures. Confirm installed series and dimensions."
+  },
+  {
+    "id": "e185242d-c156-468c-9903-ce346989ee9d",
+    "floorPlanNo": "17",
+    "manufacturer": "MADIX",
+    "model": "HEAVY-DUTY SYSTEM",
+    "description": "RICE RACK",
+    "status": "verified",
+    "source": "https://www.madixinc.com/products/storage/",
+    "note": "Manufacturer heavy-duty storage family reference. Confirm rack series, bay size and load rating."
+  },
+  {
+    "id": "be221476-7b0a-4e39-b8ab-daecac6ea0af",
+    "floorPlanNo": "30",
+    "manufacturer": "KILLION",
+    "model": "402-3500L-P4348 AND 19x42 FRONT BELT",
+    "description": "FULL-SERVICE CHECKOUT STAND",
+    "status": "verified",
+    "source": "https://www.killionindustries.com/checkstands/",
+    "note": "Manufacturer checkstand family reference. Confirm the drawing model and belt dimensions against the project submittal."
+  },
+  {
+    "id": "1a0b6259-7ad8-4ad8-b3ab-6ec27a2e87cf",
+    "floorPlanNo": "50",
+    "manufacturer": "HILLPHOENIX",
+    "model": "05DM",
+    "description": "MULTIDECK REFRIG. CASE FOR PRODUCE",
+    "status": "verified",
+    "source": "https://www.hillphoenix.com/wp-content/uploads/2018/03/2009_Reference-Manual-MERM111-Legacy-.pdf",
+    "note": "Manufacturer legacy reference for O5DM family. Drawing reads 05DM; verify case suffix, length and installed options."
+  },
+  {
+    "id": "7392caad-805e-4b55-af89-7a56df1fecee",
+    "floorPlanNo": "60",
+    "manufacturer": "AHT",
+    "model": "PARIS 185 AND 210",
+    "description": "LOW REFRIGERATED CABINET",
+    "status": "verified",
+    "source": "https://www.aht.at/wp-content/uploads/2020/12/datenblatt-paris-aht.pdf",
+    "note": "Manufacturer sheet covers Paris 185 and 210. Confirm per-size quantity and North American electrical configuration."
+  },
+  {
+    "id": "54c0751d-20fe-442f-b761-9c0fd6975b37",
+    "floorPlanNo": "114",
+    "manufacturer": "GSW",
+    "model": "EL-2DR AND EL-5DR",
+    "description": "EMPLOYEE LOCKERS",
+    "status": "verified",
+    "source": "https://gsw-usa.com/storage/lockers/premium-steel-lockers",
+    "note": "Manufacturer family covers two- and five-door lockers. Confirm quantity per model."
+  },
+  {
+    "id": "04de1212-310a-4c33-9f1e-59c2e81b05d8",
+    "floorPlanNo": "199",
+    "manufacturer": "TOSHIBA",
+    "model": "6800",
+    "description": "SELF-CHECKOUT STAND",
+    "status": "unresolved",
+    "source": null,
+    "note": "Available Toshiba checkout documents did not establish an exact 6800 model match. Confirm machine type and model."
+  },
+  {
+    "id": "ed0bbf5a-3606-4b65-b44e-d73fb2c0a78e",
+    "floorPlanNo": "2",
+    "manufacturer": "TOLEDO",
+    "model": "VARIES",
+    "description": "WEIGH SCALE",
+    "status": "verified",
+    "source": "https://www.mt.com/us/en/home/library/catalogs/retail-scales/catalog-us.html",
+    "note": "Manufacturer retail scale catalog. Drawing lists VARIES; confirm installed model before applying dimensions or utilities."
+  },
+  {
+    "id": "8c4588e4-4346-4b17-9b6c-00a7f8b90b3f",
+    "floorPlanNo": "36",
+    "manufacturer": "CUSTOM",
+    "model": "ISLAND GLASS CASE",
+    "description": "BAKERY ISLAND DISPLAY / SALES STAND – ISLAND GLASS CASE",
+    "status": "custom",
+    "source": null,
+    "note": null
+  },
+  {
+    "id": "glendale1302-k11-36-display-shelf",
+    "floorPlanNo": "36",
+    "manufacturer": "CUSTOM",
+    "model": "BAKERY DISPLAY SHELF",
+    "description": "BAKERY ISLAND DISPLAY / SALES STAND – BAKERY DISPLAY SHELF",
+    "status": "custom",
+    "source": null,
+    "note": null
+  },
+  {
+    "id": "cb48819c-254b-460c-ace8-b4c8d6aa1d9a",
+    "floorPlanNo": "37",
+    "manufacturer": "CUSTOM",
+    "model": "TOAST RACK",
+    "description": "TOAST DISPLAY / SALES RACK",
+    "status": "custom",
+    "source": null,
+    "note": null
+  },
+  {
+    "id": "796d3eea-ef6f-43b8-8365-b59d47470935",
+    "floorPlanNo": "45",
+    "manufacturer": "CUSTOM",
+    "model": "TRAY TONG",
+    "description": "BAKERY TRAY TONG STATION DISPLAY / SALES STAND",
+    "status": "custom",
+    "source": null,
+    "note": null
+  },
+  {
+    "id": "82fcd411-626a-49c6-9cf8-ae08ee06b4ec",
+    "floorPlanNo": "64",
+    "manufacturer": "HILLPHOENIX",
+    "model": "BLF-R",
+    "description": "MULTI-DECK REFRIGERATED CASE FOR BAKERY MERCH.",
+    "status": "verified",
+    "source": "https://www.hillphoenix.com/wp-content/uploads/2019/05/BLF-R-display-case-tech-reference-sheet-rv4.pdf",
+    "note": "Manufacturer technical reference. Case length and options affect utility requirements."
+  },
+  {
+    "id": "47ae783a-ff48-45d8-b2db-ae043d9a1865",
+    "floorPlanNo": "80",
+    "manufacturer": "TRUE",
+    "model": "TWT-60",
+    "description": "SOLID DOOR REFRIGERATOR WITH WORK TOP",
+    "status": "verified",
+    "source": "https://www.truemfg.com/wp-content/uploads/true-media/spec-sheets/TWT-60-HC.pdf",
+    "note": "Reference is for TWT-60-HC. Confirm HC suffix before applying its specifications."
+  },
+  {
+    "id": "640df217-dad4-4122-aad7-728f5ad882d0",
+    "floorPlanNo": "88",
+    "manufacturer": "ICE-O-MATIC",
+    "model": "ICEU300/305",
+    "description": "SELF CONTAINED CUBE ICE MAKER",
+    "status": "verified",
+    "source": "https://www.iceomatic.com/userfiles/2466/products/prod_59503/ICEU300-305-Spec-Sheet.pdf",
+    "note": "Shared manufacturer dimensions: 30.34 W x 29.97 D x 39 H in. Confirm suffix before selecting voltage and condenser requirements."
+  },
+  {
+    "id": "dfb459dc-bc5c-4dca-9ab8-4ef2d6587d35",
+    "floorPlanNo": "89",
+    "manufacturer": "ICE-O-MATIC",
+    "model": "B11OPS",
+    "description": "SLOPE FRONT STORAGE BINS",
+    "status": "verified",
+    "source": "https://iceomatic.com/content/price-lists/60Hz-List-Pricing.pdf",
+    "note": "Manufacturer lists B110PS with a zero. Confirm drawing transcription and installed bin before applying specifications."
+  },
+  {
+    "id": "e3c9f63e-86ba-4e0f-abad-074fbe9bc2b3",
+    "floorPlanNo": "94",
+    "manufacturer": "AREO",
+    "model": "MF1-2418-18L",
+    "description": "PREP SINK, 1-COMP. WITH LEFT DRAINBOARD",
+    "status": "verified",
+    "source": "https://configurator.aeromfg.com/Single-Bowl-Sink-Left-Drainboard-NSF-P22.html",
+    "note": "AERO lists exact model: 24 x 18 in bowl, 40.3 in overall length and 30 in depth."
+  },
+  {
+    "id": "58c7919f-49b5-4f39-a03f-9a90593dd951",
+    "floorPlanNo": "94A",
+    "manufacturer": "ADVANCE TABCO",
+    "model": "6-81-18 WITH N-5-818",
+    "description": "PREP SINK, 1-COMP. WITH RIGHT DRAINBOARD",
+    "status": "verified",
+    "source": "https://advancetabco.com/specs/budgetsinks_deck.pdf",
+    "note": "Manufacturer sink specification. Confirm separate N-5-818 drainboard and right-hand mounting before applying assembly dimensions."
+  },
+  {
+    "id": "d50c4f55-446f-4c8e-8754-37d74122fa47",
+    "floorPlanNo": "95",
+    "manufacturer": "AREO",
+    "model": "MF2-2424-24LR",
+    "description": "F2LR SERIES, TWO COMPARTMENT WITH TWO DRAINBOARD",
+    "status": "verified",
+    "source": "https://configurator.aeromfg.com/Double-Bowl-Sink-2-Compartment-Two-Drainboards-NSF-P27.html",
+    "note": "AERO two-compartment sink with two drainboards. Match the drawing model and drainboard size when ordering."
+  },
+  {
+    "id": "6c437378-6839-4d56-91c6-40624b4a071b",
+    "floorPlanNo": "97",
+    "manufacturer": "AREO",
+    "model": "MF3-2424-24LR",
+    "description": "3-COMPARTMENT SINK WITH TWO DRAINBOARDS",
+    "status": "verified",
+    "source": "https://configurator.aeromfg.com/3-Compartment-Sink-Triple-Bowl-Two-Drainboards-NSF-P31.html",
+    "note": "AERO three-compartment sink with two drainboards."
+  },
+  {
+    "id": "45d02793-a4b1-4709-a2cd-6b68b551feb9",
+    "floorPlanNo": "100",
+    "manufacturer": "ADVANCE TABCO",
+    "model": "9-OP-28 9-OP-48",
+    "description": "MOP SINKS",
+    "status": "verified",
+    "source": "https://advancetabco.com/mopsinks_details.asp?prodis=SERVICEMOP_FLOOR",
+    "note": "Manufacturer floor mop sink schedule. Confirm which model applies to each location."
+  },
+  {
+    "id": "224610de-67fe-43e7-9a4f-de8221107a54",
+    "floorPlanNo": "110",
+    "manufacturer": "ISS SHELVING",
+    "model": "GOLD BOND",
+    "description": "GOLD BOND WIRE SHELF",
+    "status": "verified",
+    "source": "https://www.spgusa.com/downloads/specSheets/ISS_ShelvesPosts.pdf",
+    "note": "Manufacturer lists Gold Bond as a finish across multiple sizes. Confirm shelf and post SKUs."
+  },
+  {
+    "id": "7ed52214-4901-460f-9fba-045c8bf5d91b",
+    "floorPlanNo": "118",
+    "manufacturer": "EAGLE GROUP",
+    "model": "SWS15__-14/304-VMAR\" \"SWS15__-14/316-VMAR",
+    "description": "SNAP-N-SLIDE WALL SHELVES",
+    "status": "verified",
+    "source": "https://eaglegrp.com/wp-content/uploads/2022/05/eg02.01.pdf",
+    "note": "Manufacturer SNAP-n-SLIDE spec family. Confirm shelf length and 304/316 stainless grade."
+  },
+  {
+    "id": "58492510-6632-4d74-a32b-fb69ff4caa9e",
+    "floorPlanNo": "120",
+    "manufacturer": "EAGLE GROUP",
+    "model": "T3060SB T3072SB",
+    "description": "WORKTABLE",
+    "status": "verified",
+    "source": "https://eaglegrp.com/sub_categories/budget-series-worktables-flat-top-stainless-steel-legs-with-undershelf/",
+    "note": "Manufacturer lists both worktable models. Confirm quantity per length."
+  },
+  {
+    "id": "064cbff0-47e8-4e74-88b5-893710008c37",
+    "floorPlanNo": "149",
+    "manufacturer": "ATLANTA CULINARY EQUIPMENT",
+    "model": "ARE-2",
+    "description": "2-BURNER WOK RANGE",
+    "status": "unresolved",
+    "source": null,
+    "note": "No manufacturer specification establishing the ARE-2 model was found. Request the nameplate or project submittal."
+  },
+  {
+    "id": "b26e1781-3a04-4c8b-8ece-5eaa69cffdfb",
+    "floorPlanNo": "157",
+    "manufacturer": "APW HFW-3 WYOTT",
+    "model": "VARIES",
+    "description": "MODULAR WARMERS",
+    "status": "verified",
+    "source": "https://apwwyott.com/wp-content/uploads/2021/04/APW-Wyott-HFW-xD-Food-Well-Spec-Sheet.pdf",
+    "note": "Manufacturer sheet covers HFW-3/4/5. Confirm well count, drain suffix and electrical configuration."
+  },
+  {
+    "id": "981145b8-43c4-47c9-a469-4ae4867a0896",
+    "floorPlanNo": "166",
+    "manufacturer": "BUNN",
+    "model": "H5E / H5X",
+    "description": "HOT WATER DISPENSER",
+    "status": "verified",
+    "source": "https://www.webstaurantstore.com/documents/specsheets/bunn-h5e-h5x1.pdf",
+    "note": "BUNN-authored specification. Confirm model, part number and voltage."
+  },
+  {
+    "id": "3394edba-98a9-4edc-b33a-aff8270ec3ba",
+    "floorPlanNo": "191",
+    "manufacturer": "BUNN",
+    "model": "SINGLE SH 120",
+    "description": "COFFEE BREWER",
+    "status": "verified",
+    "source": "https://commercial.bunn.com/33600.0029",
+    "note": "Manufacturer Single SH reference. Confirm exact part number and electrical configuration against equipment label."
+  },
+  {
+    "id": "b9e89304-93e6-4f20-9cbd-f887fd873f9b",
+    "floorPlanNo": "195",
+    "manufacturer": "XYTRONIC",
+    "model": "LF-90",
+    "description": "SEALING MACHINE",
+    "status": "unresolved",
+    "source": null,
+    "note": "Search results mix Xytronic soldering equipment and cup sealer manuals. Confirm sealing-machine manufacturer and nameplate."
+  },
+  {
+    "id": "e0c4f909-8d52-44a4-97e2-f6372d9abfad",
+    "floorPlanNo": "306",
+    "manufacturer": "EAGLE",
+    "model": "GWB1448V",
+    "description": "WALL-MOUNT WIRE SHELF",
+    "status": "verified",
+    "source": "https://www.eaglemhc.com/wp-content/uploads/2023/05/eg02.04.pdf",
+    "note": "Manufacturer lists GWB1448V as a Valu-Master wall shelf kit, nominal 48 in long x 14 in deep."
+  },
+  {
+    "id": "44fb949e-345e-4972-b025-864dd5fe477f",
+    "floorPlanNo": "307",
+    "manufacturer": "BOTIN",
+    "model": "BOTINKIT MAX 5.0 COOKING ROBOT",
+    "description": "STIR-FRY MACHINE",
+    "status": "unresolved",
+    "source": null,
+    "note": "Current BOTINKIT datasheet is for OMNI. Request the MAX 5.0 manufacturer sheet or nameplate."
+  },
+  {
+    "id": "07c9cc13-b51a-4744-82f8-e2842c8b9114",
+    "floorPlanNo": "2",
+    "manufacturer": "TOLEDO",
+    "model": "VARIES",
+    "description": "WEIGH SCALE",
+    "status": "verified",
+    "source": "https://www.mt.com/us/en/home/library/catalogs/retail-scales/catalog-us.html",
+    "note": "Manufacturer retail scale catalog. Drawing lists VARIES; confirm installed model before applying dimensions or utilities."
+  },
+  {
+    "id": "97379b5f-fd66-4798-90da-5ddb0f0b704f",
+    "floorPlanNo": "9",
+    "manufacturer": "CHECKPOINT",
+    "model": "TURN-O-MATIC S3",
+    "description": "CUSTOMER TICKET MACHINE",
+    "status": "verified",
+    "source": "https://sklep.retailpartner.pl/public/assets/METO-katalog-Retail.Partner.Polska-ver.ENG.pdf",
+    "note": "METO/Checkpoint catalog for Turn-O-Matic Classic S3 variants. Confirm display and dispenser kit."
+  },
+  {
+    "id": "ec0f2de2-b546-4f77-99ca-3f97b3cf1c58",
+    "floorPlanNo": "55",
+    "manufacturer": "HILLPHOENIX",
+    "model": "05DM",
+    "description": "MULTIDECK REFRIGERATED CASE FOR MEAT AND DAIRY",
+    "status": "verified",
+    "source": "https://www.hillphoenix.com/wp-content/uploads/2018/03/2009_Reference-Manual-MERM111-Legacy-.pdf",
+    "note": "Manufacturer legacy reference for O5DM family. Drawing reads 05DM; verify case suffix, length and installed options."
+  },
+  {
+    "id": "dc04986f-15ce-4273-80d5-4893299b56f0",
+    "floorPlanNo": "63",
+    "manufacturer": "HILLPHOENIX",
+    "model": "SGM",
+    "description": "MULTIDECK REFRIGERATED CASE FOR MEAT, SEAFOOD",
+    "status": "verified",
+    "source": "https://www.hillphoenix.com/wp-content/uploads/2018/01/SGM-display-case-tech-reference-sheet-v2.pdf",
+    "note": "Manufacturer technical reference. Confirm case length and options."
+  },
+  {
+    "id": "f2d76292-2664-4d79-aec6-7bdd897723e5",
+    "floorPlanNo": "65",
+    "manufacturer": "HILLPHOENIX",
+    "model": "OHMH",
+    "description": "MULTIDECK REFRIGERATED - CASE FOR MEAT",
+    "status": "verified",
+    "source": "https://www.hillphoenix.com/wp-content/uploads/2018/04/OHMH-display-case-sales-sheet.pdf",
+    "note": "Manufacturer model sheet. Confirm case length and refrigeration options."
+  },
+  {
+    "id": "d4d02519-a966-4b9a-a69d-62e19aa6a422",
+    "floorPlanNo": "94",
+    "manufacturer": "AREO",
+    "model": "MF1-2418-18L",
+    "description": "PREP SINK, 1-COMP. WITH LEFT DRAINBOARD",
+    "status": "verified",
+    "source": "https://configurator.aeromfg.com/Single-Bowl-Sink-Left-Drainboard-NSF-P22.html",
+    "note": "AERO lists exact model: 24 x 18 in bowl, 40.3 in overall length and 30 in depth."
+  },
+  {
+    "id": "41b10049-ffcb-4d07-a12a-83cc1e8aee15",
+    "floorPlanNo": "94A",
+    "manufacturer": "ADVANCE TABCO",
+    "model": "6-81-18 WITH N-5-818",
+    "description": "PREP SINK, 1-COMP. WITH RIGHT DRAINBOARD",
+    "status": "verified",
+    "source": "https://advancetabco.com/specs/budgetsinks_deck.pdf",
+    "note": "Manufacturer sink specification. Confirm separate N-5-818 drainboard and right-hand mounting before applying assembly dimensions."
+  },
+  {
+    "id": "f0b9715a-3e9f-4da9-a7a9-91da6669fa96",
+    "floorPlanNo": "95",
+    "manufacturer": "AREO",
+    "model": "MF2-2424-24LR",
+    "description": "F2LR SERIES, TWO COMPARTMENT WITH TWO DRAINBOARD",
+    "status": "verified",
+    "source": "https://configurator.aeromfg.com/Double-Bowl-Sink-2-Compartment-Two-Drainboards-NSF-P27.html",
+    "note": "AERO two-compartment sink with two drainboards. Match the drawing model and drainboard size when ordering."
+  },
+  {
+    "id": "aeb8427e-7250-4557-bbd6-204c51fa6ebf",
+    "floorPlanNo": "97",
+    "manufacturer": "AREO",
+    "model": "MF3-2424-24LR",
+    "description": "3-COMPARTMENT SINK WITH TWO DRAINBOARDS",
+    "status": "verified",
+    "source": "https://configurator.aeromfg.com/3-Compartment-Sink-Triple-Bowl-Two-Drainboards-NSF-P31.html",
+    "note": "AERO three-compartment sink with two drainboards."
+  },
+  {
+    "id": "a1c4ecf3-50bc-4ae6-8676-7c523e51a04f",
+    "floorPlanNo": "100",
+    "manufacturer": "ADVANCE TABCO",
+    "model": "9-OP-28 9-OP-48",
+    "description": "MOP SINKS",
+    "status": "verified",
+    "source": "https://advancetabco.com/mopsinks_details.asp?prodis=SERVICEMOP_FLOOR",
+    "note": "Manufacturer floor mop sink schedule. Confirm which model applies to each location."
+  },
+  {
+    "id": "30bba572-f31f-4312-b919-695d7f4f14c6",
+    "floorPlanNo": "110",
+    "manufacturer": "ISS SHELVING",
+    "model": "GOLD BOND",
+    "description": "GOLD BOND WIRE SHELF",
+    "status": "verified",
+    "source": "https://www.spgusa.com/downloads/specSheets/ISS_ShelvesPosts.pdf",
+    "note": "Manufacturer lists Gold Bond as a finish across multiple sizes. Confirm shelf and post SKUs."
+  },
+  {
+    "id": "472068c2-9b9c-41bc-a2da-171a9c6696c7",
+    "floorPlanNo": "118",
+    "manufacturer": "EAGLE GROUP",
+    "model": "SWS15__-14/304-VMAR\" \"SWS15__-14/316-VMAR",
+    "description": "SNAP-N-SLIDE WALL SHELVES",
+    "status": "verified",
+    "source": "https://eaglegrp.com/wp-content/uploads/2022/05/eg02.01.pdf",
+    "note": "Manufacturer SNAP-n-SLIDE spec family. Confirm shelf length and 304/316 stainless grade."
+  },
+  {
+    "id": "2b938b44-6299-4164-8aed-834053b6bf7e",
+    "floorPlanNo": "122",
+    "manufacturer": "HEAT SEAL",
+    "model": "SM20ES-C6B2WWBPXLB",
+    "description": "WRAPPING STATION",
+    "status": "verified",
+    "source": "https://www.heatsealco.com/wp-content/uploads/2023/09/Energy_Smart_ScaleMate_Series_D-2.pdf",
+    "note": "Manufacturer ScaleMate family reference. Confirm full option suffix before applying utility or scale specifications."
+  },
+  {
+    "id": "fef33d5a-2c1c-48f4-9fdb-79777d2cfb8c",
+    "floorPlanNo": "306",
+    "manufacturer": "EAGLE",
+    "model": "GWB1448V",
+    "description": "WALL-MOUNT WIRE SHELF",
+    "status": "verified",
+    "source": "https://www.eaglemhc.com/wp-content/uploads/2023/05/eg02.04.pdf",
+    "note": "Manufacturer lists GWB1448V as a Valu-Master wall shelf kit, nominal 48 in long x 14 in deep."
+  },
+  {
+    "id": "9590e2d6-ac8e-46c4-8933-1a78aa0a5c9f",
+    "floorPlanNo": "1",
+    "manufacturer": "Padela",
+    "model": "PDB-2F-HC",
+    "description": "Reach-in freezer",
+    "status": "verified",
+    "source": "https://www.jesrestaurantequipment.com/assets/spec-sheets/14933/PDA-PDB-XF-HC.pdf",
+    "note": "Padela-authored solid-door freezer specification includes PDB-2F-HC."
+  },
+  {
+    "id": "8cd3b37f-32c3-46ee-b513-5ffdb766980f",
+    "floorPlanNo": "2",
+    "manufacturer": "Padela",
+    "model": "PDB-2R-HC",
+    "description": "Reach-in refrigerator",
+    "status": "verified",
+    "source": "https://qualifiedproducts.efficiencyvermont.com/evt/products/details/1047262?productTechnologyId=35&searchGroup=Commercial-Grade+Refrigerators+and+Freezers",
+    "note": "ENERGY STAR model record published by Efficiency Vermont. Exact model: 54.4 W x 31.49 D x 84.05 H in, 43.8 cu ft, R-290."
+  },
+  {
+    "id": "f94fb1e9-f3c2-4616-8cf6-b00feb2a8373",
+    "floorPlanNo": "3",
+    "manufacturer": "American Range",
+    "model": "AF50-HE",
+    "description": "Fryer",
+    "status": "verified",
+    "source": "https://www.americanrange.com/wp-content/uploads/2023/01/A70612-RevB-01262023-AF50-HE-fryer-Spec.pdf",
+    "note": "Manufacturer AF50-HE spec. Confirm installed fuel type."
+  },
+  {
+    "id": "07d85fc7-3021-40ac-b482-0870ac1fb07f",
+    "floorPlanNo": "4",
+    "manufacturer": "GSW",
+    "model": "CTN-P3036",
+    "description": "Worktable cabinet",
+    "status": "verified",
+    "source": "https://gsw-usa.com/cabinets/no-door-cabinets/flat-top-enclosed-work-table-no-door",
+    "note": "Manufacturer flat-top enclosed worktable with open front."
+  },
+  {
+    "id": "7afb17b9-05bb-4793-be14-537459510fbe",
+    "floorPlanNo": "5",
+    "manufacturer": "Atosa",
+    "model": "MGF8404GR",
+    "description": "Undercounter refrigerator",
+    "status": "verified",
+    "source": "https://atosausa.com/product/mgf8404gr-72%E2%80%B3-undercounter-refrigerator/",
+    "note": "Manufacturer exact model, 72 in nominal width."
+  },
+  {
+    "id": "0dd0d7da-b435-4856-a560-8daad95713e2",
+    "floorPlanNo": "6",
+    "manufacturer": "GSW",
+    "model": "WT-EE3030 / WT-EE2430",
+    "description": "Worktable (two options)",
+    "status": "verified",
+    "source": "https://gsw-usa.com/tables/work-tables/economy-work-table-stainless-steel-top-galvanized-undershelf",
+    "note": "Manufacturer worktable family covers both sizes. Confirm quantities per size."
+  },
+  {
+    "id": "cca00146-8fca-4d28-a3b6-7b3416062b50",
+    "floorPlanNo": "7",
+    "manufacturer": "Winco",
+    "model": "VCS-1836 / VCS-1848",
+    "description": "Wire shelf (two options)",
+    "status": "verified",
+    "source": "https://www.wincous.com/collections/wire-shelving-sets",
+    "note": "Manufacturer lists both shelving sets, nominal 18 x 36 and 18 x 48 in. Confirm quantities per size."
+  },
+  {
+    "id": "be6b5239-f9d6-4103-9d56-0779c8b40934",
+    "floorPlanNo": "11",
+    "manufacturer": "Winholt",
+    "model": "WL-66/18",
+    "description": "Locker",
+    "status": "verified",
+    "source": "https://www.winholt.com/wp-content/uploads/2024/06/Lockers_WL-66_SpecSheet_6.2024.pdf",
+    "note": "Manufacturer WL-66 spec covers the 18 in depth configuration."
+  },
+  {
+    "id": "3495f666-d7c9-43e6-a1b0-55c796a56911",
+    "floorPlanNo": "12",
+    "manufacturer": "Icetro",
+    "model": "IM-0550",
+    "description": "Ice cube machine",
+    "status": "verified",
+    "source": "https://icetroamerica.com/wp-content/uploads/2026/01/Icetro-Ice-and-Slush-Pricelist-Catalog_22pp_LO-RES_2026.01.05-1.pdf",
+    "note": "Manufacturer series catalog. Confirm full IM-0550 suffix, cube size and condenser before applying utility requirements."
+  },
+  {
+    "id": "dfea5037-c97b-40a3-8dd9-de839d275e11",
+    "floorPlanNo": "13",
+    "manufacturer": "Atosa",
+    "model": "MWF9010GR",
+    "description": "Solid top chest freezer",
+    "status": "verified",
+    "source": "https://atosausa.com/wp-content/uploads/2023/10/MWF9007_9010GR_9016GR_Specsheet_10082024.pdf",
+    "note": "Manufacturer sheet includes exact MWF9010GR model."
+  },
+  {
+    "id": "3bb3cf89-3220-459f-a1c2-a4bdb6444856",
+    "floorPlanNo": "14",
+    "manufacturer": "Kool-It",
+    "model": "KGM-23",
+    "description": "Single swing door refrigerator",
+    "status": "verified",
+    "source": "https://mvpgroupcorp.com/products/kgm-23-single-door-cooler-23-cubic-feet/",
+    "note": "Manufacturer exact-model single-door glass cooler."
+  }
+]
