@@ -24,6 +24,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   Search,
   Plus,
   GripVertical,
@@ -41,7 +43,7 @@ import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
 import { PdfCaption } from "@/components/catalog/PdfCaption";
 import { DeptChip } from "@/components/DeptChip";
-import { cn, DEPARTMENTS, sentenceCase } from "@/lib/utils";
+import { cn, DEPARTMENTS, sentenceCase, STORE_STATUS_OPTIONS } from "@/lib/utils";
 import { DetailDrawer } from "@/components/catalog/DetailDrawer";
 import { CustomItemPreviewDrawer } from "./CustomItemPreviewDrawer";
 import { EquipmentEditDrawer } from "./EquipmentEditDrawer";
@@ -54,6 +56,8 @@ import {
   duplicateAsCustom,
   reorderStoreItems,
   updateStoreItem,
+  updateStoreItemPlacements,
+  type StoreItemPlacementPatch,
 } from "@/app/actions/store";
 import { StoreDetailsDrawer } from "./StoreDetailsDrawer";
 import { StoreRoomsDrawer } from "./StoreRoomsDrawer";
@@ -90,6 +94,8 @@ export function StoreBuilder({
     subtenants: store.subtenants,
   });
   const [q, setQ] = useState("");
+  const [catalogOpen, setCatalogOpen] = useState(true);
+  const [sortByNumber, setSortByNumber] = useState(false);
   const [activeDrag, setActiveDrag] = useState<EquipmentDTO | StoreItemDTO | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
@@ -106,7 +112,16 @@ export function StoreBuilder({
     return equipment.filter((e) => matchesEquipmentSearch(e, needle));
   }, [equipment, q]);
 
-  const previewList = previewTarget?.source === "catalog" ? filteredCatalog : items;
+  const displayedItems = useMemo(() => {
+    if (!sortByNumber) return items;
+    return [...items].sort((a, b) => {
+      const first = a.scheduleNo?.trim() || "";
+      const second = b.scheduleNo?.trim() || "";
+      return Number(!first) - Number(!second) || floorPlanCollator.compare(first, second);
+    });
+  }, [items, sortByNumber]);
+
+  const previewList = previewTarget?.source === "catalog" ? filteredCatalog : displayedItems;
   const previewIndex = previewList.findIndex((item) => item.id === previewTarget?.id);
   const previewRow = previewTarget?.source === "store" ? items.find((item) => item.id === previewTarget.id) ?? null : null;
   const previewEquipment = equipment.find((eq) => eq.id === (previewTarget?.source === "catalog" ? previewTarget.id : previewRow?.equipmentId)) ?? null;
@@ -287,7 +302,7 @@ export function StoreBuilder({
     }
 
     // reordered store items
-    if (activeId !== overId && !overId.startsWith("cat:")) {
+    if (!sortByNumber && activeId !== overId && !overId.startsWith("cat:")) {
       const oldIndex = items.findIndex((i) => i.id === activeId);
       const newIndex = items.findIndex((i) => i.id === overId);
       if (oldIndex >= 0 && newIndex >= 0) {
@@ -318,6 +333,17 @@ export function StoreBuilder({
             >
               <ArrowLeft size={15} /> Stores
             </Link>
+            <button
+              type="button"
+              aria-controls="store-equipment-catalog"
+              aria-expanded={catalogOpen}
+              aria-label={catalogOpen ? "Hide equipment search" : "Show equipment search"}
+              title={catalogOpen ? "Hide equipment search" : "Show equipment search"}
+              onClick={() => setCatalogOpen((open) => !open)}
+              className="ml-2 inline-flex rounded p-1 align-middle text-gray-500 hover:bg-brand-50 hover:text-brand-700"
+            >
+              {catalogOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+            </button>
             <h1 className="truncate text-xl font-semibold tracking-tight text-gray-900">
               {meta.name}
               {/* name is usually "#<number> <location>" — only append location when it isn't already in the name */}
@@ -357,9 +383,15 @@ export function StoreBuilder({
         {itemError && <p role="alert" className="pb-2 text-sm text-red-600">{itemError}</p>}
 
         {/* two panes */}
-        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 grid-rows-2 gap-4 overflow-hidden pb-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:grid-rows-1">
+        <div className={cn(
+          "grid min-h-0 min-w-0 flex-1 grid-cols-1 gap-4 overflow-hidden pb-4 lg:grid-rows-1",
+          catalogOpen ? "grid-rows-2 lg:grid-cols-[360px_minmax(0,1fr)]" : "grid-rows-1"
+        )}>
           {/* catalog */}
-          <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-white/60 bg-white/55 shadow-sm backdrop-blur-md backdrop-saturate-150">
+          <div id="store-equipment-catalog" className={cn(
+            "min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-white/60 bg-white/55 shadow-sm backdrop-blur-md backdrop-saturate-150",
+            catalogOpen ? "flex" : "hidden"
+          )}>
             <div className="border-b border-gray-100 p-3">
               <div className="relative">
                 <Search size={15} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -386,7 +418,15 @@ export function StoreBuilder({
 
           {/* store */}
           <StoreDropZone
-            items={items}
+            items={displayedItems}
+            sortByNumber={sortByNumber}
+            onSortChange={setSortByNumber}
+            onBulkUpdate={async (ids, changes) => {
+              const result = await updateStoreItemPlacements(store.id, ids, changes);
+              if (result.error) throw new Error(result.error);
+              const selected = new Set(ids);
+              setItems((current) => current.map((item) => selected.has(item.id) ? { ...item, ...changes } : item));
+            }}
             rooms={rooms}
             onRemove={remove}
             onDuplicate={duplicate}
@@ -490,14 +530,14 @@ function FloorPlanNumber({ value, onSave, compact = false }: { value: string | n
   </label>;
 }
 
-function StoreRoomSelect({ selected, rooms, onSave }: { selected: string[]; rooms: string[]; onSave: (value: string[]) => Promise<void> }) {
+function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…" }: { selected: string[]; rooms: string[]; onSave: (value: string[]) => Promise<void>; emptyLabel?: string }) {
   const [pending, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [displayed, setDisplayed] = useOptimistic(selected);
   const options = [...new Set([...rooms, ...selected])];
   return <div className="mb-3 min-w-0">
     <details className="rounded-md border border-gray-200 bg-white text-sm">
-      <summary className="px-2 py-1" aria-label="Choose rooms">{displayed.length ? displayed.join(", ") : "Room / area…"}</summary>
+      <summary className="px-2 py-1" aria-label="Choose rooms">{displayed.length ? displayed.join(", ") : emptyLabel}</summary>
       <fieldset disabled={pending} className="flex flex-col gap-2 border-t border-gray-100 p-2 disabled:opacity-50">
         <legend className="sr-only">Rooms (select multiple)</legend>
         {options.length === 0 && <p className="text-xs text-gray-500">Create rooms using the Rooms button.</p>}
@@ -573,22 +613,26 @@ function CatalogItem({
   );
 }
 
+const floorPlanCollator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
+
 // shared column template for the schedule header + rows
 const COLS =
-  "grid-cols-[20px_26px_86px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_176px]";
+  "grid-cols-[86px_20px_20px_26px_minmax(150px,1.5fr)_minmax(104px,0.9fr)_52px_minmax(150px,1.2fr)_176px]";
 
 // equipment-schedule status options (mirror the audit Excel)
-const STATUS_OPTIONS = ["New", "Existing", "(E)Relocate", "Remove"] as const;
 const statusKey = (v: string) => v.toLowerCase().replace(/\s+/g, "");
 /** map a stored value to its canonical option (case/space-insensitive), else pass through */
 function canonicalStatus(v: string | null): string {
   if (!v) return "";
   const k = statusKey(v);
-  return STATUS_OPTIONS.find((o) => statusKey(o) === k) ?? v;
+  return STORE_STATUS_OPTIONS.find((o) => statusKey(o) === k) ?? v;
 }
 
 function StoreDropZone({
   items,
+  sortByNumber,
+  onSortChange,
+  onBulkUpdate,
   rooms,
   onRemove,
   onDuplicate,
@@ -601,6 +645,9 @@ function StoreDropZone({
   onEdit,
 }: {
   items: StoreItemDTO[];
+  sortByNumber: boolean;
+  onSortChange: (sortByNumber: boolean) => void;
+  onBulkUpdate: (ids: string[], changes: StoreItemPlacementPatch) => Promise<void>;
   rooms: string[];
   onRemove: (id: string) => void;
   onDuplicate: (it: StoreItemDTO) => void;
@@ -617,6 +664,31 @@ function StoreDropZone({
   onEdit: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
+  const [selection, setSelection] = useState<Set<string>>(new Set());
+  const [bulkRooms, setBulkRooms] = useState<string[] | undefined>();
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [bulkError, setBulkError] = useState<string | null>(null);
+  const [bulkPending, startBulkSave] = useTransition();
+  const selectableIds = items.filter((item) => !item.id.startsWith("temp-")).map((item) => item.id);
+  const selectedIds = selectableIds.filter((id) => selection.has(id));
+  const allSelected = selectableIds.length > 0 && selectedIds.length === selectableIds.length;
+
+  function saveSelection() {
+    setBulkError(null);
+    const changes: StoreItemPlacementPatch = {};
+    if (bulkRooms !== undefined) changes.rooms = bulkRooms;
+    if (bulkStatus) changes.proposeNew = bulkStatus === "clear" ? null : bulkStatus;
+    startBulkSave(async () => {
+      try {
+        await onBulkUpdate(selectedIds, changes);
+        setSelection(new Set());
+        setBulkRooms(undefined);
+        setBulkStatus("");
+      } catch (error) {
+        setBulkError(error instanceof Error ? error.message : "Could not update selected equipment.");
+      }
+    });
+  }
   return (
     <div
       ref={setNodeRef}
@@ -628,6 +700,15 @@ function StoreDropZone({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
         <div className="flex items-center gap-3">
+        <select
+          aria-label="Schedule order"
+          value={sortByNumber ? "number" : "drawing"}
+          onChange={(event) => onSortChange(event.target.value === "number")}
+          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700"
+        >
+          <option value="drawing">Drawing order</option>
+          <option value="number">Floor plan number</option>
+        </select>
         <button type="button" onClick={onAddOmitted} className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-brand-600"><Plus size={14} /> Omitted</button>
         <button
           onClick={onAddCustom}
@@ -637,6 +718,26 @@ function StoreDropZone({
         </button>
         </div>
       </div>
+
+      {selectedIds.length > 0 && (
+        <fieldset disabled={bulkPending} className="flex flex-wrap items-start gap-3 border-b border-gray-100 px-4 py-2 text-sm disabled:opacity-60">
+          <span className="py-1 text-gray-600">{selectedIds.length} selected</span>
+          <label className="flex items-center gap-1 py-1">
+            <input type="checkbox" checked={bulkRooms !== undefined} onChange={(event) => setBulkRooms(event.target.checked ? [] : undefined)} />
+            Replace rooms
+          </label>
+          {bulkRooms !== undefined && <StoreRoomSelect rooms={rooms} selected={bulkRooms} onSave={async (next) => setBulkRooms(next)} emptyLabel="Clear rooms" />}
+          <select aria-label="Status for selected equipment" value={bulkStatus} onChange={(event) => setBulkStatus(event.target.value)} className="rounded-md border border-gray-200 bg-white px-2 py-1">
+            <option value="">Keep status</option>
+            <option value="clear">Clear status</option>
+            {STORE_STATUS_OPTIONS.map((status) => <option key={status} value={status}>{status}</option>)}
+          </select>
+          <button type="button" onClick={saveSelection} disabled={bulkRooms === undefined && !bulkStatus} className="rounded-md bg-brand-600 px-3 py-1 font-medium text-white disabled:opacity-50">
+            {bulkPending ? "Saving…" : "Apply"}
+          </button>
+          {bulkError && <p role="alert" className="w-full text-red-600">{bulkError}</p>}
+        </fieldset>
+      )}
 
       {items.length === 0 ? (
         <div className="m-3 flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 text-sm text-gray-400">
@@ -651,9 +752,17 @@ function StoreDropZone({
               COLS
             )}
           >
+            <span>Floor plan no.</span>
+            <input
+              type="checkbox"
+              aria-label="Select all equipment"
+              ref={(input) => { if (input) input.indeterminate = selectedIds.length > 0 && !allSelected; }}
+              checked={allSelected}
+              disabled={bulkPending || !selectableIds.length}
+              onChange={(event) => setSelection(new Set(event.target.checked ? selectableIds : []))}
+            />
             <span />
             <span>#</span>
-            <span>Floor plan no.</span>
             <span>Equipment</span>
             <span>Dimension</span>
             <span>Qty</span>
@@ -668,6 +777,15 @@ function StoreDropZone({
                 item={it}
                 rooms={rooms}
                 index={idx + 1}
+                reorderDisabled={sortByNumber}
+                selected={selection.has(it.id)}
+                selectionDisabled={bulkPending || it.id.startsWith("temp-")}
+                onSelect={(checked) => setSelection((current) => {
+                  const next = new Set(current);
+                  if (checked) next.add(it.id);
+                  else next.delete(it.id);
+                  return next;
+                })}
                 onRemove={() => onRemove(it.id)}
                 onDuplicate={() => onDuplicate(it)}
                 onPatch={(p) => onPatch(it.id, p)}
@@ -689,6 +807,10 @@ function SortableStoreRow({
   item,
   rooms,
   index,
+  reorderDisabled,
+  selected,
+  selectionDisabled,
+  onSelect,
   onRemove,
   onDuplicate,
   onPatch,
@@ -700,6 +822,10 @@ function SortableStoreRow({
   item: StoreItemDTO;
   rooms: string[];
   index: number;
+  reorderDisabled: boolean;
+  selected: boolean;
+  selectionDisabled: boolean;
+  onSelect: (checked: boolean) => void;
   onRemove: () => void;
   onDuplicate: () => void;
   onPatch: (p: Partial<StoreItemDTO>) => void;
@@ -710,6 +836,7 @@ function SortableStoreRow({
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
+    disabled: { draggable: reorderDisabled },
   });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -723,16 +850,25 @@ function SortableStoreRow({
         isDragging && "z-20 opacity-80 shadow-md"
       )}
     >
+      <FloorPlanNumber value={item.scheduleNo} compact onSave={(value) => onPersist("scheduleNo", value)} />
+      <input
+        type="checkbox"
+        aria-label={`Select item ${index}: ${sentenceCase(item.description)}`}
+        checked={selected}
+        disabled={selectionDisabled}
+        onChange={(event) => onSelect(event.target.checked)}
+        className="mt-2"
+      />
       <button
         {...attributes}
         {...listeners}
+        disabled={reorderDisabled}
         aria-label={`Reorder item ${index}`}
         className="mt-1 cursor-grab touch-none text-gray-300 hover:text-gray-500 active:cursor-grabbing"
       >
         <GripVertical size={15} />
       </button>
       <span className="mt-1 font-mono text-xs text-gray-400">{index}</span>
-      <FloorPlanNumber value={item.scheduleNo} compact onSave={(value) => onPersist("scheduleNo", value)} />
 
       {/* equipment: description, manufacturer, ALL department tags, pdf preview */}
       <div className="min-w-0">
@@ -792,7 +928,7 @@ function SortableStoreRow({
       <div className="flex items-center gap-1">
         {(() => {
           const status = canonicalStatus(item.proposeNew);
-          const extra = status && !STATUS_OPTIONS.includes(status as (typeof STATUS_OPTIONS)[number]);
+          const extra = status && !STORE_STATUS_OPTIONS.includes(status as (typeof STORE_STATUS_OPTIONS)[number]);
           return (
             <select
               aria-label="Status"
@@ -804,7 +940,7 @@ function SortableStoreRow({
               className="w-full rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm outline-none focus:border-brand-400"
             >
               <option value="">—</option>
-              {STATUS_OPTIONS.map((o) => (
+              {STORE_STATUS_OPTIONS.map((o) => (
                 <option key={o} value={o}>
                   {o}
                 </option>

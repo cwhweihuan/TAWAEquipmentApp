@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ensurePdfBucket, createSignedUploadUrl, deletePdf, pdfPublicUrl } from "@/lib/supabase";
+import { STORE_STATUS_OPTIONS } from "@/lib/utils";
 import type { Subtenant } from "@/lib/types";
 
 class RoomValidationError extends Error {}
@@ -179,6 +180,43 @@ export async function updateStoreItem(
     return tx.storeItem.update({ where: { id: itemId }, data: patch });
   });
   revalidatePath(`/stores/${item.storeId}`);
+}
+
+export type StoreItemPlacementPatch = { rooms?: string[]; proposeNew?: string | null };
+
+export async function updateStoreItemPlacements(storeId: string, ids: string[], patch: StoreItemPlacementPatch) {
+  const itemIds = [...new Set(ids)];
+  if (!itemIds.length || (patch.rooms === undefined && patch.proposeNew === undefined)) {
+    return { error: "Select equipment and choose a change." };
+  }
+  if (patch.proposeNew != null && !STORE_STATUS_OPTIONS.some((status) => status === patch.proposeNew)) {
+    return { error: "Choose a valid status." };
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const { rooms, proposeNew } = patch;
+      if (rooms !== undefined) {
+        await tx.$queryRaw`SELECT id FROM "Store" WHERE id = ${storeId} FOR UPDATE`;
+        const store = await tx.store.findUnique({ where: { id: storeId }, select: { rooms: true } });
+        if (!store || !Array.isArray(rooms) || rooms.some((room) => !store.rooms.includes(room))) {
+          throw new RoomValidationError("Choose rooms created for this store.");
+        }
+      }
+      const { count } = await tx.storeItem.updateMany({
+        where: { storeId, id: { in: itemIds } },
+        data: { rooms: rooms === undefined ? undefined : [...new Set(rooms)], proposeNew },
+      });
+      if (count !== itemIds.length) {
+        throw new RoomValidationError("Some selected equipment is no longer in this store. Reload and try again.");
+      }
+    });
+    revalidatePath(`/stores/${storeId}`);
+    return { count: itemIds.length };
+  } catch (error) {
+    if (error instanceof RoomValidationError) return { error: error.message };
+    throw error;
+  }
 }
 
 /** Fields a custom (non-catalog) line item carries on its own row. */

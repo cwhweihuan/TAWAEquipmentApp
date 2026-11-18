@@ -28,6 +28,8 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, onPrevious, onNext]);
 
+  const [remarks, specSource] = item.remarks?.split(/\nSpec source: (https?:\/\/[^\s]+)\s*$/) ?? [];
+
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30 animate-fade-in" onClick={onClose} />
@@ -64,12 +66,18 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
               </div>
             ))}
           </dl>
-          {item.remarks && (
+          {remarks && (
             <div className="mt-5 whitespace-pre-wrap break-words rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-inset ring-amber-100">
-              <span className="font-medium">Remarks: </span>{sentenceCase(item.remarks)}
+              <span className="font-medium">Remarks: </span>{remarks}
             </div>
           )}
-          <p className="mt-6 rounded-lg border border-dashed border-gray-200 p-6 text-center text-sm text-gray-400">No spec sheet attached</p>
+          {specSource ? (
+            <a href={specSource} target="_blank" rel="noopener noreferrer" className="mt-6 inline-block text-sm font-medium text-brand-700 underline">
+              View specification source
+            </a>
+          ) : (
+            <p className="mt-6 rounded-lg border border-dashed border-gray-200 p-6 text-center text-sm text-gray-400">No spec sheet attached</p>
+          )}
         </div>
       </aside>
     </div>

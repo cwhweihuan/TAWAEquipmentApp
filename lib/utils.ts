@@ -61,3 +61,5 @@ export const DEPT_HEX: Record<string, string> = {
 export function deptHex(d: string) {
   return DEPT_HEX[d] ?? "#9ca3af";
 }
+
+export const STORE_STATUS_OPTIONS = ["New", "Existing", "(E)Relocate", "Remove"] as const;
