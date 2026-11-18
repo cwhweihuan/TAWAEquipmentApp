@@ -1,0 +1,327 @@
+{
+  "sheet": "K1.4",
+  "pdfPage": 5,
+  "store": "Glendale #1302",
+  "room": "#121 Washiland Boba",
+  "scheduledQuantity": 43,
+  "retainedUnscheduledTags": [
+    "F",
+    "Q6"
+  ],
+  "rows": [
+    {
+      "tag": "I1",
+      "quantity": 1,
+      "description": "48-inch ice maker with bin",
+      "manufacturer": "Hoshizaki",
+      "model": "KM-1601S_J / B-800SF",
+      "dimension": "Ice maker: 48 W × 27.5 D × 27.5 H in; bin: 48 W × 32.3 D × 46 H in",
+      "note": "208–230 V single-phase, 15.9 A as scheduled; cold water; indirect waste to floor sink; 6 in legs; self-contained. Confirm ice maker suffix and circuit against nameplate. Bin reference: https://www.hoshizakiamerica.com/product/b-800sf/.",
+      "source": "https://www.hoshizakiamerica.com/wp-content/uploads/product-documentation/KM-1601S_J%28Z%29%283%29.pdf"
+    },
+    {
+      "tag": "F1",
+      "quantity": 1,
+      "description": "Two-door reach-in refrigerator",
+      "manufacturer": "Traulsen",
+      "model": "G20010",
+      "dimension": "52 1/8 W × 35 D × 83 7/16 H in",
+      "note": "115 V, 7.4 A as scheduled; self-contained; on casters.",
+      "source": "https://www.traulsen.com/sites/default/files/webdam-assets/G%2032d%20R290%20Ref%20Reach-In%20Sld%20Dr%202Sec%20Spec%20Sheet%20TR36153%20%2811-21%29.pdf"
+    },
+    {
+      "tag": "F2",
+      "quantity": 1,
+      "description": "48-inch undercounter freezer",
+      "manufacturer": "True",
+      "model": "TUC-48F-LP-HC",
+      "dimension": "48 3/8 W × 30 1/8 D × 29 3/4 H in",
+      "note": "115 V, 3.2 A as scheduled; self-contained; on casters.",
+      "source": "https://www.energystar.gov/productfinder/product/certified-commercial-refrigerators-and-freezers/details/2403517/export/pdf/download"
+    },
+    {
+      "tag": "F3",
+      "quantity": 1,
+      "description": "Single glass-door refrigerator",
+      "manufacturer": "Avantco",
+      "model": "GDC-15-HC",
+      "dimension": "25 5/8 W × 22 7/8 D × 79 5/16 H in",
+      "note": "115 V as scheduled; self-contained; on casters. Avantco 178GDC15HCB lists 2.5 A running, NEMA 5-15P and R-290. Verify finish suffix and scheduled amperage against selected unit.",
+      "source": "https://www.avantcorefrigeration.com/product/178GDC15HCB/"
+    },
+    {
+      "tag": "F4",
+      "quantity": 1,
+      "description": "Single-door freezer",
+      "manufacturer": "True",
+      "model": "T-23F-HC",
+      "dimension": "27 W × 29 1/2 D × 83 3/8 H in",
+      "note": "115 V, 3.7 A as scheduled; self-contained; on casters.",
+      "source": "https://www.truemfg.com/product/t-23f-hc/"
+    },
+    {
+      "tag": "E1",
+      "quantity": 1,
+      "description": "52-gallon electric water heater",
+      "manufacturer": "American Standard",
+      "model": null,
+      "dimension": "24 3/4 W × 24 3/4 D × 54 H in",
+      "note": "208 V, 13.5 kW, 37.5 A as scheduled; cold and hot water; on platform. Model imprint is blurred; confirm model and phase from tenant submittal.",
+      "source": null
+    },
+    {
+      "tag": "E2",
+      "quantity": 1,
+      "description": "Blender",
+      "manufacturer": "Hamilton Beach",
+      "model": "HBB908",
+      "dimension": "8 W × 8 D × 15 3/4 H in",
+      "note": "120 V, 6 A as scheduled; countertop.",
+      "source": "https://hamiltonbeachcommercial.com/wp-content/uploads/2018/09/HBB908-HBB909_Bar_Blenders.pdf"
+    },
+    {
+      "tag": "E3",
+      "quantity": 1,
+      "description": "Fructose dispenser",
+      "manufacturer": "Xytronic",
+      "model": "LF-88-NSF",
+      "dimension": "10 W × 12 D × 17 H in",
+      "note": "110 V, 0.315 kW as scheduled; countertop. Confirm exact manufacturer sheet and NSF suffix.",
+      "source": null
+    },
+    {
+      "tag": "E4",
+      "quantity": 2,
+      "description": "Intelli tea brewer",
+      "manufacturer": "Freser",
+      "model": "TB-35T",
+      "dimension": "11.8 W × 25.2 D × 29 H in",
+      "note": "220 V, 6.35 kW, 30 A as scheduled; cold water; indirect waste to floor sink; countertop. Confirm North American electrical configuration from nameplate.",
+      "source": "https://www.freser.com/upload_doc/5bffc59ce21b0-4.pdf"
+    },
+    {
+      "tag": "E5",
+      "quantity": 2,
+      "description": "Boba cooker",
+      "manufacturer": "Eversoon",
+      "model": "F915-2",
+      "dimension": "12 W × 20 D × 27 H in",
+      "note": "220 V, 3.0 kW, 13.5 A as scheduled; countertop. Exact-model manufacturer spec pending.",
+      "source": null
+    },
+    {
+      "tag": "E6",
+      "quantity": 1,
+      "description": "10-gallon hot water dispenser",
+      "manufacturer": "BUNN",
+      "model": "H10X-80-208",
+      "dimension": "10.2 W × 24.5 D × 34.4 H in",
+      "note": "208 V, 8.05 kW, 38.7 A as scheduled; cold water; countertop. BUNN H10X family reference; verify the 208 V build and part number.",
+      "source": "https://resource.bunn.com/assets/web/pdfs/Hot_Water_Family_Brochure_7_21_web.pdf"
+    },
+    {
+      "tag": "E7",
+      "quantity": 1,
+      "description": "Microwave oven",
+      "manufacturer": "Sharp",
+      "model": "R-21LCF",
+      "dimension": "20 W × 16 D × 12 H in",
+      "note": "120 V, 14 A as scheduled; countertop.",
+      "source": "https://files.sharpusa.com/Downloads/ForBusiness/CommercialCooking/CommercialMWO/SpecSheets/MD_EN_v4.pdf"
+    },
+    {
+      "tag": "E8",
+      "quantity": 2,
+      "previousQuantity": 1,
+      "description": "Cup sealer",
+      "manufacturer": "Bubble Teaology",
+      "model": "98SF",
+      "dimension": "10 W × 13 D × 25 H in",
+      "note": "110 V, 3.6 A as scheduled; countertop. Manufacturer lists 98S Fiberglass; verify full suffix on equipment label.",
+      "source": "https://www.bubbleteaology.com/product/98s-fiberglass-cup-sealer/"
+    },
+    {
+      "tag": "S1",
+      "quantity": 1,
+      "description": "Hand sink with splashes",
+      "manufacturer": "Regency",
+      "model": "600HS12SP",
+      "dimension": "12 W × 18 D × 12 H in",
+      "note": "Cold and hot water; direct waste to floor drain per plan; wall mount; soap and paper towel dispensers.",
+      "source": "https://www.webstaurantstore.com/documents/specsheets/regency_tables_sinks_600hs12sp_specsheet_3.pdf"
+    },
+    {
+      "tag": "S2",
+      "quantity": 1,
+      "description": "Three-compartment sink",
+      "manufacturer": "Advance Tabco",
+      "model": "FC-3-1818-18RL",
+      "dimension": "90 W × 24 D × 37 H in",
+      "note": "Cold and hot water; direct waste to floor drain per plan; 6 in legs. Verify overall length against manufacturer sheet before installation.",
+      "source": "https://advancetabco.com/specs/FC_3_4Comp.pdf"
+    },
+    {
+      "tag": "S3",
+      "quantity": 1,
+      "description": "One-compartment prep sink",
+      "manufacturer": "Regency",
+      "model": "600S1181818XLFT",
+      "dimension": "38 1/2 W × 23 D × 43 3/4 H in",
+      "note": "Cold and hot water; indirect waste to floor sink; 6 in legs. Related Regency LFT sheet; confirm whether the drawing’s XLFT suffix identifies a different unit.",
+      "source": "https://www.webstaurantstore.com/documents/specsheets/600s1181818lft1.pdf"
+    },
+    {
+      "tag": "S4",
+      "quantity": 1,
+      "description": "Mop sink with splashes",
+      "manufacturer": "Advance Tabco",
+      "model": "9-OP-40 / K-298",
+      "dimension": "25 W × 21 D × 16 H in",
+      "note": "Cold and hot water; direct waste to floor drain per plan; 6 in minimum concrete coved base; splashes on all three sides.",
+      "source": "https://advancetabco.com/specs/floor_mopsink.pdf"
+    },
+    {
+      "tag": "T1",
+      "quantity": 1,
+      "description": "Stainless steel equipment stand, 30 × 60 in",
+      "manufacturer": "Steelton",
+      "model": "522SG3060",
+      "dimension": "60 W × 30 D × 25 H in",
+      "note": "6 in legs as scheduled; confirm clearance and overall height against manufacturer sheet.",
+      "source": "https://www.webstaurantstore.com/documents/specsheets/steelton_metal_products_522sg3060.pdf"
+    },
+    {
+      "tag": "T2",
+      "quantity": 1,
+      "description": "Stainless steel equipment stand, 30 × 36 in",
+      "manufacturer": "Steelton",
+      "model": "522SG3036",
+      "dimension": "36 W × 30 D × 25 H in",
+      "note": "6 in legs as scheduled; confirm clearance and overall height against manufacturer sheet.",
+      "source": "https://www.webstaurantstore.com/documents/specsheets/steelton_metal_products_522sg3036_specsheet.pdf"
+    },
+    {
+      "tag": "H1",
+      "quantity": 4,
+      "previousQuantity": 3,
+      "description": "Four-tier wire shelving, 36 × 18 in",
+      "manufacturer": "Advance Tabco",
+      "model": "EC-1836",
+      "dimension": "36 W × 18 D × 63 H in",
+      "note": "6 in legs as scheduled. EC-1836 is the shelf SKU; verify post height and kit configuration.",
+      "source": "https://advancetabco.com/specs/chrome_wireshelving.pdf"
+    },
+    {
+      "tag": "H2",
+      "quantity": 3,
+      "description": "Four-tier wire shelving, 48 × 18 in",
+      "manufacturer": "Advance Tabco",
+      "model": "EC-1848",
+      "dimension": "48 W × 18 D × 63 H in",
+      "note": "6 in legs as scheduled. EC-1848 is the shelf SKU; verify post height and kit configuration.",
+      "source": "https://advancetabco.com/specs/chrome_wireshelving.pdf"
+    },
+    {
+      "tag": "H3",
+      "quantity": 1,
+      "description": "Chemical shelf and mop rack",
+      "manufacturer": "John Boos",
+      "model": "PB-MSS824",
+      "dimension": "24 W × 8 D × 7.5 H in",
+      "note": "Wall mount; John Boos sheet confirms 24 × 8 × 7.5 in and two mop holders.",
+      "source": "https://cdn.restaurantsupply.com/pdf/5/f/e/5fe32381-af21-472f-ba74-4b6de042c757.pdf"
+    },
+    {
+      "tag": "H4",
+      "quantity": 1,
+      "description": "Employee locker",
+      "manufacturer": "Hallowell",
+      "model": "U1228-6PT",
+      "dimension": "12 W × 12 D × 78 H in",
+      "note": "6 in legs as scheduled. Exact-model manufacturer spec pending.",
+      "source": null
+    },
+    {
+      "tag": "C1",
+      "quantity": 1,
+      "description": "Custom stainless steel work station with dump sink and perforated board",
+      "manufacturer": "ACE",
+      "model": "Custom",
+      "dimension": "54 W × 30 D × 35 H in",
+      "note": "Cold and hot water; indirect waste to floor sink; 6 in legs.",
+      "source": null
+    },
+    {
+      "tag": "C2",
+      "quantity": 1,
+      "description": "Custom stainless steel work station with ice bin",
+      "manufacturer": "ACE",
+      "model": "Custom",
+      "dimension": "28 W × 30 D × 35 H in",
+      "note": "6 in legs.",
+      "source": null
+    },
+    {
+      "tag": "C3",
+      "quantity": 1,
+      "description": "Custom stainless steel worktable",
+      "manufacturer": "ACE",
+      "model": "Custom",
+      "dimension": "30 W × 30 D × 35 H in",
+      "note": "6 in legs.",
+      "source": null
+    },
+    {
+      "tag": "C4",
+      "quantity": 1,
+      "description": "Custom stainless steel work station with hand sink and shelving",
+      "manufacturer": "ACE",
+      "model": "Custom",
+      "dimension": "84 W × 30 D × 35 H in",
+      "note": "Cold and hot water; direct waste to floor drain per plan; 6 in legs; soap and paper towel dispensers.",
+      "source": null
+    },
+    {
+      "tag": "C5",
+      "quantity": 1,
+      "description": "Custom stainless steel shelving",
+      "manufacturer": "ACE",
+      "model": "Custom",
+      "dimension": "84 W × 12 D × 30 H in",
+      "note": "6 in legs as scheduled.",
+      "source": null
+    },
+    {
+      "tag": "O1",
+      "quantity": 4,
+      "previousQuantity": 2,
+      "description": "Water filter",
+      "manufacturer": "BUNN",
+      "model": "WEQ-TWIN35(6)",
+      "dimension": "12.75 W × 6 D × 17.02 H in",
+      "note": "Wall mount. Confirm cartridge configuration and part number; BUNN WEQ family reference.",
+      "source": "https://commercial.bunn.com/56000.0022"
+    },
+    {
+      "tag": "O2",
+      "quantity": 2,
+      "previousQuantity": 1,
+      "description": "Water filter",
+      "manufacturer": "Hoshizaki",
+      "model": "H9320-53",
+      "dimension": "20.75 W × 15 D × 26 H in",
+      "note": "Wall mount. Verify scheduled depth against manufacturer installation drawing.",
+      "source": "https://www.hoshizakiamerica.com/product/h9320-53/"
+    },
+    {
+      "tag": "O3",
+      "quantity": 1,
+      "description": "Water softener",
+      "manufacturer": "Culligan",
+      "model": "PE14 or equivalent",
+      "dimension": "14 W × 14 D × 48 H in",
+      "note": "6 in minimum concrete coved base; confirm proposed equivalent and submittal.",
+      "source": null
+    }
+  ]
+}

@@ -19,6 +19,8 @@
 | 301 | TCDD-36H-B-N | 36.5" W x 30" D x 50" H | [規格來源](https://www.turboairinc.com/products/tcdd-36h-wb-n/) |
 | 302 | WFST-1X | 32-1/8" W x 25-1/4" D x 32-3/4" H | [規格來源](https://www.hatcocorp.com/cms/IOMANUALS/000000005048001-00000-20100216.PDF) |
 
+- K1.4 下半部 Wushiland Boba 的嵌入影像 schedule 已逐列核對。#121 的 31 列補入名稱、廠商、可辨識型號、尺寸及圖面註記，合計 43 件。21 列附規格來源或系列參考，ACE C1–C5 保留 Custom。F、Q6 在下方 schedule 無對應列，保留圖面佔位。[逐列核對紀錄](./GLENDALE-1302-WUSHILAND-K1.4-REVIEW.json)
+
 ## 接續工作
 
 - 本輪優先複核 58 列。50 列已補來源連結與適用註記，並逐列線上讀回。來源包含原廠產品頁、規格 PDF 及型號認證資料。系列或相近後綴只列參考，備註標示仍需核實的配置。4 列圖面列為 CUSTOM，保留原資料。廠商和型號皆空白的列也維持原狀。[逐列核對紀錄](./GLENDALE-1302-SPEC-SOURCE-REVIEW.json)
