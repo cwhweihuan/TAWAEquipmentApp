@@ -136,6 +136,32 @@ export async function addItemToStore(storeId: string, equipmentId: string) {
   return item.id;
 }
 
+export async function replaceStoreItemEquipment(
+  storeId: string,
+  itemId: string,
+  expectedEquipmentId: string | null,
+  equipmentId: string,
+) {
+  const equipment = await prisma.equipment.findUnique({ where: { id: equipmentId }, select: { id: true } });
+  if (!equipment) return { error: "This equipment is no longer in the catalog." };
+
+  const result = await prisma.storeItem.updateMany({
+    where: { id: itemId, storeId, equipmentId: expectedEquipmentId },
+    data: {
+      equipmentId,
+      description: null,
+      manufacturer: null,
+      model: null,
+      dimension: null,
+      remarks: null,
+    },
+  });
+  if (result.count !== 1) return { error: "This row changed. Reload the schedule before replacing it." };
+
+  revalidatePath(`/stores/${storeId}`);
+  return { success: true };
+}
+
 /** Add a custom (non-catalog) line item. */
 export async function addCustomItem(storeId: string, description: string) {
   const max = await prisma.storeItem.aggregate({

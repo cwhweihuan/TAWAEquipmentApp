@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition, useOptimistic } from "react";
+import { useEffect, useMemo, useOptimistic, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -55,6 +55,7 @@ import {
   removeStoreItem,
   duplicateAsCustom,
   reorderStoreItems,
+  replaceStoreItemEquipment,
   updateStoreItem,
   updateStoreItemPlacements,
   type StoreItemPlacementPatch,
@@ -83,6 +84,7 @@ export function StoreBuilder({
   const [roomsOpen, setRoomsOpen] = useState(false);
   const [itemError, setItemError] = useState<string | null>(null);
   const [editingEq, setEditingEq] = useState<EquipmentDTO | null>(null);
+  const [replacing, setReplacing] = useState<StoreItemDTO | null>(null);
   const [editingCustom, setEditingCustom] = useState<StoreItemDTO | null>(null);
   const [meta, setMeta] = useState<StoreMeta>({
     name: store.name,
@@ -443,6 +445,7 @@ export function StoreBuilder({
             onPreview={previewItem}
             onOpenEquipment={previewEquipmentItem}
             onEdit={editItem}
+            onReplace={setReplacing}
           />
         </div>
       </div>
@@ -507,7 +510,111 @@ export function StoreBuilder({
           }}
         />
       )}
+      {replacing && (
+        <ReplaceEquipmentDialog
+          item={replacing}
+          equipment={equipment}
+          onClose={() => setReplacing(null)}
+          onApply={async (eq) => {
+            const result = await replaceStoreItemEquipment(store.id, replacing.id, replacing.equipmentId, eq.id);
+            if (result.error) return result.error;
+            patch(replacing.id, {
+              equipmentId: eq.id,
+              description: eq.description,
+              manufacturer: eq.manufacturer,
+              model: eq.model,
+              dimension: eq.dimension,
+              remarks: eq.remarks,
+              departments: eq.departments,
+              pdfFilename: eq.pdfFilename,
+              pdfUrl: eq.pdfUrl,
+              pdfDownloaded: eq.pdfDownloaded,
+            });
+            setReplacing(null);
+          }}
+        />
+      )}
     </DndContext>
+  );
+}
+
+function ReplaceEquipmentDialog({ item, equipment, onClose, onApply }: {
+  item: StoreItemDTO;
+  equipment: EquipmentDTO[];
+  onClose: () => void;
+  onApply: (equipment: EquipmentDTO) => Promise<string | undefined>;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState("");
+  const [error, setError] = useState<string>();
+  const [pending, startApply] = useTransition();
+  const needle = query.trim().toLowerCase();
+  const matches = equipment.filter((eq) => eq.id !== item.equipmentId && (!needle || matchesEquipmentSearch(eq, needle)));
+  const selected = matches.find((eq) => eq.id === selectedId);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    dialog?.showModal();
+    return () => dialog?.close();
+  }, []);
+
+  function apply() {
+    if (!selected || pending) return;
+    setError(undefined);
+    startApply(async () => {
+      try {
+        setError(await onApply(selected));
+      } catch {
+        setError("Could not replace this equipment. Try again.");
+      }
+    });
+  }
+
+  return (
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="replace-equipment-title"
+      onCancel={(event) => { event.preventDefault(); if (!pending) onClose(); }}
+      className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-lg rounded-xl border border-brand-200 bg-white text-gray-900 shadow-xl backdrop:bg-black/50"
+    >
+      <div className="flex max-h-[80dvh] flex-col gap-3 p-5">
+        <div>
+          <h2 id="replace-equipment-title" className="text-lg font-semibold">Replace by</h2>
+          <p className="text-sm text-gray-600">{item.scheduleNo && `#${item.scheduleNo} · `}{sentenceCase(item.description)}</p>
+        </div>
+        <input
+          type="search"
+          aria-label="Search equipment"
+          placeholder="Search equipment…"
+          autoFocus
+          value={query}
+          disabled={pending}
+          onChange={(event) => { setQuery(event.target.value); setSelectedId(""); }}
+          className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-400"
+        />
+        <fieldset disabled={pending} className="scroll-thin min-h-0 overflow-auto rounded-lg border border-gray-200">
+          <legend className="sr-only">Replacement equipment</legend>
+          {matches.map((eq) => (
+            <label key={eq.id} className="flex items-center gap-2 border-b border-gray-100 px-3 py-2 text-sm last:border-0 hover:bg-brand-50">
+              <input type="radio" name="replacement-equipment" checked={selectedId === eq.id} onChange={() => setSelectedId(eq.id)} />
+              <span>
+                <span className="block font-medium">{sentenceCase(eq.description)}</span>
+                <span className="block text-xs text-gray-500">{[`#${eq.masterItemNo}`, eq.manufacturer, eq.model, eq.dimension].filter(Boolean).join(" · ")}</span>
+              </span>
+            </label>
+          ))}
+          {!matches.length && <p className="px-3 py-2 text-sm text-gray-500">No equipment found.</p>}
+        </fieldset>
+        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={onClose} disabled={pending} className="rounded-lg border border-gray-200 px-3 py-2 text-sm">Cancel</button>
+          <button type="button" onClick={apply} disabled={!selected || pending} className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-50">
+            {pending ? "Applying…" : "Apply"}
+          </button>
+        </div>
+      </div>
+    </dialog>
   );
 }
 
@@ -657,6 +764,7 @@ function StoreDropZone({
   onPreview,
   onOpenEquipment,
   onEdit,
+  onReplace,
 }: {
   items: StoreItemDTO[];
   sortByNumber: boolean;
@@ -676,6 +784,7 @@ function StoreDropZone({
   onPreview: (it: StoreItemDTO) => void;
   onOpenEquipment: (it: StoreItemDTO) => void;
   onEdit: (it: StoreItemDTO) => void;
+  onReplace: (it: StoreItemDTO) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
   const [selection, setSelection] = useState<Set<string>>(new Set());
@@ -807,6 +916,7 @@ function StoreDropZone({
                 onPreview={() => onPreview(it)}
                 onOpenEquipment={() => onOpenEquipment(it)}
                 onEdit={() => onEdit(it)}
+                onReplace={() => onReplace(it)}
               />
             ))}
             </div>
@@ -832,6 +942,7 @@ function SortableStoreRow({
   onPreview,
   onOpenEquipment,
   onEdit,
+  onReplace,
 }: {
   item: StoreItemDTO;
   rooms: string[];
@@ -847,6 +958,7 @@ function SortableStoreRow({
   onPreview: () => void;
   onOpenEquipment: () => void;
   onEdit: () => void;
+  onReplace: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -951,7 +1063,7 @@ function SortableStoreRow({
                 onPatch({ proposeNew: e.target.value || null });
                 onPersist("proposeNew", e.target.value);
               }}
-              className="w-full rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm outline-none focus:border-brand-400"
+              className="min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm outline-none focus:border-brand-400"
             >
               <option value="">—</option>
               {STORE_STATUS_OPTIONS.map((o) => (
@@ -963,27 +1075,39 @@ function SortableStoreRow({
             </select>
           );
         })()}
-        <button
-          onClick={onDuplicate}
-          className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
-          title="Duplicate as custom item"
-        >
-          <Copy size={14} />
-        </button>
-        <button
-          onClick={onEdit}
-          className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
-          title={item.equipmentId ? "Edit equipment" : "Edit custom item"}
-        >
-          <Pencil size={14} />
-        </button>
-        <button
-          onClick={onRemove}
-          className="shrink-0 rounded p-1 text-gray-300 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
-          title="Remove"
-        >
-          <Trash2 size={14} />
-        </button>
+        <div className={cn("flex shrink-0 flex-col items-center gap-1 transition group-hover:opacity-100 group-focus-within:opacity-100", !selected && "lg:opacity-0")}>
+          <div className="flex items-center">
+            <button
+              onClick={onDuplicate}
+              className="shrink-0 rounded p-1 text-gray-300 hover:bg-brand-50 hover:text-brand-600"
+              title="Duplicate as custom item"
+            >
+              <Copy size={14} />
+            </button>
+            <button
+              onClick={onEdit}
+              className="shrink-0 rounded p-1 text-gray-300 hover:bg-brand-50 hover:text-brand-600"
+              title={item.equipmentId ? "Edit equipment" : "Edit custom item"}
+            >
+              <Pencil size={14} />
+            </button>
+            <button
+              onClick={onRemove}
+              className="shrink-0 rounded p-1 text-gray-300 hover:bg-red-50 hover:text-red-500"
+              title="Remove"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+          <button
+            type="button"
+            disabled={item.id.startsWith("temp-")}
+            onClick={onReplace}
+            className="whitespace-nowrap rounded px-1 text-[11px] font-medium text-brand-600 hover:bg-brand-50 disabled:opacity-50"
+          >
+            Replace by
+          </button>
+        </div>
       </div>
     </div>
   );
