@@ -20,7 +20,7 @@ export function FloatingSearch({ value, onChange, resultCount, onShowResults }: 
   }
 
   return (
-    <div className="fixed right-4 z-30 bottom-[max(1rem,env(safe-area-inset-bottom))] max-w-[calc(100vw-2rem)] sm:right-6">
+    <div className="floating-equipment-search fixed right-4 z-30 bottom-[max(1rem,env(safe-area-inset-bottom))] max-w-[calc(100vw-2rem)] sm:right-6">
       {open && (
         <form
           id={panelId}

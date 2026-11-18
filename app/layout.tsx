@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import Link from "next/link";
 import { Boxes, Store } from "lucide-react";
-import { FloatingCats } from "@/components/FloatingCats";
+import { BackgroundToggle } from "@/components/BackgroundToggle";
 import "./globals.css";
 
 const quicksand = Quicksand({ variable: "--font-quicksand", subsets: ["latin"] });
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${quicksand.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <FloatingCats />
+        <BackgroundToggle />
         <header className="sticky top-0 z-30 border-b border-white/50 bg-white/45 backdrop-blur-xl backdrop-saturate-150">
           <div className="mx-auto flex h-14 max-w-[1500px] items-center gap-1 px-4 sm:px-6">
             <Link href="/" className="mr-4 flex min-w-0 items-center gap-2 font-bold tracking-tight">

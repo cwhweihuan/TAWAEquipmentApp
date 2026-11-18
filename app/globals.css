@@ -88,6 +88,21 @@ body {
   font-family: var(--font-sans);
 }
 
+body:has([data-background-off]) {
+  background-image: none;
+}
+
+.background-toggle {
+  left: max(1rem, env(safe-area-inset-left));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@media (width < 520px) {
+  body:has(.floating-equipment-search) .background-toggle {
+    bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 3.5rem);
+  }
+}
+
 /* Apply the X to every app surface, including disabled fieldsets, form controls,
  * drag handles and pseudo-elements. Override browser defaults and cursor utilities. */
 @media (any-hover: hover) and (any-pointer: fine) {
