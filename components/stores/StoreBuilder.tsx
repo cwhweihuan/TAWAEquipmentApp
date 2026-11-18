@@ -650,20 +650,21 @@ function FloorPlanNumber({ value, onSave, compact = false }: { value: string | n
   </label>;
 }
 
-function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…", creatingItem = false }: {
+function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…", creatingItem = false, compact = false }: {
   selected: string[];
   rooms: string[];
   onSave: (value: string[]) => Promise<void>;
   emptyLabel?: string;
   creatingItem?: boolean;
+  compact?: boolean;
 }) {
   const [pending, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [displayed, setDisplayed] = useOptimistic(selected);
   const options = [...new Set([...rooms, ...selected])];
-  if (creatingItem) return <p className="mb-3 px-2 py-1 text-sm text-gray-500" role="status">Adding equipment…</p>;
+  if (creatingItem) return <p className={cn("px-2 py-1 text-sm text-gray-500", !compact && "mb-3")} role="status">Adding equipment…</p>;
 
-  return <div className="mb-3 min-w-0">
+  return <div className={cn("min-w-0", !compact && "mb-3")}>
     <details className="rounded-md border border-gray-200 bg-white text-sm">
       <summary className="px-2 py-1" aria-label="Choose rooms">{displayed.length ? displayed.join(", ") : emptyLabel}</summary>
       <fieldset disabled={pending} className="flex flex-col gap-2 border-t border-gray-100 p-2 disabled:opacity-50">
@@ -983,7 +984,7 @@ function SortableStoreRow({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group mb-1 grid items-start gap-2 rounded-lg border border-white/50 bg-white/45 px-2 py-2 hover:border-brand-200 hover:bg-white/65",
+        "group mb-1 grid items-start gap-x-2 gap-y-1 rounded-lg border border-white/50 bg-white/45 px-2 py-2 hover:border-brand-200 hover:bg-white/65",
         COLS,
         isDragging && "z-20 opacity-80 shadow-md"
       )}
@@ -1062,8 +1063,8 @@ function SortableStoreRow({
         className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-center text-sm outline-none focus:border-brand-400"
       />
       </label>
-      <StoreRoomSelect selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={async (value) => { await onPersist("rooms", value); }} />
-      <div className="flex items-center gap-1">
+      <StoreRoomSelect compact selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={async (value) => { await onPersist("rooms", value); }} />
+      <div className="flex items-start gap-1">
         {(() => {
           const status = canonicalStatus(item.proposeNew);
           const extra = status && !STORE_STATUS_OPTIONS.includes(status as (typeof STORE_STATUS_OPTIONS)[number]);
@@ -1075,7 +1076,7 @@ function SortableStoreRow({
                 onPatch({ proposeNew: e.target.value || null });
                 onPersist("proposeNew", e.target.value);
               }}
-              className="min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-1.5 py-1 text-sm outline-none focus:border-brand-400"
+              className="h-[30px] min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-2 text-sm outline-none focus:border-brand-400"
             >
               <option value="">—</option>
               {STORE_STATUS_OPTIONS.map((o) => (
@@ -1149,7 +1150,7 @@ function StoreItemRemarks({ item, onSave }: {
   }
 
   return (
-    <div className="col-start-7 col-span-3 min-w-0">
+    <div className="col-span-4 col-start-6 min-w-0">
       <label className="flex flex-col gap-1">
         <span className="text-[10px] font-semibold tracking-wide text-gray-500">REMARK/NOTES:</span>
         <textarea
