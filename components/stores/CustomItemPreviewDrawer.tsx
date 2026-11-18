@@ -1,6 +1,6 @@
 "use client";
 
-import { sentenceCase } from "@/lib/utils";
+import { sentenceCase, splitStoreSpecSource } from "@/lib/utils";
 
 import { useEffect, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Pencil, X } from "lucide-react";
@@ -28,7 +28,7 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, onPrevious, onNext]);
 
-  const [remarks, specSource] = item.remarks?.split(/\nSpec source: (https?:\/\/[^\s]+)\s*$/) ?? [];
+  const { remarks, specSource } = splitStoreSpecSource(item.remarks);
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">

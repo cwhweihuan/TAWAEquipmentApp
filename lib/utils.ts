@@ -10,6 +10,15 @@ export function sentenceCase(value: string | null | undefined): string {
   return (value ?? "").toLowerCase().replace(/\p{L}/u, (letter) => letter.toUpperCase());
 }
 
+/** Read the specification source stored on the last line of a store item's remarks. */
+export function splitStoreSpecSource(remarks: string | null) {
+  const match = remarks?.match(/(?:^|\r?\n)Spec source: (https?:\/\/[^\s]+)\s*$/i);
+  return {
+    remarks: match ? remarks?.slice(0, match.index) : remarks,
+    specSource: match?.[1],
+  };
+}
+
 /** Equipment departments, in canonical display order. */
 export const DEPARTMENTS = [
   "MEAT",

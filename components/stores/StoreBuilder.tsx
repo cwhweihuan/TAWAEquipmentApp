@@ -33,6 +33,7 @@ import {
   Copy,
   Pencil,
   FileText,
+  Link2,
   Download,
   Check,
   PackagePlus,
@@ -43,7 +44,7 @@ import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
 import { PdfCaption } from "@/components/catalog/PdfCaption";
 import { DeptChip } from "@/components/DeptChip";
-import { cn, DEPARTMENTS, sentenceCase, STORE_STATUS_OPTIONS } from "@/lib/utils";
+import { cn, DEPARTMENTS, sentenceCase, splitStoreSpecSource, STORE_STATUS_OPTIONS } from "@/lib/utils";
 import { DetailDrawer } from "@/components/catalog/DetailDrawer";
 import { CustomItemPreviewDrawer } from "./CustomItemPreviewDrawer";
 import { EquipmentEditDrawer } from "./EquipmentEditDrawer";
@@ -104,6 +105,8 @@ export function StoreBuilder({
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  const catalogSpecUrls = useMemo(() => new Map(equipment.map((item) => [item.id, item.specUrl])), [equipment]);
 
   const addedIds = useMemo(
     () => new Set(items.map((i) => i.equipmentId).filter(Boolean) as string[]),
@@ -458,6 +461,7 @@ export function StoreBuilder({
           {/* store */}
           <StoreDropZone
             items={displayedItems}
+            catalogSpecUrls={catalogSpecUrls}
             sortByNumber={sortByNumber}
             onSortChange={setSortByNumber}
             onBulkUpdate={async (ids, changes) => {
@@ -790,6 +794,7 @@ function canonicalStatus(v: string | null): string {
 
 function StoreDropZone({
   items,
+  catalogSpecUrls,
   sortByNumber,
   onSortChange,
   onBulkUpdate,
@@ -807,6 +812,7 @@ function StoreDropZone({
   onSaveRemarks,
 }: {
   items: StoreItemDTO[];
+  catalogSpecUrls: ReadonlyMap<string, string | null>;
   sortByNumber: boolean;
   onSortChange: (sortByNumber: boolean) => void;
   onBulkUpdate: (ids: string[], changes: StoreItemPlacementPatch) => Promise<void>;
@@ -939,6 +945,7 @@ function StoreDropZone({
               <SortableStoreRow
                 key={it.id}
                 item={it}
+                catalogSpecUrl={it.equipmentId ? catalogSpecUrls.get(it.equipmentId) : undefined}
                 rooms={rooms}
                 index={idx + 1}
                 reorderDisabled={sortByNumber}
@@ -971,6 +978,7 @@ function StoreDropZone({
 
 function SortableStoreRow({
   item,
+  catalogSpecUrl,
   rooms,
   index,
   reorderDisabled,
@@ -988,6 +996,7 @@ function SortableStoreRow({
   onSaveRemarks,
 }: {
   item: StoreItemDTO;
+  catalogSpecUrl?: string | null;
   rooms: string[];
   index: number;
   reorderDisabled: boolean;
@@ -1004,6 +1013,7 @@ function SortableStoreRow({
   onReplace: () => void;
   onSaveRemarks: (value: string) => Promise<string | undefined>;
 }) {
+  const specUrl = splitStoreSpecSource(item.remarks).specSource ?? catalogSpecUrl;
   const [remarksExpanded, setRemarksExpanded] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -1047,14 +1057,26 @@ function SortableStoreRow({
           <button type="button" onClick={onOpenEquipment} aria-label={`Preview ${sentenceCase(item.description)}`} className="min-w-0 flex-1 rounded text-left text-sm font-medium leading-snug text-gray-800 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400">
             {sentenceCase(item.description)}
           </button>
-          {item.pdfUrl && (
+          {item.pdfUrl ? (
             <button
+              type="button"
               onClick={onPreview}
               className="mt-0.5 shrink-0 rounded p-0.5 text-brand-400 transition hover:bg-brand-50 hover:text-brand-600"
               title="Preview spec PDF"
             >
               <FileText size={14} />
             </button>
+          ) : specUrl && /^https?:\/\//i.test(specUrl) && (
+            <a
+              href={specUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-0.5 shrink-0 rounded p-0.5 text-brand-400 transition hover:bg-brand-50 hover:text-brand-600"
+              title="Open specification link"
+              aria-label={`Open specification link for ${sentenceCase(item.description)}`}
+            >
+              <Link2 size={14} />
+            </a>
           )}
         </div>
         <PdfCaption filename={item.pdfFilename} className="mt-0.5" />
