@@ -1,0 +1,2270 @@
+{
+  "storeNumber": "1302",
+  "source": "2026-10-27__1302_Glendale_CDs_Set_Equipment.pdf",
+  "sheets": [
+    "K1.0",
+    "K1.1",
+    "K1.2",
+    "K1.3",
+    "K1.4"
+  ],
+  "readBackVerified": true,
+  "rows": [
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "13",
+      "description": "PRODUCE BIN",
+      "manufacturer": null,
+      "model": "CUSTOM",
+      "dimension": "35\" W x 35\" D x 35\" H",
+      "roomCounts": {
+        "Sales Floor": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "15",
+      "description": "FREESTANDING TALL GONDOLA SHELVING",
+      "manufacturer": "MADIX",
+      "model": "GONDOLA",
+      "dimension": "48\" W x 48\" D x 84\" H",
+      "roomCounts": {
+        "Sales Floor": 9
+      },
+      "quantity": 9,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "15A",
+      "description": "FREESTANDING SHORT GONDOLA SHELVING",
+      "manufacturer": "MADIX",
+      "model": "GONDOLA",
+      "dimension": "48\" W x 48\" D x 60\" H",
+      "roomCounts": {
+        "Sales Floor": 6
+      },
+      "quantity": 6,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "16",
+      "description": "WALL-MOUNT SHELVING",
+      "manufacturer": "MADIX",
+      "model": "WALL",
+      "dimension": "48\" W x 24\" D x 84\" H",
+      "roomCounts": {
+        "Sales Floor": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "17",
+      "description": "RICE RACK",
+      "manufacturer": "MADIX",
+      "model": "HEAVY-DUTY SYSTEM",
+      "dimension": "84\" W x 30\" D x 84\" H",
+      "roomCounts": {
+        "Sales Floor": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "18",
+      "description": "CHECKSTAND ENDCAP DISPLAY",
+      "manufacturer": "IVAR",
+      "model": "WAL1S442CPT01",
+      "dimension": "52\" W x 24\" D x 53\" H",
+      "roomCounts": {
+        "Checkout": 3
+      },
+      "quantity": 3,
+      "catalogNo": 18,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 18
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "20",
+      "description": "CARDBOARD BALER",
+      "manufacturer": "MARATHON",
+      "model": "V-6030 HD",
+      "dimension": "90\" W x 42\" D x 140\" H",
+      "roomCounts": {
+        "Back of House": 1
+      },
+      "quantity": 1,
+      "catalogNo": 20,
+      "hasSpecPdf": true,
+      "remarks": "Schedule allowance. Confirm installed quantity.",
+      "linkedCatalogNo": 20
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "30",
+      "description": "FULL-SERVICE CHECKOUT STAND",
+      "manufacturer": "KILLION",
+      "model": "402-3500L-P4348 AND 19x42 FRONT BELT",
+      "dimension": "144\" W x 43\" D x 48\" H",
+      "roomCounts": {
+        "Checkout": 6
+      },
+      "quantity": 6,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "50",
+      "description": "MULTIDECK REFRIG. CASE FOR PRODUCE",
+      "manufacturer": "HILLPHOENIX",
+      "model": "05DM",
+      "dimension": null,
+      "roomCounts": {
+        "Sales Floor": 12
+      },
+      "quantity": 12,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "60",
+      "description": "LOW REFRIGERATED CABINET",
+      "manufacturer": "AHT",
+      "model": "PARIS 185 AND 210",
+      "dimension": null,
+      "roomCounts": {
+        "Sales Floor": 5
+      },
+      "quantity": 5,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "114",
+      "description": "EMPLOYEE LOCKERS",
+      "manufacturer": "GSW",
+      "model": "EL-2DR AND EL-5DR",
+      "dimension": "12\" W x 20\" D x 77\" H",
+      "roomCounts": {
+        "Staff Lockers": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "199",
+      "description": "SELF-CHECKOUT STAND",
+      "manufacturer": "TOSHIBA",
+      "model": "6800",
+      "dimension": "58\" W x 25\" D x 52\" H",
+      "roomCounts": {
+        "Checkout": 4
+      },
+      "quantity": 4,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.0",
+      "floorPlanNo": "?",
+      "description": "BACK-OF-HOUSE STORAGE RACKS",
+      "manufacturer": null,
+      "model": null,
+      "dimension": "96\" W x 48\" D x 144\" H",
+      "roomCounts": {
+        "Back of House": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Schedule allowance. Confirm installed quantity.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "2",
+      "description": "WEIGH SCALE",
+      "manufacturer": "TOLEDO",
+      "model": "VARIES",
+      "dimension": "13.6\" W x 10.8\" D x 5.7\" H",
+      "roomCounts": {
+        "Bakery": 3
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "36",
+      "description": "BAKERY ISLAND DISPLAY / SALES STAND",
+      "manufacturer": "CUSTOM",
+      "model": "ISLAND GLASS CASE\" \"BAKERY DISPLAY SHELF",
+      "dimension": "52.5\" W x 49.5\" D x 58\" H",
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "37",
+      "description": "TOAST DISPLAY / SALES RACK",
+      "manufacturer": "CUSTOM",
+      "model": "TOAST RACK",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "45",
+      "description": "BAKERY TRAY TONG STATION DISPLAY / SALES STAND",
+      "manufacturer": "CUSTOM",
+      "model": "TRAY TONG",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "48",
+      "description": "SELF-CONTAINED, SINGLE-DOOR, REACH-IN, KITCHEN REFRIGERATOR",
+      "manufacturer": "TRAULSEN",
+      "model": "G10010",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "64",
+      "description": "MULTI-DECK REFRIGERATED CASE FOR BAKERY MERCH.",
+      "manufacturer": "HILLPHOENIX",
+      "model": "BLF-R",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 202,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "74",
+      "description": "UNDER-COUNTER REFRIGERATOR",
+      "manufacturer": "BEVERAGE-AIR",
+      "model": "UCR34HC",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "80",
+      "description": "SOLID DOOR REFRIGERATOR WITH WORK TOP",
+      "manufacturer": "TRUE",
+      "model": "TWT-60",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 2,
+        "Bakery": 1
+      },
+      "quantity": 3,
+      "catalogNo": 198,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "81",
+      "description": "FOOD PREP TABLE",
+      "manufacturer": "TRUE",
+      "model": "TSSU-60-16-HC",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1,
+        "Hot Deli": 1
+      },
+      "quantity": 2,
+      "catalogNo": 87,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 87
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "88",
+      "description": "SELF CONTAINED CUBE ICE MAKER",
+      "manufacturer": "ICE-O-MATIC",
+      "model": "ICEU300/305",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "89",
+      "description": "SLOPE FRONT STORAGE BINS",
+      "manufacturer": "ICE-O-MATIC",
+      "model": "B11OPS",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "90",
+      "description": "HAND SINK, KNEE-OPERATED, WALL-MOUNTED WITH SPLASH GUARDS",
+      "manufacturer": "GSW",
+      "model": "HS-1615KS",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 4
+      },
+      "quantity": 4,
+      "catalogNo": 242,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "94",
+      "description": "PREP SINK, 1-COMP. WITH LEFT DRAINBOARD",
+      "manufacturer": "AREO",
+      "model": "MF1-2418-18L",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 101,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "94A",
+      "description": "PREP SINK, 1-COMP. WITH RIGHT DRAINBOARD",
+      "manufacturer": "ADVANCE TABCO",
+      "model": "6-81-18 WITH N-5-818",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1,
+        "Hot Deli": 1
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "95",
+      "description": "F2LR SERIES, TWO COMPARTMENT WITH TWO DRAINBOARD",
+      "manufacturer": "AREO",
+      "model": "MF2-2424-24LR",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 102,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "97",
+      "description": "3-COMPARTMENT SINK WITH TWO DRAINBOARDS",
+      "manufacturer": "AREO",
+      "model": "MF3-2424-24LR",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 104,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "100",
+      "description": "MOP SINKS",
+      "manufacturer": "ADVANCE TABCO",
+      "model": "9-OP-28 9-OP-48",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "101",
+      "description": "MOP SINK FAUCET",
+      "manufacturer": "FISHER",
+      "model": "8261",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 108,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 108
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "104",
+      "description": "FISHER-KITCHEN",
+      "manufacturer": "FISHER",
+      "model": "60143",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 2
+      },
+      "quantity": 2,
+      "catalogNo": 111,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 111
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "105",
+      "description": "TBD WATER HEATER",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "107",
+      "description": "HAND SINKS DROP-IN HAND SINK WITH SPLASH GUARDS",
+      "manufacturer": "KROWNE",
+      "model": "HS-1220",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "110",
+      "description": "GOLD BOND WIRE SHELF",
+      "manufacturer": "ISS SHELVING",
+      "model": "GOLD BOND",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 2,
+        "Bakery": 1
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "111",
+      "description": "SOAP DISPENSER",
+      "manufacturer": "SLOAN",
+      "model": "ESD-1500-CP",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 4,
+        "Hot Deli": 1
+      },
+      "quantity": 5,
+      "catalogNo": 118,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 118
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "118",
+      "description": "SNAP-N-SLIDE WALL SHELVES",
+      "manufacturer": "EAGLE GROUP",
+      "model": "SWS15__-14/304-VMAR\" \"SWS15__-14/316-VMAR",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "120",
+      "description": "WORKTABLE",
+      "manufacturer": "EAGLE GROUP",
+      "model": "T3060SB T3072SB",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 6,
+        "Hot Deli": 1
+      },
+      "quantity": 7,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "145",
+      "description": "COMBI OVEN",
+      "manufacturer": "CONVOTHERM",
+      "model": "C4eT 20.20 GB-N",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 1
+      },
+      "quantity": 1,
+      "catalogNo": 186,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 186
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "147",
+      "description": "2-BURNER STOCK POT RANGE",
+      "manufacturer": "AMERICAN RANGE",
+      "model": "ARSP-J-2",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 2
+      },
+      "quantity": 2,
+      "catalogNo": 149,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 149
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "148",
+      "description": "FRYER",
+      "manufacturer": "PITCO",
+      "model": "SG18",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 2
+      },
+      "quantity": 2,
+      "catalogNo": 150,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 150
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "149",
+      "description": "2-BURNER WOK RANGE",
+      "manufacturer": "ATLANTA CULINARY EQUIPMENT",
+      "model": "ARE-2",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "152",
+      "description": "RANGE",
+      "manufacturer": "AMERICAN RANGE",
+      "model": "AR24G-2B",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 1
+      },
+      "quantity": 1,
+      "catalogNo": 182,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 182
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "157",
+      "description": "MODULAR WARMERS",
+      "manufacturer": "APW HFW-3 WYOTT",
+      "model": "VARIES",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "164",
+      "description": "RICE COOKER",
+      "manufacturer": "ZOJIRUSHI",
+      "model": "THA-803SA",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "166",
+      "description": "HOT WATER DISPENSER",
+      "manufacturer": "BUNN",
+      "model": "H5E / H5X",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "174",
+      "description": "SINGLE-WIDE RETARDER AND PROOFER",
+      "manufacturer": "BAXTER",
+      "model": "RPW1S",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 172,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 172
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "180",
+      "description": "DOUGH MIXER, 20 QUART",
+      "manufacturer": "HOBART",
+      "model": "HL200",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 174,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 174
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "190",
+      "description": "COFFEE GRINDER",
+      "manufacturer": "BUNN",
+      "model": "G9-2T DBC SST",
+      "dimension": "8.5\" W x 19.5\" D x 27\" H",
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "191",
+      "description": "COFFEE BREWER",
+      "manufacturer": "BUNN",
+      "model": "SINGLE SH 120",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "195",
+      "description": "SEALING MACHINE",
+      "manufacturer": "XYTRONIC",
+      "model": "LF-90",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "216",
+      "description": "DOUBLE-RACK GAS OVEN WITH INTEGRAL EXHAUST HOOD",
+      "manufacturer": "BAXTER",
+      "model": "OV500G2EE",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": 251,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 251
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "301",
+      "description": "GRAB-AND-GO REFRIGERATED MERCHANDISER",
+      "manufacturer": "TURBO AIR",
+      "model": "TCDD-36H-B-N",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "302",
+      "description": "PASTRY WARMER",
+      "manufacturer": "HATCO",
+      "model": "WFST-1X",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "306",
+      "description": "WALL-MOUNT WIRE SHELF",
+      "manufacturer": "EAGLE",
+      "model": "GWB1448V",
+      "dimension": null,
+      "roomCounts": {
+        "Bakery": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.1",
+      "floorPlanNo": "307",
+      "description": "STIR-FRY MACHINE",
+      "manufacturer": "BOTIN",
+      "model": "BOTINKIT MAX 5.0 COOKING ROBOT",
+      "dimension": null,
+      "roomCounts": {
+        "Hot Deli": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "2",
+      "description": "WEIGH SCALE",
+      "manufacturer": "TOLEDO",
+      "model": "VARIES",
+      "dimension": "13.6\" W x 10.8\" D x 5.7\" H",
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "9",
+      "description": "CUSTOMER TICKET MACHINE",
+      "manufacturer": "CHECKPOINT",
+      "model": "TURN-O-MATIC S3",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1,
+        "Meat": 1
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "55",
+      "description": "MULTIDECK REFRIGERATED CASE FOR MEAT AND DAIRY",
+      "manufacturer": "HILLPHOENIX",
+      "model": "05DM",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "63",
+      "description": "MULTIDECK REFRIGERATED CASE FOR MEAT, SEAFOOD",
+      "manufacturer": "HILLPHOENIX",
+      "model": "SGM",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "65",
+      "description": "MULTIDECK REFRIGERATED - CASE FOR MEAT",
+      "manufacturer": "HILLPHOENIX",
+      "model": "OHMH",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "85",
+      "description": "FOLLETT ICE MAKER",
+      "manufacturer": "FOLLETT",
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "90",
+      "description": "HAND SINK, KNEE-OPERATED, WALL-MOUNTED WITH SPLASH GUARDS",
+      "manufacturer": "GSW",
+      "model": "HS-1615KS",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 2,
+        "Seafood": 1,
+        "Produce": 1
+      },
+      "quantity": 4,
+      "catalogNo": 242,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "94",
+      "description": "PREP SINK, 1-COMP. WITH LEFT DRAINBOARD",
+      "manufacturer": "AREO",
+      "model": "MF1-2418-18L",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": 101,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "94A",
+      "description": "PREP SINK, 1-COMP. WITH RIGHT DRAINBOARD",
+      "manufacturer": "ADVANCE TABCO",
+      "model": "6-81-18 WITH N-5-818",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1,
+        "Back of House": 1
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "95",
+      "description": "F2LR SERIES, TWO COMPARTMENT WITH TWO DRAINBOARD",
+      "manufacturer": "AREO",
+      "model": "MF2-2424-24LR",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1,
+        "Seafood": 1,
+        "Produce": 1
+      },
+      "quantity": 3,
+      "catalogNo": 102,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "97",
+      "description": "3-COMPARTMENT SINK WITH TWO DRAINBOARDS",
+      "manufacturer": "AREO",
+      "model": "MF3-2424-24LR",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1,
+        "Seafood": 1,
+        "Back of House": 1,
+        "Produce": 1
+      },
+      "quantity": 4,
+      "catalogNo": 104,
+      "hasSpecPdf": false,
+      "remarks": "Catalog PDF requires model or configuration confirmation.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "100",
+      "description": "MOP SINKS",
+      "manufacturer": "ADVANCE TABCO",
+      "model": "9-OP-28 9-OP-48",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1,
+        "Back of House": 1
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "101",
+      "description": "MOP SINK FAUCET",
+      "manufacturer": "FISHER",
+      "model": "8261",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1,
+        "Back of House": 1
+      },
+      "quantity": 2,
+      "catalogNo": 108,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 108
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "104",
+      "description": "FISHER-KITCHEN",
+      "manufacturer": "FISHER",
+      "model": "60143",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 2,
+        "Seafood": 5,
+        "Produce": 2,
+        "Back of House": 2
+      },
+      "quantity": 11,
+      "catalogNo": 111,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 111
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "105",
+      "description": "TBD WATER HEATER",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 3
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "110",
+      "description": "GOLD BOND WIRE SHELF",
+      "manufacturer": "ISS SHELVING",
+      "model": "GOLD BOND",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 11,
+        "Back of House": 3
+      },
+      "quantity": 14,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "111",
+      "description": "SOAP DISPENSER",
+      "manufacturer": "SLOAN",
+      "model": "ESD-1500-CP",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1,
+        "Meat": 2,
+        "Produce": 1
+      },
+      "quantity": 4,
+      "catalogNo": 118,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 118
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "118",
+      "description": "SNAP-N-SLIDE WALL SHELVES",
+      "manufacturer": "EAGLE GROUP",
+      "model": "SWS15__-14/304-VMAR\" \"SWS15__-14/316-VMAR",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "119",
+      "description": "MOP HANGER",
+      "manufacturer": "ADVANCE TABCO",
+      "model": "K242",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1,
+        "Back of House": 2
+      },
+      "quantity": 3,
+      "catalogNo": 123,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 123
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "121",
+      "description": "POLY TOP CUTTING TABLE",
+      "manufacturer": "EAGLE GROUP",
+      "model": "CT3060S",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 9,
+        "Seafood": 1,
+        "Back of House": 1,
+        "Produce": 3
+      },
+      "quantity": 14,
+      "catalogNo": 125,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 125
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "122",
+      "description": "WRAPPING STATION",
+      "manufacturer": "HEAT SEAL",
+      "model": "SM20ES-C6B2WWBPXLB",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 2,
+        "Seafood": 1,
+        "Back of House": 1,
+        "Produce": 1
+      },
+      "quantity": 5,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "124",
+      "description": "CUSTOM ADA-COMPLIANT STAINLESS STEEL COUNTERTOP",
+      "manufacturer": null,
+      "model": "CUSTOM",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1,
+        "Seafood": 1
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "125",
+      "description": "MEAT SAW",
+      "manufacturer": "HOBART",
+      "model": "6801",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1
+      },
+      "quantity": 1,
+      "catalogNo": 129,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 129
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "126",
+      "description": "MEAT GRINDER",
+      "manufacturer": "HOBART",
+      "model": "4146",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1
+      },
+      "quantity": 1,
+      "catalogNo": 130,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 130
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "127",
+      "description": "MEAT SLICER",
+      "manufacturer": "BIZERBA",
+      "model": "GSP-HD",
+      "dimension": null,
+      "roomCounts": {
+        "Meat": 1
+      },
+      "quantity": 1,
+      "catalogNo": 131,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 131
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "130",
+      "description": "SEAFOOD STEAMER WITH STAND",
+      "manufacturer": "GROEN",
+      "model": "SSB-5G",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": 135,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 135
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "131",
+      "description": "SELF-CONTAINED TWO-LEVEL FISH TANK, 5 FEET",
+      "manufacturer": "SW WILSON",
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 4,
+        "Back of House": 4
+      },
+      "quantity": 8,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "134L",
+      "description": "FISH CUTTING TABLE LEFT DRAIN",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "134R",
+      "description": "FISH CUTTING TABLE LEFT DRAIN",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Drawing schedule labels both 134L and 134R as left drain. Confirm 134R drain orientation.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "139",
+      "description": "ICED SEAFOOD DISPLAY",
+      "manufacturer": "ATLANTIC FOOD BAR",
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "148",
+      "description": "FRYER",
+      "manufacturer": "PITCO",
+      "model": "SG18",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 2
+      },
+      "quantity": 2,
+      "catalogNo": 150,
+      "hasSpecPdf": true,
+      "remarks": null,
+      "linkedCatalogNo": 150
+    },
+    {
+      "sheet": "K1.2",
+      "floorPlanNo": "306",
+      "description": "WALL-MOUNT WIRE SHELF",
+      "manufacturer": "EAGLE",
+      "model": "GWB1448V",
+      "dimension": null,
+      "roomCounts": {
+        "Seafood": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Listed in the schedule. Quantity and placement are provisional where no matching plan tag was identified.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "1",
+      "description": "Reach-in freezer",
+      "manufacturer": "Padela",
+      "model": "PDB-2F-HC",
+      "dimension": "54 2/5 × 31 7/10 × 83 1/10 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "2",
+      "description": "Reach-in refrigerator",
+      "manufacturer": "Padela",
+      "model": "PDB-2R-HC",
+      "dimension": "54 3/8 × 31 1/2 × 83 1/8 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "3",
+      "description": "Fryer",
+      "manufacturer": "American Range",
+      "model": "AF50-HE",
+      "dimension": "15 1/2 × 30 1/2 × 45 3/4 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 3
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "4",
+      "description": "Worktable cabinet",
+      "manufacturer": "GSW",
+      "model": "CTN-P3036",
+      "dimension": "36 × 30 × 35 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Schedule-only line. Quantity is provisional.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "5",
+      "description": "Undercounter refrigerator",
+      "manufacturer": "Atosa",
+      "model": "MGF8404GR",
+      "dimension": "72 11/16 × 30 × 34 1/2 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "6",
+      "description": "Worktable (two options)",
+      "manufacturer": "GSW",
+      "model": "WT-EE3030 / WT-EE2430",
+      "dimension": null,
+      "roomCounts": {
+        "Panlao Dad Chicken": 4
+      },
+      "quantity": 4,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "7",
+      "description": "Wire shelf (two options)",
+      "manufacturer": "Winco",
+      "model": "VCS-1836 / VCS-1848",
+      "dimension": null,
+      "roomCounts": {
+        "Panlao Dad Chicken": 4
+      },
+      "quantity": 4,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "8",
+      "description": "Wall-mounted hand sink",
+      "manufacturer": "Regency",
+      "model": null,
+      "dimension": "17 × 15 × 13 1/2 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "9",
+      "description": "3-compartment sink",
+      "manufacturer": "Regency",
+      "model": null,
+      "dimension": "88 × 25 1/2 × 44 3/4 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "10",
+      "description": "1-compartment sink",
+      "manufacturer": "Regency",
+      "model": null,
+      "dimension": "38 1/2 × 23 1/2 × 44 3/4 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "11",
+      "description": "Locker",
+      "manufacturer": "Winholt",
+      "model": "WL-66/18",
+      "dimension": "12 × 18 × 78 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "12",
+      "description": "Ice cube machine",
+      "manufacturer": "Icetro",
+      "model": "IM-0550",
+      "dimension": "30 × 24.8 × 22.6 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "13",
+      "description": "Solid top chest freezer",
+      "manufacturer": "Atosa",
+      "model": "MWF9010GR",
+      "dimension": "40 1/2 × 26 1/2 × 32 1/2 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "14",
+      "description": "Single swing door refrigerator",
+      "manufacturer": "Kool-It",
+      "model": "KGM-23",
+      "dimension": "27.6 × 31.1 × 80.9 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "15",
+      "description": "Mop sink",
+      "manufacturer": null,
+      "model": "SE2424FM-UP",
+      "dimension": "24 × 24 × 15 in",
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "16",
+      "description": "Soda machine",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "17",
+      "description": "Water heater",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Panlao Dad Chicken": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "18",
+      "description": "Floor sink",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Panlao Dad Chicken": 3
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "C1",
+      "description": "Equipment C1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "C2",
+      "description": "Equipment C2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "C3",
+      "description": "Equipment C3",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "C4",
+      "description": "Equipment C4",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "C5",
+      "description": "Equipment C5",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E1",
+      "description": "Equipment E1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E2",
+      "description": "Equipment E2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E3",
+      "description": "Equipment E3",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E4",
+      "description": "Equipment E4",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E5",
+      "description": "Equipment E5",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E6",
+      "description": "Equipment E6",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E7",
+      "description": "Equipment E7",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "E8",
+      "description": "Equipment E8",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "F",
+      "description": "Equipment F",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "F1",
+      "description": "Equipment F1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "F2",
+      "description": "Equipment F2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "F3",
+      "description": "Equipment F3",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "F4",
+      "description": "Equipment F4",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "H1",
+      "description": "Equipment H1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 3
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "H2",
+      "description": "Equipment H2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 3
+      },
+      "quantity": 3,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "H3",
+      "description": "Equipment H3",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "H4",
+      "description": "Equipment H4",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "I1",
+      "description": "Equipment I1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "O1",
+      "description": "Equipment O1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 2
+      },
+      "quantity": 2,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "O2",
+      "description": "Equipment O2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "O3",
+      "description": "Equipment O3",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "Q6",
+      "description": "Equipment Q6",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "S1",
+      "description": "Equipment S1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "S2",
+      "description": "Equipment S2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "S3",
+      "description": "Equipment S3",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "S4",
+      "description": "Equipment S4",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "T1",
+      "description": "Equipment T1",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    },
+    {
+      "sheet": "K1.4",
+      "floorPlanNo": "T2",
+      "description": "Equipment T2",
+      "manufacturer": null,
+      "model": null,
+      "dimension": null,
+      "roomCounts": {
+        "Washiland Boba": 1
+      },
+      "quantity": 1,
+      "catalogNo": null,
+      "hasSpecPdf": false,
+      "remarks": "Spec PDF not matched to the drawing model. Plan tag only. Equipment description and model require the tenant schedule.",
+      "linkedCatalogNo": null
+    }
+  ]
+}
