@@ -75,6 +75,7 @@ export function StoreRoomsDrawer({ storeId, rooms, onClose, onSaved }: {
                       name={entry.name}
                       index={index}
                       disabled={pending}
+                      focusOnMount={entry.original === null}
                       onRename={(name) => setEntries((current) => current.map((room) => room.id === entry.id ? { ...room, name } : room))}
                       onRemove={() => setEntries((current) => current.filter((room) => room.id !== entry.id))}
                     />
@@ -98,11 +99,12 @@ export function StoreRoomsDrawer({ storeId, rooms, onClose, onSaved }: {
 }
 
 
-function SortableRoom({ id, name, index, disabled, onRename, onRemove }: {
+function SortableRoom({ id, name, index, disabled, focusOnMount, onRename, onRemove }: {
   id: number;
   name: string;
   index: number;
   disabled: boolean;
+  focusOnMount: boolean;
   onRename: (name: string) => void;
   onRemove: () => void;
 }) {
@@ -121,7 +123,21 @@ function SortableRoom({ id, name, index, disabled, onRename, onRemove }: {
       >
         <GripVertical size={16} />
       </button>
-      <input aria-label={`Room name ${index + 1}`} value={name} required maxLength={120} onChange={(event) => onRename(event.target.value)} className="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-400" />
+      <input
+        aria-label={`Room name ${index + 1}`}
+        value={name}
+        required
+        maxLength={120}
+        autoFocus={focusOnMount}
+        onKeyDown={(event) => {
+          // Some browsers report 229 on the Enter that confirms IME input.
+          if (event.key === "Enter" && (event.nativeEvent.isComposing || event.keyCode === 229)) {
+            event.preventDefault();
+          }
+        }}
+        onChange={(event) => onRename(event.target.value)}
+        className="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-400"
+      />
       <button type="button" aria-label={`Remove room ${index + 1}`} onClick={onRemove} className="rounded-lg p-2 text-gray-400 hover:text-red-600"><Trash2 size={16} /></button>
     </div>
   );

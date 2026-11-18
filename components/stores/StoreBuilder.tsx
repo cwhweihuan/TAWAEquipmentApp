@@ -165,9 +165,15 @@ export function StoreBuilder({
       pdfUrl: eq.pdfUrl,
       pdfDownloaded: eq.pdfDownloaded,
     };
+    setItemError(null);
     setItems((cur) => [...cur, temp]);
-    const realId = await addItemToStore(store.id, eq.id);
-    setItems((cur) => cur.map((i) => (i.id === temp.id ? { ...i, id: realId } : i)));
+    try {
+      const realId = await addItemToStore(store.id, eq.id);
+      setItems((cur) => cur.map((i) => (i.id === temp.id ? { ...i, id: realId } : i)));
+    } catch (error) {
+      setItems((cur) => cur.filter((i) => i.id !== temp.id));
+      setItemError(error instanceof Error ? error.message : "Could not add equipment.");
+    }
   }
 
   async function addCustom(omitted = false) {
@@ -508,7 +514,7 @@ export function StoreBuilder({
 function StorePlacement({ item, rooms, onPersist }: { item: StoreItemDTO; rooms: string[]; onPersist: (field: "rooms" | "scheduleNo", value: string | string[]) => Promise<void> }) {
   return <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
     <FloorPlanNumber value={item.scheduleNo} onSave={(value) => onPersist("scheduleNo", value)} />
-    <StoreRoomSelect selected={item.rooms} rooms={rooms} onSave={(value) => onPersist("rooms", value)} />
+    <StoreRoomSelect selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={(value) => onPersist("rooms", value)} />
   </div>;
 }
 
@@ -530,11 +536,19 @@ function FloorPlanNumber({ value, onSave, compact = false }: { value: string | n
   </label>;
 }
 
-function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…" }: { selected: string[]; rooms: string[]; onSave: (value: string[]) => Promise<void>; emptyLabel?: string }) {
+function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…", creatingItem = false }: {
+  selected: string[];
+  rooms: string[];
+  onSave: (value: string[]) => Promise<void>;
+  emptyLabel?: string;
+  creatingItem?: boolean;
+}) {
   const [pending, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [displayed, setDisplayed] = useOptimistic(selected);
   const options = [...new Set([...rooms, ...selected])];
+  if (creatingItem) return <p className="mb-3 px-2 py-1 text-sm text-gray-500" role="status">Adding equipment…</p>;
+
   return <div className="mb-3 min-w-0">
     <details className="rounded-md border border-gray-200 bg-white text-sm">
       <summary className="px-2 py-1" aria-label="Choose rooms">{displayed.length ? displayed.join(", ") : emptyLabel}</summary>
@@ -924,7 +938,7 @@ function SortableStoreRow({
         className="w-full rounded-md border border-gray-200 px-1.5 py-1 text-center text-sm outline-none focus:border-brand-400"
       />
       </label>
-      <StoreRoomSelect selected={item.rooms} rooms={rooms} onSave={async (value) => { await onPersist("rooms", value); }} />
+      <StoreRoomSelect selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={async (value) => { await onPersist("rooms", value); }} />
       <div className="flex items-center gap-1">
         {(() => {
           const status = canonicalStatus(item.proposeNew);
