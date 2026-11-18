@@ -661,9 +661,12 @@ function ReplaceEquipmentDialog({ item, equipment, onClose, onApply }: {
 }
 
 function StorePlacement({ item, rooms, onPersist }: { item: StoreItemDTO; rooms: string[]; onPersist: (field: "rooms" | "scheduleNo", value: string | string[]) => Promise<void> }) {
-  return <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+  return <div className="mb-4 grid grid-cols-1 items-start gap-3 sm:grid-cols-2">
     <FloorPlanNumber value={item.scheduleNo} onSave={(value) => onPersist("scheduleNo", value)} />
-    <StoreRoomSelect selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={(value) => onPersist("rooms", value)} />
+    <div className="flex min-w-0 flex-col gap-1">
+      <span className="text-xs text-gray-500">Room</span>
+      <StoreRoomSelect compact selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={(value) => onPersist("rooms", value)} />
+    </div>
   </div>;
 }
 
