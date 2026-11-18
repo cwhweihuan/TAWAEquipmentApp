@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useMemo, useOptimistic, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, FileText, X, Plus, LayoutGrid, List } from "lucide-react";
+import { Search, FileText, X, Plus, LayoutGrid, List, GripVertical } from "lucide-react";
 import Link from "next/link";
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { EquipmentDTO } from "@/lib/types";
 import { DEPARTMENTS, deptStyle, deptHex, cn } from "@/lib/utils";
-import { deleteEquipment } from "@/app/actions/equipment";
+import { deleteEquipment, reorderCatalogEquipment } from "@/app/actions/equipment";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
 import { FloatingSearch } from "@/components/FloatingSearch";
 import { EquipmentCard } from "./EquipmentCard";
@@ -29,6 +32,17 @@ export function CatalogBrowser({
   const router = useRouter();
   const [, startDelete] = useTransition();
 
+  const [orderError, setOrderError] = useState<string | null>(null);
+  const [savingOrder, startOrder] = useTransition();
+  const [orderedEquipment, applyOrder] = useOptimistic(equipment, (items, order: ReadonlyMap<string, number>) =>
+    items.map((item) => ({ ...item, masterItemNo: order.get(item.id) ?? item.masterItemNo }))
+      .sort((a, b) => a.masterItemNo - b.masterItemNo),
+  );
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
   function handleDelete(item: EquipmentDTO) {
     if (!confirm(`Delete "${item.description}"? This cannot be undone.`)) return;
     setSelectedId(null);
@@ -40,13 +54,37 @@ export function CatalogBrowser({
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return equipment.filter((e) => {
+    return orderedEquipment.filter((e) => {
       if (pdfOnly && !e.pdfUrl) return false;
       if (activeDepts.length && !activeDepts.some((d) => e.departments.includes(d))) return false;
       if (!matchesEquipmentSearch(e, needle)) return false;
       return true;
     });
-  }, [equipment, q, activeDepts, pdfOnly]);
+  }, [orderedEquipment, q, activeDepts, pdfOnly]);
+
+  function handleReorder({ active, over }: DragEndEvent) {
+    if (!over || active.id === over.id || savingOrder) return;
+    const from = filtered.findIndex((item) => item.id === active.id);
+    const to = filtered.findIndex((item) => item.id === over.id);
+    if (from < 0 || to < 0) return;
+
+    const first = Math.min(from, to);
+    const range = filtered.slice(first, Math.max(from, to) + 1);
+    const expected = range.map(({ id, masterItemNo }) => ({ id, masterItemNo }));
+    const reordered = arrayMove(range, from - first, to - first);
+    setOrderError(null);
+    startOrder(async () => {
+      applyOrder(new Map(reordered.map(({ id }, index) => [id, expected[index].masterItemNo])));
+      try {
+        if (!(await reorderCatalogEquipment(expected, range[from - first].id, range[to - first].id))) {
+          setOrderError("The catalog order changed. Try again after it refreshes.");
+          router.refresh();
+        }
+      } catch {
+        setOrderError("Could not save the catalog order. Try again.");
+      }
+    });
+  }
 
   const selectedIndex = filtered.findIndex((item) => item.id === selectedId);
   const selected = selectedIndex >= 0 ? filtered[selectedIndex] : null;
@@ -181,6 +219,8 @@ export function CatalogBrowser({
         onShowResults={() => resultsRef.current?.scrollIntoView({ block: "start" })}
       />
 
+      {orderError && <p role="alert" className="mb-3 text-sm text-red-600">{orderError}</p>}
+
       {/* grid */}
       {filtered.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gray-200 py-20 text-center text-sm text-gray-400">
@@ -189,11 +229,15 @@ export function CatalogBrowser({
       ) : view === "list" ? (
         <EquipmentList items={filtered} onSelect={setSelectedId} />
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {filtered.map((item) => (
-            <EquipmentCard key={item.id} item={item} onClick={() => setSelectedId(item.id)} />
-          ))}
-        </div>
+        <DndContext id="catalog-card-sort" sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleReorder}>
+          <SortableContext items={filtered.map((item) => item.id)} strategy={rectSortingStrategy}>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {filtered.map((item) => (
+                <SortableEquipmentCard key={item.id} item={item} disabled={savingOrder} onClick={() => setSelectedId(item.id)} />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       <DetailDrawer
@@ -212,6 +256,36 @@ export function CatalogBrowser({
           }
         }}
       />
+    </div>
+  );
+}
+
+
+function SortableEquipmentCard({ item, disabled, onClick }: {
+  item: EquipmentDTO;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: item.id, disabled });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn("relative flex min-w-0 flex-col", isDragging && "z-20")}
+    >
+      <button
+        ref={setActivatorNodeRef}
+        type="button"
+        {...attributes}
+        {...listeners}
+        disabled={disabled}
+        aria-label={`Reorder equipment #${item.masterItemNo}`}
+        title="Drag to reorder"
+        className="flex h-6 w-full cursor-grab touch-none items-center justify-center rounded-t-lg bg-white/40 text-gray-400 hover:bg-brand-50 hover:text-brand-600 active:cursor-grabbing disabled:opacity-50"
+      >
+        <GripVertical size={14} />
+      </button>
+      <EquipmentCard item={item} onClick={onClick} />
     </div>
   );
 }

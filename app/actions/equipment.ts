@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf, ensurePdfBucket, createSignedUploadUrl } from "@/lib/supabase";
 import { DEPARTMENTS } from "@/lib/utils";
@@ -107,39 +107,49 @@ async function maybeUploadPdf(fd: FormData): Promise<string | null> {
   return pdf.id;
 }
 
+/** Serialize catalog number changes across create, duplicate, reorder and delete. */
+function withCatalogNumbering<T>(work: (tx: Prisma.TransactionClient) => Promise<T>) {
+  return prisma.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(54943, 1)`;
+    return work(tx);
+  });
+}
+
 export async function createEquipment(fd: FormData) {
   const { data, departments } = readFields(fd);
   if (!data.description) throw new Error("Description is required");
 
   const pdfId = await maybeUploadPdf(fd);
-  const max = await prisma.equipment.aggregate({ _max: { masterItemNo: true } });
-  const masterItemNo = (max._max.masterItemNo ?? 0) + 1;
+  const eq = await withCatalogNumbering(async (tx) => {
+    const max = await tx.equipment.aggregate({ _max: { masterItemNo: true } });
+    const masterItemNo = (max._max.masterItemNo ?? 0) + 1;
 
-  const eq = await prisma.equipment.create({
-    data: {
-      masterItemNo,
-      description: data.description!,
-      manufacturer: data.manufacturer,
-      model: data.model,
-      supplyBy: data.supplyBy,
-      installBy: data.installBy,
-      dimension: data.dimension,
-      specUrl: data.specUrl,
-      power: data.power,
-      height: data.height,
-      nema: data.nema,
-      dataPhone: data.dataPhone,
-      waterCold: data.waterCold,
-      waterHot: data.waterHot,
-      waterElev: data.waterElev,
-      gasPipe: data.gasPipe,
-      gasBtu: data.gasBtu,
-      gasElev: data.gasElev,
-      floorSink: data.floorSink,
-      remarks: data.remarks,
-      departments,
-      pdfId,
-    },
+    return tx.equipment.create({
+      data: {
+        masterItemNo,
+        description: data.description!,
+        manufacturer: data.manufacturer,
+        model: data.model,
+        supplyBy: data.supplyBy,
+        installBy: data.installBy,
+        dimension: data.dimension,
+        specUrl: data.specUrl,
+        power: data.power,
+        height: data.height,
+        nema: data.nema,
+        dataPhone: data.dataPhone,
+        waterCold: data.waterCold,
+        waterHot: data.waterHot,
+        waterElev: data.waterElev,
+        gasPipe: data.gasPipe,
+        gasBtu: data.gasBtu,
+        gasElev: data.gasElev,
+        floorSink: data.floorSink,
+        remarks: data.remarks,
+        departments,
+        pdfId,
+      },
+    });
   });
   revalidatePath("/catalog");
   return eq.id;
@@ -191,48 +201,100 @@ export async function duplicateEquipment(
   id: string,
   overrides: { description?: string; dimension?: string }
 ): Promise<string> {
-  const src = await prisma.equipment.findUnique({ where: { id } });
-  if (!src) throw new Error("Original equipment not found");
+  const eq = await withCatalogNumbering(async (tx) => {
+    const src = await tx.equipment.findUnique({ where: { id } });
+    if (!src) throw new Error("Original equipment not found");
 
-  const max = await prisma.equipment.aggregate({ _max: { masterItemNo: true } });
-  const eq = await prisma.equipment.create({
-    data: {
-      masterItemNo: (max._max.masterItemNo ?? 0) + 1,
-      description: overrides.description?.trim() || `${src.description} (variant)`,
-      manufacturer: src.manufacturer,
-      model: src.model,
-      supplyBy: src.supplyBy,
-      installBy: src.installBy,
-      dimension: overrides.dimension?.trim() || null,
-      specUrl: src.specUrl,
-      power: src.power,
-      height: src.height,
-      nema: src.nema,
-      dataPhone: src.dataPhone,
-      waterCold: src.waterCold,
-      waterHot: src.waterHot,
-      waterElev: src.waterElev,
-      gasPipe: src.gasPipe,
-      gasBtu: src.gasBtu,
-      gasElev: src.gasElev,
-      floorSink: src.floorSink,
-      remarks: src.remarks,
-      departments: src.departments,
-      ...(src.departmentItems != null
-        ? { departmentItems: src.departmentItems as Prisma.InputJsonValue }
-        : {}),
-      pdfId: src.pdfId, // share the spec sheet with the original
-    },
+    const max = await tx.equipment.aggregate({ _max: { masterItemNo: true } });
+    return tx.equipment.create({
+      data: {
+        masterItemNo: (max._max.masterItemNo ?? 0) + 1,
+        description: overrides.description?.trim() || `${src.description} (variant)`,
+        manufacturer: src.manufacturer,
+        model: src.model,
+        supplyBy: src.supplyBy,
+        installBy: src.installBy,
+        dimension: overrides.dimension?.trim() || null,
+        specUrl: src.specUrl,
+        power: src.power,
+        height: src.height,
+        nema: src.nema,
+        dataPhone: src.dataPhone,
+        waterCold: src.waterCold,
+        waterHot: src.waterHot,
+        waterElev: src.waterElev,
+        gasPipe: src.gasPipe,
+        gasBtu: src.gasBtu,
+        gasElev: src.gasElev,
+        floorSink: src.floorSink,
+        remarks: src.remarks,
+        departments: src.departments,
+        ...(src.departmentItems != null
+          ? { departmentItems: src.departmentItems as Prisma.InputJsonValue }
+          : {}),
+        pdfId: src.pdfId, // share the spec sheet with the original
+      },
+    });
   });
   revalidatePath("/catalog");
   return eq.id;
 }
 
+export async function reorderCatalogEquipment(
+  expected: { id: string; masterItemNo: number }[],
+  movedId: string,
+  targetId: string,
+) {
+  const saved = await withCatalogNumbering(async (tx) => {
+    const ids = expected.map((item) => item.id);
+    const current = await tx.equipment.findMany({
+      where: { id: { in: ids } },
+      orderBy: { masterItemNo: "asc" },
+      select: { id: true, masterItemNo: true },
+    });
+    const unchanged = current.length === expected.length && current.every(
+      (item, index) => item.id === expected[index].id && item.masterItemNo === expected[index].masterItemNo,
+    );
+    const from = ids.indexOf(movedId);
+    const to = ids.indexOf(targetId);
+    if (!unchanged || from < 0 || to < 0) return false;
+    if (from === to) return true;
+
+    ids.splice(from, 1);
+    ids.splice(to, 0, movedId);
+    const reordered = ids.map((id, index) => ({ id, number: current[index].masterItemNo }));
+    // Release the occupied numbers before assigning them to different cards.
+    await tx.$executeRaw`
+      UPDATE "Equipment" SET "masterItemNo" = -"masterItemNo"
+      WHERE id IN (${Prisma.join(ids)})
+    `;
+    await tx.$executeRaw`
+      UPDATE "Equipment" AS equipment SET "masterItemNo" = ordered.number
+      FROM jsonb_to_recordset(${JSON.stringify(reordered)}::jsonb) AS ordered(id text, number integer)
+      WHERE equipment.id = ordered.id
+    `;
+    return true;
+  });
+  if (saved) revalidatePath("/catalog");
+  return saved;
+}
+
 export async function deleteEquipment(id: string) {
-  const eq = await prisma.equipment.findUnique({ where: { id }, include: { pdf: true } });
-  await prisma.equipment.delete({ where: { id } });
+  const eq = await withCatalogNumbering(async (tx) => {
+    const deleted = await tx.equipment.delete({ where: { id }, include: { pdf: true } });
+    // Temporarily move the remaining positive numbers out of the unique index range.
+    await tx.$executeRaw`
+      UPDATE "Equipment" SET "masterItemNo" = -"masterItemNo"
+      WHERE "masterItemNo" > ${deleted.masterItemNo}
+    `;
+    await tx.$executeRaw`
+      UPDATE "Equipment" SET "masterItemNo" = -"masterItemNo" - 1
+      WHERE "masterItemNo" < ${-deleted.masterItemNo}
+    `;
+    return deleted;
+  });
   // clean up an uploaded (non-seed) PDF if nothing else references it
-  if (eq?.pdf?.storagePath?.startsWith("uploads/")) {
+  if (eq.pdf?.storagePath?.startsWith("uploads/")) {
     const refs = await prisma.equipment.count({ where: { pdfId: eq.pdfId } });
     if (refs === 0) {
       await deletePdf(eq.pdf.storagePath);
