@@ -5,17 +5,15 @@ import { X, Pencil } from "lucide-react";
 import type { EquipmentDTO } from "@/lib/types";
 import { EquipmentForm } from "@/components/catalog/EquipmentForm";
 
-/**
- * Edit the underlying Equipment ("family") record from inside the store builder.
- * Because StoreItems reference the shared Equipment row, saving here updates the
- * item everywhere it is used. Mirrors the StoreDetailsDrawer shell.
- */
+/** Edit shared equipment fields and, when opened from a schedule row, that row’s remarks. */
 export function EquipmentEditDrawer({
   equipment,
+  storeRow,
   onClose,
   onSaved,
 }: {
   equipment: EquipmentDTO;
+  storeRow?: { id: string; storeId: string; remarks: string | null };
   onClose: () => void;
   onSaved: (fd: FormData) => void;
 }) {
@@ -46,9 +44,9 @@ export function EquipmentEditDrawer({
         {/* body — the shared catalog form, embedded */}
         <div className="scroll-thin flex-1 overflow-y-auto px-5 py-5">
           <p className="mb-4 rounded-lg bg-brand-50/60 px-3 py-2 text-xs text-brand-700 ring-1 ring-inset ring-brand-100">
-            Editing the shared equipment record — changes apply to every store that uses this item.
+            {storeRow ? "Remark / Notes applies to this store row. Other fields update the shared equipment record." : "Changes apply to every store that uses this equipment."}
           </p>
-          <EquipmentForm item={equipment} embedded onSaved={onSaved} onCancel={onClose} />
+          <EquipmentForm item={equipment} storeRow={storeRow} embedded onSaved={onSaved} onCancel={onClose} />
         </div>
       </aside>
     </div>

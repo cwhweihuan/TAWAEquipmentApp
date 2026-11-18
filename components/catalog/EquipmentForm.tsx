@@ -45,6 +45,7 @@ export function EquipmentForm({
   embedded,
   onSaved,
   onCancel,
+  storeRow,
 }: {
   item?: EquipmentDTO;
   /** render without page chrome (back link / title / max-width) for use inside a drawer */
@@ -52,6 +53,7 @@ export function EquipmentForm({
   /** in embedded mode, called with the submitted FormData after a successful save (instead of navigating) */
   onSaved?: (fd: FormData) => void;
   onCancel?: () => void;
+  storeRow?: { id: string; storeId: string; remarks: string | null };
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -83,7 +85,11 @@ export function EquipmentForm({
           fd.set("pdfName", file.name);
           fd.set("pdfSize", String(file.size));
         }
-        if (editing) await updateEquipment(item!.id, fd);
+        if (editing) await updateEquipment(item!.id, fd, storeRow && {
+          id: storeRow.id,
+          storeId: storeRow.storeId,
+          initialRemarks: storeRow.remarks ?? "",
+        });
         else await createEquipment(fd);
         if (embedded) {
           onSaved?.(fd);
@@ -197,10 +203,10 @@ export function EquipmentForm({
           </div>
           <div className="mt-4">
             <label className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-gray-600">Remarks</span>
+              <span className="text-xs font-medium text-gray-600">{storeRow ? "Remark / Notes" : "Remarks"}</span>
               <textarea
                 name="remarks"
-                defaultValue={item?.remarks ?? ""}
+                defaultValue={(storeRow ? storeRow.remarks : item?.remarks) ?? ""}
                 rows={2}
                 className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
               />

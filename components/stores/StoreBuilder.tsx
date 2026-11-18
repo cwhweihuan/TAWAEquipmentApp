@@ -84,9 +84,10 @@ export function StoreBuilder({
   const [rooms, setRooms] = useState(store.rooms);
   const [roomsOpen, setRoomsOpen] = useState(false);
   const [itemError, setItemError] = useState<string | null>(null);
-  const [editingEq, setEditingEq] = useState<EquipmentDTO | null>(null);
+  const [editingEq, setEditingEq] = useState<{ equipment: EquipmentDTO; rowId?: string } | null>(null);
   const [replacing, setReplacing] = useState<StoreItemDTO | null>(null);
-  const [editingCustom, setEditingCustom] = useState<StoreItemDTO | null>(null);
+  const [editingCustomId, setEditingCustomId] = useState<string | null>(null);
+  const pendingRemarks = useRef(new Map<string, Promise<string | undefined>>());
   const [meta, setMeta] = useState<StoreMeta>({
     name: store.name,
     number: store.number,
@@ -128,6 +129,8 @@ export function StoreBuilder({
   const previewIndex = previewList.findIndex((item) => item.id === previewTarget?.id);
   const previewRow = previewTarget?.source === "store" ? items.find((item) => item.id === previewTarget.id) ?? null : null;
   const previewEquipment = equipment.find((eq) => eq.id === (previewTarget?.source === "catalog" ? previewTarget.id : previewRow?.equipmentId)) ?? null;
+  const editingStoreRow = items.find((item) => item.id === editingEq?.rowId);
+  const editingCustom = items.find((item) => item.id === editingCustomId);
   const previewCustom = previewRow && !previewRow.equipmentId ? previewRow : null;
   function movePreview(offset: number) {
     const next = previewList[previewIndex + offset];
@@ -237,18 +240,37 @@ export function StoreBuilder({
   }
 
   // pencil: linked rows open the shared family editor, custom rows edit their own fields
-  function editItem(item: StoreItemDTO) {
+  async function editItem(item: StoreItemDTO) {
+    const pending = pendingRemarks.current.get(item.id);
+    if (pending) {
+      try {
+        if (await pending) return;
+      } catch {
+        return;
+      }
+    }
     if (!item.equipmentId) {
-      if (!item.id.startsWith("temp-")) setEditingCustom(item);
+      if (!item.id.startsWith("temp-")) setEditingCustomId(item.id);
       return;
     }
     const eq = equipment.find((e) => e.id === item.equipmentId);
-    if (eq) setEditingEq(eq);
+    if (eq) setEditingEq({ equipment: eq, rowId: item.id });
+  }
+
+  function persistRemarks(item: StoreItemDTO, value: string) {
+    const save = async () => {
+      const result = await saveStoreItemRemarks(store.id, item.id, item.equipmentId, value);
+      if (result.error !== undefined) return result.error;
+      patch(item.id, { remarks: result.remarks, hasStoreRemarks: true });
+    };
+    const pending = save().finally(() => pendingRemarks.current.delete(item.id));
+    pendingRemarks.current.set(item.id, pending);
+    return pending;
   }
 
   // after the shared Equipment is saved, reflect the change on every row that uses it
   function onEquipmentSaved(fd: FormData) {
-    const eqId = editingEq?.id;
+    const eqId = editingEq?.equipment.id;
     if (!eqId) return;
     const val = (k: string) => {
       const v = (fd.get(k) as string | null)?.trim();
@@ -263,7 +285,15 @@ export function StoreBuilder({
       departments: DEPARTMENTS.filter((d) => fd.get(`dept:${d}`) === "on"),
       ...(description ? { description } : {}),
     };
-    setItems((cur) => cur.map((i) => (i.equipmentId === eqId ? { ...i, ...p, remarks: i.hasStoreRemarks ? i.remarks : p.remarks ?? null } : i)));
+    const nextRemarks = val("remarks") ?? "";
+    setItems((cur) => cur.map((i) => {
+      if (i.equipmentId !== eqId) return i;
+      if (editingStoreRow) {
+        const notesChanged = i.id === editingStoreRow.id && nextRemarks !== (editingStoreRow.remarks ?? "").trim();
+        return { ...i, ...p, remarks: notesChanged ? nextRemarks : i.remarks, hasStoreRemarks: notesChanged || i.hasStoreRemarks };
+      }
+      return { ...i, ...p, remarks: i.hasStoreRemarks ? i.remarks : p.remarks ?? null };
+    }));
     setEditingEq(null);
     router.refresh(); // refresh server data so the catalog pane + specs stay in sync
   }
@@ -447,11 +477,7 @@ export function StoreBuilder({
             onOpenEquipment={previewEquipmentItem}
             onEdit={editItem}
             onReplace={setReplacing}
-            onSaveRemarks={async (item, value) => {
-              const result = await saveStoreItemRemarks(store.id, item.id, item.equipmentId, value);
-              if (result.error !== undefined) return result.error;
-              patch(item.id, { remarks: result.remarks, hasStoreRemarks: true });
-            }}
+            onSaveRemarks={persistRemarks}
           />
         </div>
       </div>
@@ -486,7 +512,11 @@ export function StoreBuilder({
           total={previewList.length}
           onPrevious={() => movePreview(-1)}
           onNext={() => movePreview(1)}
-          onEdit={() => { setPreviewTarget(null); setEditingEq(previewEquipment); }}
+          onEdit={() => {
+            setPreviewTarget(null);
+            if (previewRow) void editItem(previewRow);
+            else setEditingEq({ equipment: previewEquipment });
+          }}
           onClose={() => setPreviewTarget(null)}
         >
           {previewRow && <StorePlacement key={previewRow.id} item={previewRow} rooms={rooms} onPersist={(field, value) => persistField(previewRow.id, field, value)} />}
@@ -499,9 +529,10 @@ export function StoreBuilder({
       )}
       <PdfPreviewDrawer target={preview} onClose={() => setPreview(null)} />
 
-      {editingEq && (
+      {editingEq && (!editingEq.rowId || editingStoreRow) && (
         <EquipmentEditDrawer
-          equipment={editingEq}
+          equipment={editingEq.equipment}
+          storeRow={editingStoreRow && { id: editingStoreRow.id, storeId: store.id, remarks: editingStoreRow.remarks }}
           onClose={() => setEditingEq(null)}
           onSaved={onEquipmentSaved}
         />
@@ -509,10 +540,10 @@ export function StoreBuilder({
       {editingCustom && (
         <CustomItemEditDrawer
           item={editingCustom}
-          onClose={() => setEditingCustom(null)}
+          onClose={() => setEditingCustomId(null)}
           onSaved={(fields) => {
             patch(editingCustom.id, fields);
-            setEditingCustom(null);
+            setEditingCustomId(null);
           }}
         />
       )}

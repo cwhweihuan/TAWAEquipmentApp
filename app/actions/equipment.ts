@@ -145,18 +145,32 @@ export async function createEquipment(fd: FormData) {
   return eq.id;
 }
 
-export async function updateEquipment(id: string, fd: FormData) {
+export async function updateEquipment(id: string, fd: FormData, storeRow?: {
+  id: string;
+  storeId: string;
+  initialRemarks: string;
+}) {
   const { data, departments } = readFields(fd);
   const pdfId = await maybeUploadPdf(fd);
+  const remarks = data.remarks ?? "";
+  if (storeRow) delete data.remarks;
+  const fields = { ...data, departments, ...(pdfId ? { pdfId } : {}) };
 
-  await prisma.equipment.update({
-    where: { id },
-    data: {
-      ...data,
-      departments,
-      ...(pdfId ? { pdfId } : {}),
-    },
-  });
+  if (storeRow) {
+    await prisma.$transaction(async (tx) => {
+      const where = { id: storeRow.id, storeId: storeRow.storeId, equipmentId: id };
+      if (remarks === storeRow.initialRemarks.trim()) {
+        await tx.storeItem.findFirstOrThrow({ where, select: { id: true } });
+      } else {
+        const saved = await tx.storeItem.updateMany({ where, data: { remarks } });
+        if (saved.count !== 1) throw new Error("This row changed. Reopen it before saving.");
+      }
+      await tx.equipment.update({ where: { id }, data: fields });
+    });
+    revalidatePath(`/stores/${storeRow.storeId}`);
+  } else {
+    await prisma.equipment.update({ where: { id }, data: fields });
+  }
   revalidatePath("/catalog");
 }
 
