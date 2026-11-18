@@ -973,6 +973,7 @@ function SortableStoreRow({
   onReplace: () => void;
   onSaveRemarks: (value: string) => Promise<string | undefined>;
 }) {
+  const [remarksExpanded, setRemarksExpanded] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
     disabled: { draggable: reorderDisabled },
@@ -1122,14 +1123,22 @@ function SortableStoreRow({
           </button>
         </div>
       </div>
-      <StoreItemRemarks key={JSON.stringify([item.equipmentId, item.remarks])} item={item} onSave={onSaveRemarks} />
+      <StoreItemRemarks
+        key={JSON.stringify([item.equipmentId, item.remarks])}
+        item={item}
+        expanded={remarksExpanded}
+        onToggle={() => setRemarksExpanded((current) => !current)}
+        onSave={onSaveRemarks}
+      />
     </div>
   );
 }
 
 
-function StoreItemRemarks({ item, onSave }: {
+function StoreItemRemarks({ item, expanded, onToggle, onSave }: {
   item: StoreItemDTO;
+  expanded: boolean;
+  onToggle: () => void;
   onSave: (value: string) => Promise<string | undefined>;
 }) {
   const [value, setValue] = useState(item.remarks ?? "");
@@ -1151,19 +1160,35 @@ function StoreItemRemarks({ item, onSave }: {
 
   return (
     <div className="col-span-4 col-start-6 min-w-0">
-      <label className="flex flex-col gap-1">
-        <span className="text-[10px] font-semibold tracking-wide text-gray-500">REMARK/NOTES:</span>
+      <div className="flex items-start gap-2">
+        <label htmlFor={`remarks-${item.id}`} className="shrink-0 py-1 text-[10px] font-semibold tracking-wide text-gray-500">
+          REMARK/NOTES:
+        </label>
         <textarea
+          id={`remarks-${item.id}`}
           aria-label={`Remarks for ${sentenceCase(item.description)}`}
-          rows={2}
+          rows={expanded ? 3 : 1}
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onBlur={save}
           readOnly={pending}
           disabled={item.id.startsWith("temp-")}
-          className="field-sizing-content min-h-10 max-h-40 w-full resize-y rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 outline-none focus:border-brand-400 disabled:opacity-50"
+          className={cn(
+            "min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 outline-none focus:border-brand-400 disabled:opacity-50",
+            expanded ? "field-sizing-content min-h-16 max-h-40 resize-y" : "h-6 resize-none"
+          )}
         />
-      </label>
+        <button
+          type="button"
+          aria-label={expanded ? "Collapse remarks" : "Expand remarks"}
+          aria-expanded={expanded}
+          aria-controls={`remarks-${item.id}`}
+          onClick={onToggle}
+          className="h-6 w-6 shrink-0 rounded border border-gray-200 text-sm leading-none text-brand-600 hover:bg-brand-50"
+        >
+          {expanded ? "−" : "+"}
+        </button>
+      </div>
       {pending && <span role="status" className="text-xs text-gray-500">Saving…</span>}
       {error && (
         <div className="flex items-center gap-2 text-xs text-red-600">
