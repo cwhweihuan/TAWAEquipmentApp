@@ -1161,6 +1161,16 @@ function StoreItemRemarks({ item, expanded, onToggle, onSave }: {
   return (
     <div className="col-span-4 col-start-6 min-w-0">
       <div className="flex items-start gap-2">
+        <button
+          type="button"
+          aria-label={expanded ? "Collapse remarks" : "Expand remarks"}
+          aria-expanded={expanded}
+          aria-controls={`remarks-${item.id}`}
+          onClick={onToggle}
+          className="flex h-6 w-3 shrink-0 items-center justify-center rounded text-sm leading-none text-brand-600 hover:bg-brand-50"
+        >
+          {expanded ? "−" : "+"}
+        </button>
         <label htmlFor={`remarks-${item.id}`} className="shrink-0 py-1 text-[10px] font-semibold tracking-wide text-gray-500">
           REMARK/NOTES:
         </label>
@@ -1178,16 +1188,6 @@ function StoreItemRemarks({ item, expanded, onToggle, onSave }: {
             expanded ? "field-sizing-content min-h-16 max-h-40 resize-y" : "h-6 resize-none"
           )}
         />
-        <button
-          type="button"
-          aria-label={expanded ? "Collapse remarks" : "Expand remarks"}
-          aria-expanded={expanded}
-          aria-controls={`remarks-${item.id}`}
-          onClick={onToggle}
-          className="h-6 w-6 shrink-0 rounded border border-gray-200 text-sm leading-none text-brand-600 hover:bg-brand-50"
-        >
-          {expanded ? "−" : "+"}
-        </button>
       </div>
       {pending && <span role="status" className="text-xs text-gray-500">Saving…</span>}
       {error && (

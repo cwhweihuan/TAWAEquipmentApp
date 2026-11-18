@@ -1288,7 +1288,7 @@
     "departmentItems": {
       "PRODUCE": "PD#03"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "O5DM",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -1315,7 +1315,7 @@
     "departmentItems": {
       "PRODUCE": "PD#04"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "OIP-OIPB",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -1494,7 +1494,7 @@
       "MEAT": "MT#02",
       "SEAFOOD": "SF#03"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "SEE R. DWGS",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -1596,7 +1596,7 @@
     "departmentItems": {
       "MEAT": "TBD"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "02.5 UM",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -1822,7 +1822,7 @@
     "departmentItems": {
       "SEAFOOD": "SF#08"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "SSAM-RG",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -1849,7 +1849,7 @@
     "departmentItems": {
       "MEAT": "MT#06"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "SGM",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -1876,7 +1876,7 @@
     "departmentItems": {
       "BAKERY": "BK#12"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "BLF",
     "supplyBy": "OWNER",
     "installBy": "R.C. / E.C.",
@@ -2092,7 +2092,7 @@
       "BAKERY": "BK#13",
       "HOT DELI": "HD#07"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "CUSTOM",
     "supplyBy": "OWNER",
     "installBy": "R.C.",
@@ -2127,7 +2127,7 @@
       "BAKERY": "BK#14",
       "HOT DELI": "HD#08"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "CUSTOM",
     "supplyBy": "OWNER",
     "installBy": "R.C.",
@@ -5129,7 +5129,7 @@
     "departmentItems": {
       "HOT DELI": "HD#42"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "PF-54-SC",
     "supplyBy": "OWNER",
     "installBy": "G.C.",
@@ -5404,7 +5404,7 @@
     "departmentItems": {
       "HOT DELI": "HD#53"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "BLF-R",
     "supplyBy": "OWNER",
     "installBy": "G.C.",
@@ -5479,7 +5479,7 @@
     "departmentItems": {
       "MEAT": "TBD"
     },
-    "manufacturer": "HILL PHOENIX",
+    "manufacturer": "Hillphoenix",
     "model": "I2I",
     "supplyBy": "OWNER",
     "installBy": "R.C./E.C.",
