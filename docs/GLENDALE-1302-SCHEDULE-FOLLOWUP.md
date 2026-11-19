@@ -21,6 +21,8 @@
 
 - K1.4 下半部 Wushiland Boba 的嵌入影像 schedule 已逐列核對。#121 的 31 列補入名稱、廠商、可辨識型號、尺寸及圖面註記，合計 43 件。21 列附規格來源或系列參考，ACE C1–C5 保留 Custom。F、Q6 在下方 schedule 無對應列，保留圖面佔位。[逐列核對紀錄](./GLENDALE-1302-WUSHILAND-K1.4-REVIEW.json)
 
+- K1.1 No. 89 冰槽依圖面補入 48 W × 31 D × 50 H in、163 lb dry／854 lb full、耐震固定、3/4 in FPT 間接排水及 NSF。依原廠規格表校正型號為 B110PS（圖面寫 B11OPS）。原廠列 854 lb 為儲冰容量、163 lb 為運輸重量，安裝前需確認搭配的製冰機及轉接件。已讀回線上資料。[Ice-O-Matic 原廠規格表](https://www.iceomatic.com/userfiles/2466/products/prod_59267/Storage-Bins-Spec-Sheet.pdf)
+
 ## 接續工作
 
 - 本輪優先複核 58 列。50 列已補來源連結與適用註記，並逐列線上讀回。來源包含原廠產品頁、規格 PDF 及型號認證資料。系列或相近後綴只列參考，備註標示仍需核實的配置。4 列圖面列為 CUSTOM，保留原資料。廠商和型號皆空白的列也維持原狀。[逐列核對紀錄](./GLENDALE-1302-SPEC-SOURCE-REVIEW.json)
