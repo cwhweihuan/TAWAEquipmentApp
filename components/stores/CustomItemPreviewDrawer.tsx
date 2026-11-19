@@ -37,7 +37,7 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
         <div className="flex items-start justify-between gap-3 border-b border-gray-200 px-6 py-4">
           <div>
             <p className="mb-1 text-xs text-gray-500">Custom equipment</p>
-            <h2 id="custom-preview-title" className="text-lg font-semibold text-gray-900">{sentenceCase(item.description)}</h2>
+            <h2 id="custom-preview-title" className="text-lg font-semibold text-gray-900">{item.description.toUpperCase()}</h2>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-xs text-gray-400">{position} / {total}</span>
@@ -62,7 +62,7 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
             ].map(([label, value]) => (
               <div key={label}>
                 <dt className="text-xs text-gray-400">{sentenceCase(label)}</dt>
-                <dd className="text-sm text-gray-800">{sentenceCase(value) || "—"}</dd>
+                <dd className="text-sm text-gray-800">{(label === "Dimension" ? value : sentenceCase(value)) || "—"}</dd>
               </div>
             ))}
           </dl>

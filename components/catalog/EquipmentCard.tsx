@@ -26,7 +26,7 @@ export function EquipmentCard({
         type="button"
         onClick={onClick}
         className="flex w-full flex-col gap-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
-        aria-label={`Open equipment #${item.masterItemNo}, ${sentenceCase(item.description)}`}
+        aria-label={`Open equipment #${item.masterItemNo}, ${item.description.toUpperCase()}`}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -51,7 +51,7 @@ export function EquipmentCard({
         </div>
 
         <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900">
-          {sentenceCase(item.description)}
+          {item.description.toUpperCase()}
         </h3>
         <PdfCaption filename={item.pdfFilename} />
 
@@ -64,7 +64,7 @@ export function EquipmentCard({
         {item.dimension && (
           <p className="flex items-center gap-1 text-xs font-medium text-brand-600">
             <Ruler size={12} className="shrink-0" />
-            <span className="line-clamp-1">{sentenceCase(item.dimension)}</span>
+            <span className="line-clamp-1">{item.dimension}</span>
           </p>
         )}
 
@@ -86,7 +86,7 @@ export function EquipmentCard({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 hover:underline"
-            aria-label={`Open official product page for ${sentenceCase(item.description)}`}
+            aria-label={`Open official product page for ${item.description.toUpperCase()}`}
           >
             Official site <ExternalLink size={11} />
           </a>

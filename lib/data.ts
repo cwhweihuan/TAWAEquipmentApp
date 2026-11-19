@@ -143,6 +143,8 @@ export function toStoreItemDTO(it: StoreWithItems["items"][number]): StoreItemDT
     rooms: it.rooms,
     proposeNew: it.proposeNew,
     scheduleNo: it.scheduleNo,
+    drawingPage: it.drawingPage,
+    customGroup: it.customGroup,
     position: it.position,
     departments: eq?.departments ?? [],
     pdfFilename: eq?.pdf?.filename ?? null,
@@ -170,6 +172,7 @@ export function toStoreView(store: StoreWithItems): StoreView {
     floorplanName: store.floorplanName,
     subtenants: parseSubtenants(store.subtenants),
     rooms: store.rooms,
+    equipmentGrouping: store.equipmentGrouping,
     items: store.items.map(toStoreItemDTO),
   };
 }

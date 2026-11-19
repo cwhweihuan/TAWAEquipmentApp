@@ -115,7 +115,7 @@ export function DetailDrawer({
                 <DeptChip key={d} dept={d} />
               ))}
             </div>
-            <h2 className="truncate text-lg font-semibold text-gray-900">{sentenceCase(item.description)}</h2>
+            <h2 className="truncate text-lg font-semibold text-gray-900">{item.description.toUpperCase()}</h2>
             <PdfCaption filename={item.pdfFilename} className="mt-1" />
             {(item.manufacturer || item.model) && (
               <p className="text-sm text-gray-500">
@@ -266,7 +266,7 @@ export function DetailDrawer({
               </span>
             </div>
             {readOnly ? (
-              <p className="text-sm text-gray-800">{sentenceCase(item.dimension) || "—"}</p>
+              <p className="text-sm text-gray-800">{item.dimension || "—"}</p>
             ) : (
             <div className="flex items-center gap-2">
               <input
@@ -307,9 +307,9 @@ export function DetailDrawer({
               </dl>
 
               {item.remarks && (
-            <div className="mt-5 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-inset ring-amber-100">
+            <div className="mt-5 whitespace-pre-wrap break-words rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 ring-1 ring-inset ring-amber-100">
               <span className="font-medium">Remarks: </span>
-              {sentenceCase(item.remarks)}
+              {item.remarks}
             </div>
               )}
 

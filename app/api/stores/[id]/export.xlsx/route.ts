@@ -54,7 +54,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       it.rooms.join(", "),
       it.proposeNew ?? "",
       it.quantity,
-      eq?.description ?? it.description ?? "",
+      (eq?.description ?? it.description ?? "").toUpperCase(),
       eq?.manufacturer ?? it.manufacturer ?? "",
       eq?.model ?? it.model ?? "",
       eq?.supplyBy ?? "",

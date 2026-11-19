@@ -41,7 +41,7 @@ import {
   Settings2,
   Ruler,
 } from "lucide-react";
-import type { EquipmentDTO, StoreItemDTO, StoreView } from "@/lib/types";
+import type { EquipmentDTO, StoreEquipmentGrouping, StoreItemDTO, StoreView } from "@/lib/types";
 import { matchesEquipmentSearch } from "@/lib/equipment-search";
 import { PdfCaption } from "@/components/catalog/PdfCaption";
 import { DeptChip } from "@/components/DeptChip";
@@ -59,6 +59,7 @@ import {
   reorderStoreItems,
   replaceStoreItemEquipment,
   saveStoreItemRemarks,
+  saveStoreEquipmentGrouping,
   updateStoreItem,
   updateStoreItemPlacements,
   type StoreItemPlacementPatch,
@@ -81,6 +82,7 @@ export function StoreBuilder({
   equipment: EquipmentDTO[];
 }) {
   const router = useRouter();
+  const dragContextId = useId();
   const [items, setItems] = useState<StoreItemDTO[]>(store.items);
   const [previewTarget, setPreviewTarget] = useState<{ source: "catalog" | "store"; id: string } | null>(null);
   const [rooms, setRooms] = useState(store.rooms);
@@ -148,7 +150,7 @@ export function StoreBuilder({
   function previewItem(it: { description: string; manufacturer: string | null; pdfUrl: string | null; pdfDownloaded: boolean }) {
     if (!it.pdfUrl) return;
     setPreview({
-      title: it.description,
+      title: it.description.toUpperCase(),
       subtitle: it.manufacturer,
       url: it.pdfUrl,
       downloaded: it.pdfDownloaded,
@@ -169,6 +171,8 @@ export function StoreBuilder({
       rooms: [],
       proposeNew: null,
       scheduleNo: null,
+      drawingPage: null,
+      customGroup: null,
       position: items.length,
       departments: eq.departments,
       pdfFilename: eq.pdfFilename,
@@ -204,6 +208,8 @@ export function StoreBuilder({
         rooms: [],
         proposeNew: null,
         scheduleNo: null,
+        drawingPage: null,
+        customGroup: null,
         position: cur.length,
         departments: [],
         pdfFilename: null,
@@ -361,6 +367,7 @@ export function StoreBuilder({
 
   return (
     <DndContext
+      id={dragContextId}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragStart={onDragStart}
@@ -463,6 +470,8 @@ export function StoreBuilder({
           <StoreDropZone
             items={displayedItems}
             catalogSpecUrls={catalogSpecUrls}
+            initialGrouping={store.equipmentGrouping}
+            onGroupingChange={(mode) => saveStoreEquipmentGrouping(store.id, mode)}
             sortByNumber={sortByNumber}
             onSortChange={setSortByNumber}
             onBulkUpdate={async (ids, changes) => {
@@ -490,7 +499,7 @@ export function StoreBuilder({
       <DragOverlay>
         {activeDrag ? (
           <div className="w-[340px] rounded-xl border border-brand-300 bg-white p-2.5 text-sm font-medium text-gray-800 shadow-lg">
-            {sentenceCase(activeDrag.description)}
+            {activeDrag.description.toUpperCase()}
           </div>
         ) : null}
       </DragOverlay>
@@ -624,7 +633,7 @@ function ReplaceEquipmentDialog({ item, equipment, onClose, onApply }: {
       <div className="flex max-h-[80dvh] flex-col gap-3 p-5">
         <div>
           <h2 id="replace-equipment-title" className="text-lg font-semibold">Replace by</h2>
-          <p className="text-sm text-gray-600">{item.scheduleNo && `#${item.scheduleNo} · `}{sentenceCase(item.description)}</p>
+          <p className="text-sm text-gray-600">{item.scheduleNo && `#${item.scheduleNo} · `}{item.description.toUpperCase()}</p>
         </div>
         <input
           type="search"
@@ -642,7 +651,7 @@ function ReplaceEquipmentDialog({ item, equipment, onClose, onApply }: {
             <label key={eq.id} className="flex items-center gap-2 border-b border-gray-100 px-3 py-2 text-sm last:border-0 hover:bg-brand-50">
               <input type="radio" name="replacement-equipment" checked={selectedId === eq.id} onChange={() => setSelectedId(eq.id)} />
               <span>
-                <span className="block font-medium">{sentenceCase(eq.description)}</span>
+                <span className="block font-medium">{eq.description.toUpperCase()}</span>
                 <span className="block text-xs text-gray-500">{[`#${eq.masterItemNo}`, eq.manufacturer, eq.model, eq.dimension].filter(Boolean).join(" · ")}</span>
               </span>
             </label>
@@ -763,13 +772,13 @@ function CatalogItem({
       >
         <GripVertical size={16} />
       </button>
-      <button type="button" onClick={onPreview} className="min-w-0 flex-1 rounded text-left hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400" aria-label={`Preview ${sentenceCase(eq.description)}`}>
-        <p className="truncate text-sm font-medium">{sentenceCase(eq.description)}</p>
+      <button type="button" onClick={onPreview} className="min-w-0 flex-1 rounded text-left hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400" aria-label={`Preview ${eq.description.toUpperCase()}`}>
+        <p className="truncate text-sm font-medium">{eq.description.toUpperCase()}</p>
         <PdfCaption filename={eq.pdfFilename} className="mt-0.5" />
         <p className="truncate text-xs text-gray-400">
           #{eq.masterItemNo}
           {eq.manufacturer ? ` · ${sentenceCase(eq.manufacturer)}` : ""}
-          {eq.dimension ? ` · ${sentenceCase(eq.dimension)}` : ""}
+          {eq.dimension ? ` · ${eq.dimension}` : ""}
         </p>
       </button>
       {eq.pdfUrl && <FileText size={13} className="shrink-0 text-brand-400" />}
@@ -807,6 +816,8 @@ function canonicalStatus(v: string | null): string {
 function StoreDropZone({
   items,
   catalogSpecUrls,
+  initialGrouping,
+  onGroupingChange,
   sortByNumber,
   onSortChange,
   onBulkUpdate,
@@ -825,6 +836,8 @@ function StoreDropZone({
 }: {
   items: StoreItemDTO[];
   catalogSpecUrls: ReadonlyMap<string, string | null>;
+  initialGrouping: StoreEquipmentGrouping;
+  onGroupingChange: (mode: StoreEquipmentGrouping) => Promise<void>;
   sortByNumber: boolean;
   onSortChange: (sortByNumber: boolean) => void;
   onBulkUpdate: (ids: string[], changes: StoreItemPlacementPatch) => Promise<void>;
@@ -846,10 +859,15 @@ function StoreDropZone({
   onSaveRemarks: (item: StoreItemDTO, value: string) => Promise<string | undefined>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
-  const [groupByRoom, setGroupByRoom] = useState(true);
+  const [grouping, setGrouping] = useState(initialGrouping);
+  const [groupingError, setGroupingError] = useState<string | null>(null);
+  const [groupingPending, startGroupingSave] = useTransition();
+  const grouped = grouping !== "none";
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const [bulkRooms, setBulkRooms] = useState<string[] | undefined>();
   const [bulkStatus, setBulkStatus] = useState("");
+  const [bulkDrawingPage, setBulkDrawingPage] = useState<string>();
+  const [bulkCustomGroup, setBulkCustomGroup] = useState<string>();
   const [bulkError, setBulkError] = useState<string | null>(null);
   const [bulkPending, startBulkSave] = useTransition();
   const selectableIds = items.filter((item) => !item.id.startsWith("temp-")).map((item) => item.id);
@@ -857,27 +875,56 @@ function StoreDropZone({
   const allSelected = selectableIds.length > 0 && selectedIds.length === selectableIds.length;
 
   const indexedItems = items.map((item, index) => ({ item, index }));
-  const roomGroups = new Map<string | null, typeof indexedItems>(rooms.map((room) => [room, []]));
-  if (groupByRoom) {
+  const groups = new Map<string | null, typeof indexedItems>(
+    grouping === "room" ? rooms.map((room) => [room, []]) : []
+  );
+  if (grouped) {
     for (const entry of indexedItems) {
-      const assignments = entry.item.rooms.length ? entry.item.rooms : [null];
-      for (const room of assignments) {
-        if (!roomGroups.has(room)) roomGroups.set(room, []);
-        roomGroups.get(room)!.push(entry);
+      const { item } = entry;
+      const assignments = grouping === "room"
+        ? (item.rooms.length ? item.rooms : [null])
+        : [grouping === "drawingPage" ? item.drawingPage : item.customGroup];
+      for (const name of assignments) {
+        const entries = groups.get(name);
+        if (entries) entries.push(entry);
+        else groups.set(name, [entry]);
       }
     }
+  }
+  const unassigned = groups.get(null);
+  groups.delete(null);
+  const orderedGroups = [...groups].filter(([, entries]) => entries.length > 0);
+  if (grouping === "drawingPage") {
+    orderedGroups.sort(([a], [b]) => (a ?? "").localeCompare(b ?? "", undefined, { numeric: true }));
+  }
+  if (unassigned) orderedGroups.push([null, unassigned]);
+  const unassignedLabel = grouping === "drawingPage" ? "No drawing page"
+    : grouping === "custom" ? "No custom group" : "Unassigned";
+
+  function changeGrouping(mode: StoreEquipmentGrouping) {
+    const previous = grouping;
+    setGroupingError(null);
+    setGrouping(mode);
+    startGroupingSave(async () => {
+      try {
+        await onGroupingChange(mode);
+      } catch {
+        setGrouping(previous);
+        setGroupingError("Could not save grouping. Try again.");
+      }
+    });
   }
 
   function renderRow({ item: it, index: idx }: (typeof indexedItems)[number]) {
     return (
       <SortableStoreRow
         key={it.id}
-        grouped={groupByRoom}
+        grouped={grouped}
         item={it}
         catalogSpecUrl={it.equipmentId ? catalogSpecUrls.get(it.equipmentId) : undefined}
         rooms={rooms}
         index={idx + 1}
-        reorderDisabled={sortByNumber || groupByRoom}
+        reorderDisabled={sortByNumber || grouped}
         selected={selection.has(it.id)}
         selectionDisabled={bulkPending || it.id.startsWith("temp-")}
         onSelect={(checked) => setSelection((current) => {
@@ -904,12 +951,16 @@ function StoreDropZone({
     const changes: StoreItemPlacementPatch = {};
     if (bulkRooms !== undefined) changes.rooms = bulkRooms;
     if (bulkStatus) changes.proposeNew = bulkStatus === "clear" ? null : bulkStatus;
+    if (bulkDrawingPage !== undefined) changes.drawingPage = bulkDrawingPage.trim() || null;
+    if (bulkCustomGroup !== undefined) changes.customGroup = bulkCustomGroup.trim() || null;
     startBulkSave(async () => {
       try {
         await onBulkUpdate(selectedIds, changes);
         setSelection(new Set());
         setBulkRooms(undefined);
         setBulkStatus("");
+        setBulkDrawingPage(undefined);
+        setBulkCustomGroup(undefined);
       } catch (error) {
         setBulkError(error instanceof Error ? error.message : "Could not update selected equipment.");
       }
@@ -926,14 +977,18 @@ function StoreDropZone({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
         <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          aria-pressed={groupByRoom}
-          onClick={() => setGroupByRoom((current) => !current)}
-          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 aria-pressed:border-brand-400 aria-pressed:bg-brand-50"
+        <select
+          aria-label="Group equipment by"
+          value={grouping}
+          disabled={groupingPending}
+          onChange={(event) => changeGrouping(event.target.value as StoreEquipmentGrouping)}
+          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700"
         >
-          Group by room
-        </button>
+          <option value="none">No grouping</option>
+          <option value="room">Group by room</option>
+          <option value="drawingPage">Group by drawing page</option>
+          <option value="custom">Custom groups</option>
+        </select>
         <select
           aria-label="Schedule order"
           value={sortByNumber ? "number" : "drawing"}
@@ -953,6 +1008,8 @@ function StoreDropZone({
         </div>
       </div>
 
+      {groupingError && <p role="alert" className="px-4 py-1 text-xs text-red-600">{groupingError}</p>}
+
       {selectedIds.length > 0 && (
         <fieldset disabled={bulkPending} className="flex flex-wrap items-start gap-3 border-b border-gray-100 px-4 py-2 text-sm disabled:opacity-60">
           <span className="py-1 text-gray-600">{selectedIds.length} selected</span>
@@ -966,7 +1023,25 @@ function StoreDropZone({
             <option value="clear">Clear status</option>
             {STORE_STATUS_OPTIONS.map((status) => <option key={status} value={status}>{status}</option>)}
           </select>
-          <button type="button" onClick={saveSelection} disabled={bulkRooms === undefined && !bulkStatus} className="rounded-md bg-brand-600 px-3 py-1 font-medium text-white disabled:opacity-50">
+          <label className="flex items-center gap-1 py-1">
+            <input type="checkbox" checked={bulkCustomGroup !== undefined} onChange={(event) => setBulkCustomGroup(event.target.checked ? "" : undefined)} />
+            Set custom group
+          </label>
+          {bulkCustomGroup !== undefined && (
+            <input aria-label="Custom group name" value={bulkCustomGroup} maxLength={120}
+              onChange={(event) => setBulkCustomGroup(event.target.value)} placeholder="Group name (blank to clear)"
+              className="w-56 rounded-md border border-gray-200 bg-white px-2 py-1 text-sm" />
+          )}
+          <label className="flex items-center gap-1 py-1">
+            <input type="checkbox" checked={bulkDrawingPage !== undefined} onChange={(event) => setBulkDrawingPage(event.target.checked ? "" : undefined)} />
+            Set drawing page
+          </label>
+          {bulkDrawingPage !== undefined && (
+            <input aria-label="Drawing page" value={bulkDrawingPage} maxLength={120}
+              onChange={(event) => setBulkDrawingPage(event.target.value)} placeholder="e.g. K1.2 (blank to clear)"
+              className="w-48 rounded-md border border-gray-200 bg-white px-2 py-1 text-sm" />
+          )}
+          <button type="button" onClick={saveSelection} disabled={bulkRooms === undefined && !bulkStatus && bulkDrawingPage === undefined && bulkCustomGroup === undefined} className="rounded-md bg-brand-600 px-3 py-1 font-medium text-white disabled:opacity-50">
             {bulkPending ? "Saving…" : "Apply"}
           </button>
           {bulkError && <p role="alert" className="w-full text-red-600">{bulkError}</p>}
@@ -1003,14 +1078,14 @@ function StoreDropZone({
             <span>Room</span>
             <span>Status</span>
           </div>
-          {groupByRoom ? (
+          {grouped ? (
             <div className="min-w-[1000px]">
-              {[...roomGroups].filter(([, entries]) => entries.length > 0).map(([room, entries]) => (
-                <details key={room === null ? "unassigned" : `room:${room}`} className="group/room mb-1">
+              {orderedGroups.map(([name, entries]) => (
+                <details key={JSON.stringify([grouping, name])} className="group/room mb-1">
                   <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/50 bg-white/65 px-3 py-2 text-sm font-medium text-gray-800 hover:border-brand-200 [&::-webkit-details-marker]:hidden">
                     <ChevronRight size={14} aria-hidden="true" className="group-open/room:hidden" />
                     <ChevronDown size={14} aria-hidden="true" className="hidden group-open/room:block" />
-                    {room ?? "Unassigned"}
+                    {name ?? unassignedLabel}
                     <span className="text-xs font-normal text-gray-500">{entries.length} {entries.length === 1 ? "item" : "items"}</span>
                   </summary>
                   <div className="mt-1">{entries.map(renderRow)}</div>
@@ -1089,7 +1164,7 @@ function SortableStoreRow({
       <FloorPlanNumber value={item.scheduleNo} compact onSave={(value) => onPersist("scheduleNo", value)} />
       <input
         type="checkbox"
-        aria-label={`Select item ${index}: ${sentenceCase(item.description)}`}
+        aria-label={`Select item ${index}: ${item.description.toUpperCase()}`}
         checked={selected}
         disabled={selectionDisabled}
         onChange={(event) => onSelect(event.target.checked)}
@@ -1109,8 +1184,8 @@ function SortableStoreRow({
       {/* equipment: description, manufacturer, ALL department tags, pdf preview */}
       <div className="min-w-0">
         <div className="flex items-start gap-1.5">
-          <button type="button" onClick={onOpenEquipment} aria-label={`Preview ${sentenceCase(item.description)}`} className="min-w-0 flex-1 rounded text-left text-sm font-medium leading-snug text-gray-800 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400">
-            {sentenceCase(item.description)}
+          <button type="button" onClick={onOpenEquipment} aria-label={`Preview ${item.description.toUpperCase()}`} className="min-w-0 flex-1 rounded text-left text-sm font-medium leading-snug text-gray-800 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-brand-400">
+            {item.description.toUpperCase()}
           </button>
           {item.pdfUrl ? (
             <button
@@ -1128,7 +1203,7 @@ function SortableStoreRow({
               rel="noopener noreferrer"
               className="mt-0.5 shrink-0 rounded p-0.5 text-brand-400 transition hover:bg-brand-50 hover:text-brand-600"
               title="Open specification link"
-              aria-label={`Open specification link for ${sentenceCase(item.description)}`}
+              aria-label={`Open specification link for ${item.description.toUpperCase()}`}
             >
               <Link2 size={14} />
             </a>
@@ -1139,6 +1214,8 @@ function SortableStoreRow({
           {item.manufacturer && (
             <span className="truncate text-xs text-gray-400">{sentenceCase(item.manufacturer)}</span>
           )}
+          {item.drawingPage && <span className="break-all rounded bg-gray-100 px-1 text-[10px] text-gray-500" title="Drawing page">{item.drawingPage}</span>}
+          {item.customGroup && <span className="break-words rounded bg-gray-100 px-1 text-[10px] text-gray-500" title="Custom group">{item.customGroup}</span>}
           {item.departments.map((d) => (
             <DeptChip key={d} dept={d} />
           ))}
@@ -1153,7 +1230,7 @@ function SortableStoreRow({
         {item.dimension ? (
           <span className="flex items-start gap-1 text-xs text-gray-600">
             <Ruler size={12} className="mt-0.5 shrink-0 text-gray-300" />
-            <span className="break-words">{sentenceCase(item.dimension)}</span>
+            <span className="break-words">{item.dimension}</span>
           </span>
         ) : (
           <span className="text-xs text-gray-300">—</span>
@@ -1249,6 +1326,7 @@ function StoreItemRemarks({ item, expanded, onToggle, onSave }: {
   onToggle: () => void;
   onSave: (value: string) => Promise<string | undefined>;
 }) {
+  const remarksId = useId();
   const [value, setValue] = useState(item.remarks ?? "");
   const [error, setError] = useState<string>();
   const [pending, startSave] = useTransition();
@@ -1273,18 +1351,18 @@ function StoreItemRemarks({ item, expanded, onToggle, onSave }: {
           type="button"
           aria-label={expanded ? "Collapse remarks" : "Expand remarks"}
           aria-expanded={expanded}
-          aria-controls={`remarks-${item.id}`}
+          aria-controls={remarksId}
           onClick={onToggle}
           className="flex h-6 w-3 shrink-0 items-center justify-center rounded text-sm leading-none text-brand-600 hover:bg-brand-50"
         >
           {expanded ? "−" : "+"}
         </button>
-        <label htmlFor={`remarks-${item.id}`} className="shrink-0 py-1 text-[10px] font-semibold tracking-wide text-gray-500">
+        <label htmlFor={remarksId} className="shrink-0 py-1 text-[10px] font-semibold tracking-wide text-gray-500">
           REMARK/NOTES:
         </label>
         <textarea
-          id={`remarks-${item.id}`}
-          aria-label={`Remarks for ${sentenceCase(item.description)}`}
+          id={remarksId}
+          aria-label={`Remarks for ${item.description.toUpperCase()}`}
           rows={expanded ? 3 : 1}
           value={value}
           onChange={(event) => setValue(event.target.value)}

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ensurePdfBucket, createSignedUploadUrl, deletePdf, pdfPublicUrl } from "@/lib/supabase";
 import { STORE_STATUS_OPTIONS } from "@/lib/utils";
-import type { Subtenant } from "@/lib/types";
+import type { StoreEquipmentGrouping, Subtenant } from "@/lib/types";
 
 class RoomValidationError extends Error {}
 
@@ -220,20 +220,37 @@ export async function updateStoreItem(
   revalidatePath(`/stores/${item.storeId}`);
 }
 
-export type StoreItemPlacementPatch = { rooms?: string[]; proposeNew?: string | null };
+export async function saveStoreEquipmentGrouping(storeId: string, equipmentGrouping: StoreEquipmentGrouping) {
+  if (!["none", "room", "drawingPage", "custom"].includes(equipmentGrouping)) {
+    throw new Error("Choose a valid grouping.");
+  }
+  await prisma.store.update({ where: { id: storeId }, data: { equipmentGrouping } });
+  revalidatePath(`/stores/${storeId}`);
+}
+
+export type StoreItemPlacementPatch = {
+  rooms?: string[];
+  proposeNew?: string | null;
+  drawingPage?: string | null;
+  customGroup?: string | null;
+};
 
 export async function updateStoreItemPlacements(storeId: string, ids: string[], patch: StoreItemPlacementPatch) {
   const itemIds = [...new Set(ids)];
-  if (!itemIds.length || (patch.rooms === undefined && patch.proposeNew === undefined)) {
+  const { rooms, proposeNew, drawingPage, customGroup } = patch;
+  if (!itemIds.length || [rooms, proposeNew, drawingPage, customGroup].every((value) => value === undefined)) {
     return { error: "Select equipment and choose a change." };
   }
   if (patch.proposeNew != null && !STORE_STATUS_OPTIONS.some((status) => status === patch.proposeNew)) {
     return { error: "Choose a valid status." };
   }
 
+  if ([drawingPage, customGroup].some((value) => value != null && (typeof value !== "string" || value.trim().length > 120))) {
+    return { error: "Drawing page and custom group must be at most 120 characters." };
+  }
+
   try {
     await prisma.$transaction(async (tx) => {
-      const { rooms, proposeNew } = patch;
       if (rooms !== undefined) {
         await tx.$queryRaw`SELECT id FROM "Store" WHERE id = ${storeId} FOR UPDATE`;
         const store = await tx.store.findUnique({ where: { id: storeId }, select: { rooms: true } });
@@ -243,7 +260,12 @@ export async function updateStoreItemPlacements(storeId: string, ids: string[], 
       }
       const { count } = await tx.storeItem.updateMany({
         where: { storeId, id: { in: itemIds } },
-        data: { rooms: rooms === undefined ? undefined : [...new Set(rooms)], proposeNew },
+        data: {
+          rooms: rooms === undefined ? undefined : [...new Set(rooms)],
+          proposeNew,
+          drawingPage: drawingPage === undefined ? undefined : drawingPage?.trim() || null,
+          customGroup: customGroup === undefined ? undefined : customGroup?.trim() || null,
+        },
       });
       if (count !== itemIds.length) {
         throw new RoomValidationError("Some selected equipment is no longer in this store. Reload and try again.");
@@ -324,6 +346,8 @@ export async function duplicateAsCustom(itemId: string) {
         rooms: src.rooms,
         proposeNew: src.proposeNew,
         scheduleNo: src.scheduleNo,
+        drawingPage: src.drawingPage,
+        customGroup: src.customGroup,
         position: src.position + 1,
       },
     }),

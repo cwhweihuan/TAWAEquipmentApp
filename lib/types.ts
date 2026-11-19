@@ -42,6 +42,8 @@ export type StoreItemDTO = {
   rooms: string[];
   proposeNew: string | null;
   scheduleNo: string | null;
+  drawingPage: string | null;
+  customGroup: string | null;
   position: number;
   departments: string[];
   pdfFilename: string | null;
@@ -55,6 +57,8 @@ export type Subtenant = {
   name: string;
 };
 
+export type StoreEquipmentGrouping = "none" | "room" | "drawingPage" | "custom";
+
 /** Client-safe shape of a store buildout (header + items). */
 export type StoreView = {
   id: string;
@@ -67,4 +71,5 @@ export type StoreView = {
   subtenants: Subtenant[];
   rooms: string[];
   items: StoreItemDTO[];
+  equipmentGrouping: StoreEquipmentGrouping;
 };

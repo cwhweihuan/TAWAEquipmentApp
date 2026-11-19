@@ -78,6 +78,13 @@ model Pdf {
   createdAt DateTime @default(now())
 }
 
+enum StoreEquipmentGrouping {
+  none
+  room
+  drawingPage
+  custom
+}
+
 /// A store buildout — an ordered collection of equipment chosen from the catalog.
 model Store {
   id       String  @id @default(cuid())
@@ -86,6 +93,7 @@ model Store {
   location String?
   status   String  @default("active")
   rooms    String[] @default([])
+  equipmentGrouping StoreEquipmentGrouping @default(room)
 
   floorplanPath String? // path inside the Supabase Storage bucket for the floor-plan PDF
   floorplanName String? // original filename of the floor-plan PDF
@@ -118,6 +126,8 @@ model StoreItem {
   rooms      String[] @default([])
   proposeNew String?
   scheduleNo String?
+  drawingPage String?
+  customGroup String?
   position   Int     @default(0)
 
   createdAt DateTime @default(now())
