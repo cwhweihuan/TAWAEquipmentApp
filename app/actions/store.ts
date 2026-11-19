@@ -235,7 +235,12 @@ export type StoreItemPlacementPatch = {
   customGroup?: string | null;
 };
 
-export async function updateStoreItemPlacements(storeId: string, ids: string[], patch: StoreItemPlacementPatch) {
+export async function updateStoreItemPlacements(
+  storeId: string,
+  ids: string[],
+  patch: StoreItemPlacementPatch,
+  currentCustomGroup?: string,
+) {
   const itemIds = [...new Set(ids)];
   const { rooms, proposeNew, drawingPage, customGroup } = patch;
   if (!itemIds.length || [rooms, proposeNew, drawingPage, customGroup].every((value) => value === undefined)) {
@@ -259,7 +264,7 @@ export async function updateStoreItemPlacements(storeId: string, ids: string[], 
         }
       }
       const { count } = await tx.storeItem.updateMany({
-        where: { storeId, id: { in: itemIds } },
+        where: { storeId, id: { in: itemIds }, customGroup: currentCustomGroup },
         data: {
           rooms: rooms === undefined ? undefined : [...new Set(rooms)],
           proposeNew,
@@ -268,6 +273,9 @@ export async function updateStoreItemPlacements(storeId: string, ids: string[], 
         },
       });
       if (count !== itemIds.length) {
+        if (currentCustomGroup !== undefined) {
+          throw new RoomValidationError("Group membership changed. Reload and try again.");
+        }
         throw new RoomValidationError("Some selected equipment is no longer in this store. Reload and try again.");
       }
     });

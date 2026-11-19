@@ -474,8 +474,8 @@ export function StoreBuilder({
             onGroupingChange={(mode) => saveStoreEquipmentGrouping(store.id, mode)}
             sortByNumber={sortByNumber}
             onSortChange={setSortByNumber}
-            onBulkUpdate={async (ids, changes) => {
-              const result = await updateStoreItemPlacements(store.id, ids, changes);
+            onBulkUpdate={async (ids, changes, currentCustomGroup) => {
+              const result = await updateStoreItemPlacements(store.id, ids, changes, currentCustomGroup);
               if (result.error) throw new Error(result.error);
               const selected = new Set(ids);
               setItems((current) => current.map((item) => selected.has(item.id) ? { ...item, ...changes } : item));
@@ -840,7 +840,7 @@ function StoreDropZone({
   onGroupingChange: (mode: StoreEquipmentGrouping) => Promise<void>;
   sortByNumber: boolean;
   onSortChange: (sortByNumber: boolean) => void;
-  onBulkUpdate: (ids: string[], changes: StoreItemPlacementPatch) => Promise<void>;
+  onBulkUpdate: (ids: string[], changes: StoreItemPlacementPatch, currentCustomGroup?: string) => Promise<void>;
   rooms: string[];
   onRemove: (id: string) => void;
   onDuplicate: (it: StoreItemDTO) => void;
@@ -870,6 +870,8 @@ function StoreDropZone({
   const [bulkCustomGroup, setBulkCustomGroup] = useState<string>();
   const [bulkError, setBulkError] = useState<string | null>(null);
   const [bulkPending, startBulkSave] = useTransition();
+  const [renamingGroup, setRenamingGroup] = useState<{ name: string; draft: string } | null>(null);
+  const [customGroupError, setCustomGroupError] = useState<string | null>(null);
   const selectableIds = items.filter((item) => !item.id.startsWith("temp-")).map((item) => item.id);
   const selectedIds = selectableIds.filter((id) => selection.has(id));
   const allSelected = selectableIds.length > 0 && selectedIds.length === selectableIds.length;
@@ -904,6 +906,8 @@ function StoreDropZone({
   function changeGrouping(mode: StoreEquipmentGrouping) {
     const previous = grouping;
     setGroupingError(null);
+    setRenamingGroup(null);
+    setCustomGroupError(null);
     setGrouping(mode);
     startGroupingSave(async () => {
       try {
@@ -966,6 +970,25 @@ function StoreDropZone({
       }
     });
   }
+
+  function saveCustomGroup(name: string, nextName: string | null) {
+    if (nextName === "" || nextName === name) return;
+    setCustomGroupError(null);
+    if (nextName !== null && groups.has(nextName)) {
+      setCustomGroupError("A custom group already has this name.");
+      return;
+    }
+    const ids = groups.get(name)?.map(({ item }) => item.id);
+    if (!ids?.length) return;
+    startBulkSave(async () => {
+      try {
+        await onBulkUpdate(ids, { customGroup: nextName }, name);
+        setRenamingGroup(null);
+      } catch (error) {
+        setCustomGroupError(error instanceof Error ? error.message : "Could not save the custom group.");
+      }
+    });
+  }
   return (
     <div
       ref={setNodeRef}
@@ -1009,6 +1032,7 @@ function StoreDropZone({
       </div>
 
       {groupingError && <p role="alert" className="px-4 py-1 text-xs text-red-600">{groupingError}</p>}
+      {customGroupError && <p role="alert" className="px-4 py-1 text-xs text-red-600">{customGroupError}</p>}
 
       {selectedIds.length > 0 && (
         <fieldset disabled={bulkPending} className="flex flex-wrap items-start gap-3 border-b border-gray-100 px-4 py-2 text-sm disabled:opacity-60">
@@ -1081,15 +1105,58 @@ function StoreDropZone({
           {grouped ? (
             <div className="min-w-[1000px]">
               {orderedGroups.map(([name, entries]) => (
-                <details key={JSON.stringify([grouping, name])} className="group/room mb-1">
-                  <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/50 bg-white/65 px-3 py-2 text-sm font-medium text-gray-800 hover:border-brand-200 [&::-webkit-details-marker]:hidden">
-                    <ChevronRight size={14} aria-hidden="true" className="group-open/room:hidden" />
-                    <ChevronDown size={14} aria-hidden="true" className="hidden group-open/room:block" />
-                    {name ?? unassignedLabel}
-                    <span className="text-xs font-normal text-gray-500">{entries.length} {entries.length === 1 ? "item" : "items"}</span>
-                  </summary>
-                  <div className="mt-1">{entries.map(renderRow)}</div>
-                </details>
+                <div key={JSON.stringify([grouping, name])} className="relative mb-1">
+                  <details className="group/room">
+                    <summary className={cn(
+                      "flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/50 bg-white/65 px-3 py-2 text-sm font-medium text-gray-800 hover:border-brand-200 [&::-webkit-details-marker]:hidden",
+                      grouping === "custom" && name !== null && "pr-24"
+                    )}>
+                      <ChevronRight size={14} aria-hidden="true" className="group-open/room:hidden" />
+                      <ChevronDown size={14} aria-hidden="true" className="hidden group-open/room:block" />
+                      <span className="truncate">{name ?? unassignedLabel}</span>
+                      <span className="shrink-0 text-xs font-normal text-gray-500">{entries.length} {entries.length === 1 ? "item" : "items"}</span>
+                    </summary>
+                    <div className="mt-1">{entries.map(renderRow)}</div>
+                  </details>
+                  {grouping === "custom" && name !== null && (
+                    <div className="absolute right-2 top-1 flex gap-1">
+                      <button type="button" aria-label={`Rename group ${name}`} title="Rename group" disabled={bulkPending}
+                        className="rounded p-2 text-gray-500 hover:bg-brand-50 hover:text-brand-700 disabled:opacity-50"
+                        onClick={() => {
+                          setCustomGroupError(null);
+                          setRenamingGroup({ name, draft: name });
+                        }}>
+                        <Pencil size={14} />
+                      </button>
+                      <button type="button" aria-label={`Remove group ${name}`} title="Remove group" disabled={bulkPending}
+                        className="rounded p-2 text-gray-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                        onClick={() => {
+                          if (window.confirm(`Remove group “${name}”? Its equipment will move to “No custom group”.`)) {
+                            saveCustomGroup(name, null);
+                          }
+                        }}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {renamingGroup && renamingGroup.name === name && (
+                    <form className="mt-1 flex items-center gap-2 px-3 py-2 text-sm" onSubmit={(event) => {
+                      event.preventDefault();
+                      saveCustomGroup(renamingGroup.name, renamingGroup.draft.trim());
+                    }}>
+                      <input aria-label="New custom group name" autoFocus required maxLength={120}
+                        value={renamingGroup.draft} disabled={bulkPending}
+                        className="rounded-md border border-gray-200 bg-white px-2 py-1"
+                        onChange={(event) => setRenamingGroup({ ...renamingGroup, draft: event.target.value })} />
+                      <button type="submit" disabled={bulkPending || !renamingGroup.draft.trim() || renamingGroup.draft.trim() === name}
+                        className="rounded-md bg-brand-600 px-3 py-1 font-medium text-white disabled:opacity-50">Save</button>
+                      <button type="button" disabled={bulkPending} className="px-2 py-1 text-gray-600" onClick={() => {
+                        setCustomGroupError(null);
+                        setRenamingGroup(null);
+                      }}>Cancel</button>
+                    </form>
+                  )}
+                </div>
               ))}
             </div>
           ) : (
