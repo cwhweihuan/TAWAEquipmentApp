@@ -282,14 +282,15 @@ export async function reorderCatalogEquipment(
 export async function deleteEquipment(id: string) {
   const eq = await withCatalogNumbering(async (tx) => {
     const deleted = await tx.equipment.delete({ where: { id }, include: { pdf: true } });
-    // Temporarily move the remaining positive numbers out of the unique index range.
+    // Move numbers out of the way before assigning a continuous sequence in the same order.
+    await tx.$executeRaw`UPDATE "Equipment" SET "masterItemNo" = -"masterItemNo"`;
     await tx.$executeRaw`
-      UPDATE "Equipment" SET "masterItemNo" = -"masterItemNo"
-      WHERE "masterItemNo" > ${deleted.masterItemNo}
-    `;
-    await tx.$executeRaw`
-      UPDATE "Equipment" SET "masterItemNo" = -"masterItemNo" - 1
-      WHERE "masterItemNo" < ${-deleted.masterItemNo}
+      WITH numbered AS (
+        SELECT id, row_number() OVER (ORDER BY "masterItemNo" DESC)::integer AS number
+        FROM "Equipment"
+      )
+      UPDATE "Equipment" AS equipment SET "masterItemNo" = numbered.number
+      FROM numbered WHERE equipment.id = numbered.id
     `;
     return deleted;
   });
