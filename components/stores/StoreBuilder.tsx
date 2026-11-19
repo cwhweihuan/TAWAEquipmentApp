@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useOptimistic, useRef, useState, useTransition } from "react";
+import { useEffect, useId, useMemo, useOptimistic, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -24,6 +24,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import {
   ArrowLeft,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Search,
@@ -664,8 +665,8 @@ function StorePlacement({ item, rooms, onPersist }: { item: StoreItemDTO; rooms:
   return <div className="mb-4 grid grid-cols-1 items-start gap-3 sm:grid-cols-2">
     <FloorPlanNumber value={item.scheduleNo} onSave={(value) => onPersist("scheduleNo", value)} />
     <div className="flex min-w-0 flex-col gap-1">
-      <span className="text-xs text-gray-500">Room</span>
-      <StoreRoomSelect compact selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={(value) => onPersist("rooms", value)} />
+      <span className="text-[11px] text-gray-500">Room</span>
+      <StoreRoomSelect compact floating selected={item.rooms} rooms={rooms} creatingItem={item.id.startsWith("temp-")} onSave={(value) => onPersist("rooms", value)} />
     </div>
   </div>;
 }
@@ -688,13 +689,14 @@ function FloorPlanNumber({ value, onSave, compact = false }: { value: string | n
   </label>;
 }
 
-function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…", creatingItem = false, compact = false }: {
+function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…", creatingItem = false, compact = false, floating = false }: {
   selected: string[];
   rooms: string[];
   onSave: (value: string[]) => Promise<void>;
   emptyLabel?: string;
   creatingItem?: boolean;
   compact?: boolean;
+  floating?: boolean;
 }) {
   const [pending, startSave] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -703,12 +705,19 @@ function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…
   if (creatingItem) return <p className={cn("px-2 py-1 text-sm text-gray-500", !compact && "mb-3")} role="status">Adding equipment…</p>;
 
   return <div className={cn("min-w-0", !compact && "mb-3")}>
-    <details className="rounded-md border border-gray-200 bg-white text-sm">
-      <summary className="px-2 py-1" aria-label="Choose rooms">{displayed.length ? displayed.join(", ") : emptyLabel}</summary>
-      <fieldset disabled={pending} className="flex flex-col gap-2 border-t border-gray-100 p-2 disabled:opacity-50">
+    <details className="relative rounded-md border border-gray-200 bg-white text-xs open:z-10">
+      <summary className="cursor-pointer px-2 py-1" aria-label="Choose rooms">
+        <span className="inline-block max-w-[calc(100%-1rem)] truncate align-bottom" title={displayed.join(", ")}>
+          {displayed.length ? displayed.join(", ") : emptyLabel}
+        </span>
+      </summary>
+      <fieldset disabled={pending} className={cn(
+        "scroll-thin max-h-[11rem] min-w-0 overflow-y-auto overscroll-contain border-t border-gray-100 p-1 disabled:opacity-50",
+        floating && "absolute inset-x-0 top-full mt-1 rounded-md border border-gray-200 bg-white shadow-lg"
+      )}>
         <legend className="sr-only">Rooms (select multiple)</legend>
         {options.length === 0 && <p className="text-xs text-gray-500">Create rooms using the Rooms button.</p>}
-        {options.map((name) => <label key={name} className="flex items-start gap-2">
+        {options.map((name) => <label key={name} className="flex min-h-6 cursor-pointer items-start gap-2 rounded px-1 py-1 hover:bg-gray-100">
           <input type="checkbox" checked={displayed.includes(name)} onChange={(event) => {
             const next = event.target.checked ? [...selected, name] : selected.filter((room) => room !== name);
             setError(null);
@@ -837,6 +846,7 @@ function StoreDropZone({
   onSaveRemarks: (item: StoreItemDTO, value: string) => Promise<string | undefined>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: "store-drop" });
+  const [groupByRoom, setGroupByRoom] = useState(true);
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const [bulkRooms, setBulkRooms] = useState<string[] | undefined>();
   const [bulkStatus, setBulkStatus] = useState("");
@@ -845,6 +855,49 @@ function StoreDropZone({
   const selectableIds = items.filter((item) => !item.id.startsWith("temp-")).map((item) => item.id);
   const selectedIds = selectableIds.filter((id) => selection.has(id));
   const allSelected = selectableIds.length > 0 && selectedIds.length === selectableIds.length;
+
+  const indexedItems = items.map((item, index) => ({ item, index }));
+  const roomGroups = new Map<string | null, typeof indexedItems>(rooms.map((room) => [room, []]));
+  if (groupByRoom) {
+    for (const entry of indexedItems) {
+      const assignments = entry.item.rooms.length ? entry.item.rooms : [null];
+      for (const room of assignments) {
+        if (!roomGroups.has(room)) roomGroups.set(room, []);
+        roomGroups.get(room)!.push(entry);
+      }
+    }
+  }
+
+  function renderRow({ item: it, index: idx }: (typeof indexedItems)[number]) {
+    return (
+      <SortableStoreRow
+        key={it.id}
+        grouped={groupByRoom}
+        item={it}
+        catalogSpecUrl={it.equipmentId ? catalogSpecUrls.get(it.equipmentId) : undefined}
+        rooms={rooms}
+        index={idx + 1}
+        reorderDisabled={sortByNumber || groupByRoom}
+        selected={selection.has(it.id)}
+        selectionDisabled={bulkPending || it.id.startsWith("temp-")}
+        onSelect={(checked) => setSelection((current) => {
+          const next = new Set(current);
+          if (checked) next.add(it.id);
+          else next.delete(it.id);
+          return next;
+        })}
+        onRemove={() => onRemove(it.id)}
+        onDuplicate={() => onDuplicate(it)}
+        onPatch={(p) => onPatch(it.id, p)}
+        onPersist={(field, value) => onPersist(it.id, field, value)}
+        onPreview={() => onPreview(it)}
+        onOpenEquipment={() => onOpenEquipment(it)}
+        onEdit={() => onEdit(it)}
+        onReplace={() => onReplace(it)}
+        onSaveRemarks={(value) => onSaveRemarks(it, value)}
+      />
+    );
+  }
 
   function saveSelection() {
     setBulkError(null);
@@ -872,7 +925,15 @@ function StoreDropZone({
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          aria-pressed={groupByRoom}
+          onClick={() => setGroupByRoom((current) => !current)}
+          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 aria-pressed:border-brand-400 aria-pressed:bg-brand-50"
+        >
+          Group by room
+        </button>
         <select
           aria-label="Schedule order"
           value={sortByNumber ? "number" : "drawing"}
@@ -942,37 +1003,25 @@ function StoreDropZone({
             <span>Room</span>
             <span>Status</span>
           </div>
-          <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+          {groupByRoom ? (
             <div className="min-w-[1000px]">
-            {items.map((it, idx) => (
-              <SortableStoreRow
-                key={it.id}
-                item={it}
-                catalogSpecUrl={it.equipmentId ? catalogSpecUrls.get(it.equipmentId) : undefined}
-                rooms={rooms}
-                index={idx + 1}
-                reorderDisabled={sortByNumber}
-                selected={selection.has(it.id)}
-                selectionDisabled={bulkPending || it.id.startsWith("temp-")}
-                onSelect={(checked) => setSelection((current) => {
-                  const next = new Set(current);
-                  if (checked) next.add(it.id);
-                  else next.delete(it.id);
-                  return next;
-                })}
-                onRemove={() => onRemove(it.id)}
-                onDuplicate={() => onDuplicate(it)}
-                onPatch={(p) => onPatch(it.id, p)}
-                onPersist={(field, value) => onPersist(it.id, field, value)}
-                onPreview={() => onPreview(it)}
-                onOpenEquipment={() => onOpenEquipment(it)}
-                onEdit={() => onEdit(it)}
-                onReplace={() => onReplace(it)}
-                onSaveRemarks={(value) => onSaveRemarks(it, value)}
-              />
-            ))}
+              {[...roomGroups].filter(([, entries]) => entries.length > 0).map(([room, entries]) => (
+                <details key={room === null ? "unassigned" : `room:${room}`} className="group/room mb-1">
+                  <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/50 bg-white/65 px-3 py-2 text-sm font-medium text-gray-800 hover:border-brand-200 [&::-webkit-details-marker]:hidden">
+                    <ChevronRight size={14} aria-hidden="true" className="group-open/room:hidden" />
+                    <ChevronDown size={14} aria-hidden="true" className="hidden group-open/room:block" />
+                    {room ?? "Unassigned"}
+                    <span className="text-xs font-normal text-gray-500">{entries.length} {entries.length === 1 ? "item" : "items"}</span>
+                  </summary>
+                  <div className="mt-1">{entries.map(renderRow)}</div>
+                </details>
+              ))}
             </div>
-          </SortableContext>
+          ) : (
+            <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+              <div className="min-w-[1000px]">{indexedItems.map(renderRow)}</div>
+            </SortableContext>
+          )}
         </div>
       )}
     </div>
@@ -981,6 +1030,7 @@ function StoreDropZone({
 
 function SortableStoreRow({
   item,
+  grouped,
   catalogSpecUrl,
   rooms,
   index,
@@ -999,6 +1049,7 @@ function SortableStoreRow({
   onSaveRemarks,
 }: {
   item: StoreItemDTO;
+  grouped: boolean;
   catalogSpecUrl?: string | null;
   rooms: string[];
   index: number;
@@ -1016,11 +1067,12 @@ function SortableStoreRow({
   onReplace: () => void;
   onSaveRemarks: (value: string) => Promise<string | undefined>;
 }) {
+  const instanceId = useId();
   const specUrl = splitStoreSpecSource(item.remarks).specSource ?? catalogSpecUrl;
   const [remarksExpanded, setRemarksExpanded] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: item.id,
-    disabled: { draggable: reorderDisabled },
+    id: grouped ? `grouped:${instanceId}` : item.id,
+    disabled: { draggable: reorderDisabled, droppable: grouped },
   });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
