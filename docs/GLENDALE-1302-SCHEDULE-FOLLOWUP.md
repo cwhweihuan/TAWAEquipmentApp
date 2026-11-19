@@ -23,10 +23,23 @@
 
 - K1.1 No. 89 冰槽依圖面補入 48 W × 31 D × 50 H in、163 lb dry／854 lb full、耐震固定、3/4 in FPT 間接排水及 NSF。依原廠規格表校正型號為 B110PS（圖面寫 B11OPS）。原廠列 854 lb 為儲冰容量、163 lb 為運輸重量，安裝前需確認搭配的製冰機及轉接件。已讀回線上資料。[Ice-O-Matic 原廠規格表](https://www.iceomatic.com/userfiles/2466/products/prod_59267/Storage-Bins-Spec-Sheet.pdf)
 
+## Rooms 圖複核
+
+以 2026-10-27 Rooms 圖的房號對照 K1.2、K1.3 的設備引線。跨房設備以同一設備列勾選多個 Room，數量仍為該列合計。已重新載入驗證下列 9 列指派及全店 140 列的圖號與數量。
+
+| 設備圖 | 圖號 | Room |
+| --- | --- | --- |
+| K1.3 | 114 | #173 Men's Lockers、#174 Women's Lockers |
+| K1.2 | 2 | #152 Live Fish Tanks |
+| K1.2、K1.3 | 90、111 | #141 Butcher Prep、#153 Seafood Prep、#177 Produce Prep |
+| K1.2、K1.3 | 95 | #141 Butcher Prep、#151 Seafood Cutting、#177 Produce Prep |
+| K1.2、K1.3 | 100、101 | #171 Janitor、#176 Pump Storage |
+| K1.2 | 130、148 | #151 Seafood Cutting |
+
 ## 接續工作
 
 - 本輪優先複核 58 列。50 列已補來源連結與適用註記，並逐列線上讀回。來源包含原廠產品頁、規格 PDF 及型號認證資料。系列或相近後綴只列參考，備註標示仍需核實的配置。4 列圖面列為 CUSTOM，保留原資料。廠商和型號皆空白的列也維持原狀。[逐列核對紀錄](./GLENDALE-1302-SPEC-SOURCE-REVIEW.json)
 - 4 列待核實。No. 199 Toshiba 6800 與 No. 149 Atlanta Culinary ARE-2 待查銘牌或送審資料。No. 195 Xytronic LF-90 待確認封口機廠商及型號。No. 307 BOTINKIT MAX 5.0 待取得該版本規格書。
 - 同一圖號有不同尺寸時，在同一門店建立獨立變體列，保留圖號，填各自型號、尺寸、數量和 Room。優先核對 K1.0 No. 60（AHT Paris 185／210，合計 5）及 No. 114（GSW EL-2DR／EL-5DR，合計 2）、K1.1 No. 120（Eagle T3060SB／T3072SB，合計 7）、No. 157（圖面列 HFW-3／4／5，合計 2），以及 K1.4 Panlao No. 6（GSW WT-EE3030／WT-EE2430，合計 4）及 No. 7（Winco VCS-1836／VCS-1848，合計 4）。原圖列為選項或未標分配數時，先保留合計並核實實際組合，避免把總數分配給錯誤尺寸。
-- 回查 K1.0 和 K1.2 的 Seafood、Meat、Produce、Back of House 和 Staff Lockers，按設備所在位置對應實際房號，再把房號加到 Room 名稱前。原彙總區域包含多個房間。
+- 接續核對 K1.0、K1.2、K1.3 的其餘設備擺位。優先釐清 No. 94A、97、104、105、110、119、121、122、131 的跨房指派與圖面數量，並比對 K1.2、K1.3 重疊畫出的設備。No. 114 已確認置物間房號，EL-2DR／EL-5DR 的配置及分配數仍待核對。
 - 介面需求已實作。第一欄是圖紙號碼，門店清單可切換原有順序或按圖號自然排序，標題上方 Stores 旁可收合或展開設備搜尋欄。排序切換只改顯示順序。
