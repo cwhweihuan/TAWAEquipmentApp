@@ -19,6 +19,10 @@ export function splitStoreSpecSource(remarks: string | null) {
   };
 }
 
+export function isOmittedStoreItem(item: { description: string | null; quantity: number }) {
+  return item.quantity === 0 && item.description?.trim().toLowerCase() === "omitted";
+}
+
 /** Equipment departments, in canonical display order. */
 export const DEPARTMENTS = [
   "MEAT",

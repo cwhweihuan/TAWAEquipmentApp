@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { uploadPdf, deletePdf, ensurePdfBucket, createSignedUploadUrl } from "@/lib/supabase";
-import { DEPARTMENTS } from "@/lib/utils";
+import { DEPARTMENTS, isOmittedStoreItem, splitStoreSpecSource } from "@/lib/utils";
 
 const FIELDS = [
   "description",
@@ -153,6 +153,42 @@ export async function createEquipment(fd: FormData) {
   });
   revalidatePath("/catalog");
   return eq.id;
+}
+
+export async function convertCustomItemToEquipment(storeId: string, itemId: string) {
+  const result = await withCatalogNumbering(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "StoreItem" WHERE id = ${itemId} AND "storeId" = ${storeId} FOR UPDATE`;
+    const item = await tx.storeItem.findUnique({ where: { id: itemId, storeId } });
+    if (!item) return { error: "This store item is no longer available." };
+    if (item.equipmentId) return { equipmentId: item.equipmentId, remarks: item.remarks };
+    if (isOmittedStoreItem(item)) return { error: "An omitted placeholder cannot be added to the catalog." };
+
+    const { remarks, specSource } = splitStoreSpecSource(item.remarks);
+    const notes = remarks?.trim() || null;
+    const max = await tx.equipment.aggregate({ _max: { masterItemNo: true } });
+    const equipment = await tx.equipment.create({
+      data: {
+        masterItemNo: (max._max.masterItemNo ?? 0) + 1,
+        description: item.description ?? "Custom item",
+        manufacturer: item.manufacturer,
+        model: item.model,
+        dimension: item.dimension,
+        specUrl: specSource,
+        remarks: notes,
+        departments: [],
+      },
+    });
+    await tx.storeItem.update({
+      where: { id: item.id },
+      data: { equipmentId: equipment.id, remarks: notes },
+    });
+    return { equipmentId: equipment.id, remarks: notes };
+  });
+  if (result.equipmentId) {
+    revalidatePath("/catalog");
+    revalidatePath(`/stores/${storeId}`);
+  }
+  return result;
 }
 
 export async function updateEquipment(id: string, fd: FormData, storeRow?: {

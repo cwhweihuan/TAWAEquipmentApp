@@ -1,21 +1,36 @@
 "use client";
 
-import { sentenceCase, splitStoreSpecSource } from "@/lib/utils";
+import { isOmittedStoreItem, sentenceCase, splitStoreSpecSource } from "@/lib/utils";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, useTransition, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Pencil, X } from "lucide-react";
 import type { StoreItemDTO } from "@/lib/types";
 
-export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onNext, position, total, children }: {
+export function CustomItemPreviewDrawer({ item, onClose, onEdit, onConvert, onPrevious, onNext, position, total, children }: {
   item: StoreItemDTO;
   onClose: () => void;
   onEdit: () => void;
+  onConvert: () => Promise<string | undefined>;
   onPrevious: () => void;
   onNext: () => void;
   position: number;
   total: number;
   children?: ReactNode;
 }) {
+  const [converting, startConversion] = useTransition();
+  const [conversionError, setConversionError] = useState<string>();
+
+  function convert() {
+    setConversionError(undefined);
+    startConversion(async () => {
+      try {
+        setConversionError(await onConvert());
+      } catch {
+        setConversionError("Could not convert this item. Please try again.");
+      }
+    });
+  }
+
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -50,6 +65,17 @@ export function CustomItemPreviewDrawer({ item, onClose, onEdit, onPrevious, onN
           </div>
         </div>
         <div className="scroll-thin flex-1 overflow-y-auto px-6 py-5">
+          {!isOmittedStoreItem(item) && !item.id.startsWith("temp-") && (
+            <button
+              type="button"
+              onClick={convert}
+              disabled={converting}
+              className="mb-4 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+            >
+              {converting ? "Converting…" : "Convert to Catalog Equipment"}
+            </button>
+          )}
+          {conversionError && <p role="alert" className="mb-4 text-sm text-red-600">{conversionError}</p>}
           {children}
           <dl className="grid grid-cols-2 gap-4">
             {[

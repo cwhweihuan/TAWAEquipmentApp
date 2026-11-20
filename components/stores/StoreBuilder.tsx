@@ -50,6 +50,7 @@ import { DetailDrawer } from "@/components/catalog/DetailDrawer";
 import { CustomItemPreviewDrawer } from "./CustomItemPreviewDrawer";
 import { EquipmentEditDrawer } from "./EquipmentEditDrawer";
 import { CustomItemEditDrawer } from "./CustomItemEditDrawer";
+import { convertCustomItemToEquipment } from "@/app/actions/equipment";
 import {
   addItemToStore,
   addCustomItem,
@@ -247,6 +248,21 @@ export function StoreBuilder({
 
   function patch(id: string, p: Partial<StoreItemDTO>) {
     setItems((cur) => cur.map((i) => (i.id === id ? { ...i, ...p } : i)));
+  }
+
+  async function convertToEquipment(itemId: string) {
+    const pending = pendingRemarks.current.get(itemId);
+    const remarksError = await pending;
+    if (remarksError) return remarksError;
+
+    const result = await convertCustomItemToEquipment(store.id, itemId);
+    if (!result.equipmentId) return result.error;
+    patch(itemId, {
+      equipmentId: result.equipmentId,
+      remarks: result.remarks,
+      hasStoreRemarks: result.remarks !== null,
+    });
+    router.refresh();
   }
 
   // pencil: linked rows open the shared family editor, custom rows edit their own fields
@@ -537,7 +553,7 @@ export function StoreBuilder({
         </DetailDrawer>
       )}
       {previewCustom && (
-        <CustomItemPreviewDrawer item={previewCustom} onClose={() => setPreviewTarget(null)} position={previewIndex + 1} total={previewList.length} onPrevious={() => movePreview(-1)} onNext={() => movePreview(1)} onEdit={() => { setPreviewTarget(null); editItem(previewCustom); }}>
+        <CustomItemPreviewDrawer key={previewCustom.id} item={previewCustom} onClose={() => setPreviewTarget(null)} position={previewIndex + 1} total={previewList.length} onPrevious={() => movePreview(-1)} onNext={() => movePreview(1)} onEdit={() => { setPreviewTarget(null); editItem(previewCustom); }} onConvert={() => convertToEquipment(previewCustom.id)}>
           <StorePlacement key={previewCustom.id} item={previewCustom} rooms={rooms} onPersist={(field, value) => persistField(previewCustom.id, field, value)} />
         </CustomItemPreviewDrawer>
       )}
