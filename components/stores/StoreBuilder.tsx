@@ -12,6 +12,8 @@ import {
   useSensor,
   useSensors,
   closestCenter,
+  pointerWithin,
+  type CollisionDetection,
   type DragStartEvent,
   type DragEndEvent,
 } from "@dnd-kit/core";
@@ -75,6 +77,22 @@ type StoreMeta = Pick<
   "name" | "number" | "location" | "floorplanUrl" | "floorplanPath" | "floorplanName" | "subtenants"
 >;
 
+type GroupTarget = { mode: Exclude<StoreEquipmentGrouping, "none">; name: string | null };
+type StoreDragData = { itemId?: string; group?: GroupTarget };
+
+const detectStoreCollision: CollisionDetection = (args) => {
+  if (String(args.active.id).startsWith("cat:")) {
+    return closestCenter({
+      ...args,
+      droppableContainers: args.droppableContainers.filter(({ id }) => id === "store-drop"),
+    });
+  }
+  return pointerWithin({
+    ...args,
+    droppableContainers: args.droppableContainers.filter(({ id }) => id !== "store-drop"),
+  });
+};
+
 export function StoreBuilder({
   store,
   equipment,
@@ -105,6 +123,7 @@ export function StoreBuilder({
   const [q, setQ] = useState("");
   const [catalogOpen, setCatalogOpen] = useState(true);
   const [sortByNumber, setSortByNumber] = useState(false);
+  const [movePending, setMovePending] = useState(false);
   const [activeDrag, setActiveDrag] = useState<EquipmentDTO | StoreItemDTO | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [preview, setPreview] = useState<PreviewTarget | null>(null);
@@ -349,7 +368,7 @@ export function StoreBuilder({
     if (id.startsWith("cat:")) {
       setActiveDrag(equipment.find((x) => x.id === id.slice(4)) ?? null);
     } else {
-      setActiveDrag(items.find((x) => x.id === id) ?? null);
+      setActiveDrag(items.find((x) => x.id === (e.active.data.current?.itemId ?? id)) ?? null);
     }
   }
 
@@ -366,18 +385,54 @@ export function StoreBuilder({
       return;
     }
 
-    // reordered store items
-    if (!sortByNumber && activeId !== overId && !overId.startsWith("cat:")) {
-      const oldIndex = items.findIndex((i) => i.id === activeId);
-      const newIndex = items.findIndex((i) => i.id === overId);
-      if (oldIndex >= 0 && newIndex >= 0) {
-        const next = arrayMove(items, oldIndex, newIndex);
-        setItems(next);
-        await reorderStoreItems(
-          store.id,
-          next.filter((i) => !i.id.startsWith("temp-")).map((i) => i.id)
-        );
+    const source = e.active.data.current as StoreDragData | undefined;
+    const target = e.over?.data.current as StoreDragData | undefined;
+    const item = items.find(({ id }) => id === source?.itemId);
+    if (!item || movePending || activeId === overId) return;
+
+    const from = source?.group;
+    const to = target?.group;
+    if (from?.mode !== to?.mode) return;
+
+    setItemError(null);
+    setMovePending(true);
+    try {
+      if (from && to && from.name !== to.name) {
+        const changes: StoreItemPlacementPatch = to.mode === "room"
+          ? { rooms: to.name === null ? [] : [...new Set([...item.rooms.filter((room) => room !== from.name), to.name])] }
+          : { [to.mode === "custom" ? "customGroup" : "drawingPage"]: to.name };
+        const result = await updateStoreItemPlacements(store.id, [item.id], changes);
+        if (result.error) throw new Error(result.error);
+        patch(item.id, changes);
+      } else if (!sortByNumber && target?.itemId) {
+        const sourceId = item.id;
+        const targetId = target.itemId;
+        const belongsToGroup = (row: StoreItemDTO) => {
+          switch (from?.mode) {
+            case "room": return from.name === null ? row.rooms.length === 0 : row.rooms.includes(from.name);
+            case "drawingPage": return row.drawingPage === from.name;
+            case "custom": return row.customGroup === from.name;
+            default: return true;
+          }
+        };
+        function reorder(current: StoreItemDTO[]) {
+          const groupItems = current.filter(belongsToGroup);
+          const oldIndex = groupItems.findIndex(({ id }) => id === sourceId);
+          const newIndex = groupItems.findIndex(({ id }) => id === targetId);
+          if (oldIndex < 0 || newIndex < 0 || oldIndex === newIndex) return current;
+          const reordered = arrayMove(groupItems, oldIndex, newIndex);
+          let index = 0;
+          return current.map((row) => belongsToGroup(row) ? reordered[index++] : row);
+        }
+        const next = reorder(items);
+        if (next === items) return;
+        await reorderStoreItems(store.id, next.filter(({ id }) => !id.startsWith("temp-")).map(({ id }) => id));
+        setItems(reorder);
       }
+    } catch (error) {
+      setItemError(error instanceof Error ? error.message : "Could not move equipment.");
+    } finally {
+      setMovePending(false);
     }
   }
 
@@ -385,9 +440,10 @@ export function StoreBuilder({
     <DndContext
       id={dragContextId}
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={detectStoreCollision}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onDragCancel={() => setActiveDrag(null)}
     >
       <div className="mx-auto flex h-[calc(100dvh-3.5rem-1px)] min-h-0 max-w-[1500px] flex-col overflow-hidden px-4 sm:px-6">
         {/* header */}
@@ -489,6 +545,7 @@ export function StoreBuilder({
             initialGrouping={store.equipmentGrouping}
             onGroupingChange={(mode) => saveStoreEquipmentGrouping(store.id, mode)}
             sortByNumber={sortByNumber}
+            movePending={movePending}
             onSortChange={setSortByNumber}
             onBulkUpdate={async (ids, changes, currentCustomGroup) => {
               const result = await updateStoreItemPlacements(store.id, ids, changes, currentCustomGroup);
@@ -833,6 +890,7 @@ function StoreDropZone({
   items,
   catalogSpecUrls,
   initialGrouping,
+  movePending,
   onGroupingChange,
   sortByNumber,
   onSortChange,
@@ -853,6 +911,7 @@ function StoreDropZone({
   items: StoreItemDTO[];
   catalogSpecUrls: ReadonlyMap<string, string | null>;
   initialGrouping: StoreEquipmentGrouping;
+  movePending: boolean;
   onGroupingChange: (mode: StoreEquipmentGrouping) => Promise<void>;
   sortByNumber: boolean;
   onSortChange: (sortByNumber: boolean) => void;
@@ -935,16 +994,16 @@ function StoreDropZone({
     });
   }
 
-  function renderRow({ item: it, index: idx }: (typeof indexedItems)[number]) {
+  function renderRow({ item: it, index: idx }: (typeof indexedItems)[number], group?: GroupTarget) {
     return (
       <SortableStoreRow
         key={it.id}
-        grouped={grouped}
+        group={group}
         item={it}
         catalogSpecUrl={it.equipmentId ? catalogSpecUrls.get(it.equipmentId) : undefined}
         rooms={rooms}
         index={idx + 1}
-        reorderDisabled={sortByNumber || grouped}
+        reorderDisabled={movePending || (!group && sortByNumber) || it.id.startsWith("temp-")}
         selected={selection.has(it.id)}
         selectionDisabled={bulkPending || it.id.startsWith("temp-")}
         onSelect={(checked) => setSelection((current) => {
@@ -1123,7 +1182,7 @@ function StoreDropZone({
               {orderedGroups.map(([name, entries]) => (
                 <div key={JSON.stringify([grouping, name])} className="relative mb-1">
                   <details className="group/room">
-                    <summary className={cn(
+                    <GroupSummary group={{ mode: grouping, name }} className={cn(
                       "flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/50 bg-white/65 px-3 py-2 text-sm font-medium text-gray-800 hover:border-brand-200 [&::-webkit-details-marker]:hidden",
                       grouping === "custom" && name !== null && "pr-24"
                     )}>
@@ -1131,8 +1190,10 @@ function StoreDropZone({
                       <ChevronDown size={14} aria-hidden="true" className="hidden group-open/room:block" />
                       <span className="truncate">{name ?? unassignedLabel}</span>
                       <span className="shrink-0 text-xs font-normal text-gray-500">{entries.length} {entries.length === 1 ? "item" : "items"}</span>
-                    </summary>
-                    <div className="mt-1">{entries.map(renderRow)}</div>
+                    </GroupSummary>
+                    <SortableContext items={entries.map(({ item }) => storeRowDragId(item.id, { mode: grouping, name }))} strategy={verticalListSortingStrategy}>
+                      <div className="mt-1">{entries.map((entry) => renderRow(entry, { mode: grouping, name }))}</div>
+                    </SortableContext>
                   </details>
                   {grouping === "custom" && name !== null && (
                     <div className="absolute right-2 top-1 flex gap-1">
@@ -1177,7 +1238,7 @@ function StoreDropZone({
             </div>
           ) : (
             <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-              <div className="min-w-[1000px]">{indexedItems.map(renderRow)}</div>
+              <div className="min-w-[1000px]">{indexedItems.map((entry) => renderRow(entry))}</div>
             </SortableContext>
           )}
         </div>
@@ -1186,9 +1247,26 @@ function StoreDropZone({
   );
 }
 
+function storeRowDragId(itemId: string, group?: GroupTarget) {
+  return group ? JSON.stringify([group.mode, group.name, itemId]) : itemId;
+}
+
+function GroupSummary({ group, className, children }: {
+  group: GroupTarget;
+  className: string;
+  children: React.ReactNode;
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: JSON.stringify([group.mode, group.name]),
+    data: { group } satisfies StoreDragData,
+  });
+
+  return <summary ref={setNodeRef} className={cn(className, isOver && "ring-2 ring-brand-400")}>{children}</summary>;
+}
+
 function SortableStoreRow({
   item,
-  grouped,
+  group,
   catalogSpecUrl,
   rooms,
   index,
@@ -1207,7 +1285,7 @@ function SortableStoreRow({
   onSaveRemarks,
 }: {
   item: StoreItemDTO;
-  grouped: boolean;
+  group?: GroupTarget;
   catalogSpecUrl?: string | null;
   rooms: string[];
   index: number;
@@ -1225,12 +1303,12 @@ function SortableStoreRow({
   onReplace: () => void;
   onSaveRemarks: (value: string) => Promise<string | undefined>;
 }) {
-  const instanceId = useId();
   const specUrl = splitStoreSpecSource(item.remarks).specSource ?? catalogSpecUrl;
   const [remarksExpanded, setRemarksExpanded] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: grouped ? `grouped:${instanceId}` : item.id,
-    disabled: { draggable: reorderDisabled, droppable: grouped },
+    id: storeRowDragId(item.id, group),
+    data: { itemId: item.id, group } satisfies StoreDragData,
+    disabled: { draggable: reorderDisabled, droppable: item.id.startsWith("temp-") },
   });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
