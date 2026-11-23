@@ -789,7 +789,7 @@ function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…
   return <div className={cn("min-w-0", !compact && "mb-3")}>
     <details className="relative rounded-md border border-gray-200 bg-white text-xs open:z-10">
       <summary className="cursor-pointer px-2 py-1" aria-label="Choose rooms">
-        <span className="inline-block max-w-[calc(100%-1rem)] truncate align-bottom" title={displayed.join(", ")}>
+        <span className="wrap-anywhere whitespace-normal">
           {displayed.length ? displayed.join(", ") : emptyLabel}
         </span>
       </summary>
@@ -808,8 +808,8 @@ function StoreRoomSelect({ selected, rooms, onSave, emptyLabel = "Room / area…
               try { await onSave(next); }
               catch (err) { setError(err instanceof Error ? err.message : "Could not save rooms."); }
             });
-          }} className="mt-0.5 accent-brand-600" />
-          <span>{name}</span>
+          }} className="mt-0.5 shrink-0 accent-brand-600" />
+          <span className="min-w-0 wrap-anywhere">{name}</span>
         </label>)}
       </fieldset>
     </details>
