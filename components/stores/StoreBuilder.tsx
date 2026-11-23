@@ -44,7 +44,7 @@ import {
   Ruler,
 } from "lucide-react";
 import type { EquipmentDTO, StoreEquipmentGrouping, StoreItemDTO, StoreView } from "@/lib/types";
-import { matchesEquipmentSearch } from "@/lib/equipment-search";
+import { matchesEquipmentSearch, searchTerms } from "@/lib/equipment-search";
 import { PdfCaption } from "@/components/catalog/PdfCaption";
 import { DeptChip } from "@/components/DeptChip";
 import { cn, DEPARTMENTS, sentenceCase, splitStoreSpecSource, STORE_STATUS_OPTIONS } from "@/lib/utils";
@@ -938,6 +938,7 @@ function StoreDropZone({
   const [groupingError, setGroupingError] = useState<string | null>(null);
   const [groupingPending, startGroupingSave] = useTransition();
   const grouped = grouping !== "none";
+  const [scheduleQuery, setScheduleQuery] = useState("");
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const [bulkRooms, setBulkRooms] = useState<string[] | undefined>();
   const [bulkStatus, setBulkStatus] = useState("");
@@ -947,11 +948,21 @@ function StoreDropZone({
   const [bulkPending, startBulkSave] = useTransition();
   const [renamingGroup, setRenamingGroup] = useState<{ name: string; draft: string } | null>(null);
   const [customGroupError, setCustomGroupError] = useState<string | null>(null);
-  const selectableIds = items.filter((item) => !item.id.startsWith("temp-")).map((item) => item.id);
+  const indexedItems = items.map((item, index) => ({ item, index }));
+  const terms = searchTerms(scheduleQuery);
+  const searching = terms.length > 0;
+  const visibleItems = searching ? indexedItems.filter(({ item, index }) => {
+    const searchableText = searchTerms([
+      item.description, item.manufacturer, item.model, item.scheduleNo, index + 1,
+      item.dimension, item.pdfFilename, ...item.rooms, item.drawingPage, item.customGroup,
+    ].join(" ")).join(" ");
+    return terms.every((term) => searchableText.includes(term));
+  }) : indexedItems;
+  const visibleIds = new Set(visibleItems.map(({ item }) => item.id));
+  const selectableIds = visibleItems.filter(({ item }) => !item.id.startsWith("temp-")).map(({ item }) => item.id);
   const selectedIds = selectableIds.filter((id) => selection.has(id));
   const allSelected = selectableIds.length > 0 && selectedIds.length === selectableIds.length;
 
-  const indexedItems = items.map((item, index) => ({ item, index }));
   const groups = new Map<string | null, typeof indexedItems>(
     grouping === "room" ? rooms.map((room) => [room, []]) : []
   );
@@ -975,6 +986,10 @@ function StoreDropZone({
     orderedGroups.sort(([a], [b]) => (a ?? "").localeCompare(b ?? "", undefined, { numeric: true }));
   }
   if (unassigned) orderedGroups.push([null, unassigned]);
+  const visibleGroups = orderedGroups.map(([name, entries]) => ({
+    name,
+    entries: entries.filter(({ item }) => visibleIds.has(item.id)),
+  })).filter(({ entries }) => entries.length > 0);
   const unassignedLabel = grouping === "drawingPage" ? "No drawing page"
     : grouping === "custom" ? "No custom group" : "Unassigned";
 
@@ -1003,7 +1018,7 @@ function StoreDropZone({
         catalogSpecUrl={it.equipmentId ? catalogSpecUrls.get(it.equipmentId) : undefined}
         rooms={rooms}
         index={idx + 1}
-        reorderDisabled={movePending || (!group && sortByNumber) || it.id.startsWith("temp-")}
+        reorderDisabled={searching || movePending || (!group && sortByNumber) || it.id.startsWith("temp-")}
         selected={selection.has(it.id)}
         selectionDisabled={bulkPending || it.id.startsWith("temp-")}
         onSelect={(checked) => setSelection((current) => {
@@ -1075,6 +1090,20 @@ function StoreDropZone({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
         <h2 className="text-sm font-semibold text-gray-700">Store equipment schedule</h2>
         <div className="flex flex-wrap items-center gap-3">
+        <label className="flex min-w-0 items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2 focus-within:border-brand-400">
+          <Search size={14} aria-hidden="true" className="shrink-0 text-gray-400" />
+          <input
+            type="search"
+            aria-label="Search store equipment"
+            placeholder="Search store equipment"
+            value={scheduleQuery}
+            onChange={(event) => {
+              setScheduleQuery(event.target.value);
+              setSelection(new Set());
+            }}
+            className="w-40 min-w-0 py-1 text-xs outline-none"
+          />
+        </label>
         <select
           aria-label="Group equipment by"
           value={grouping}
@@ -1151,6 +1180,8 @@ function StoreDropZone({
         <div className="m-3 flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 text-sm text-gray-400">
           Drag equipment here, or click + on a catalog item
         </div>
+      ) : visibleItems.length === 0 ? (
+        <p role="status" className="px-4 py-3 text-sm text-gray-500">No matching store equipment.</p>
       ) : (
         <div className="scroll-thin min-h-0 min-w-0 flex-1 overflow-auto p-2">
           {/* header row */}
@@ -1179,9 +1210,9 @@ function StoreDropZone({
           </div>
           {grouped ? (
             <div className="min-w-[1000px]">
-              {orderedGroups.map(([name, entries]) => (
+              {visibleGroups.map(({ name, entries }) => (
                 <div key={JSON.stringify([grouping, name])} className="relative mb-1">
-                  <details className="group/room">
+                  <details key={String(searching)} open={searching || undefined} className="group/room">
                     <GroupSummary group={{ mode: grouping, name }} className={cn(
                       "flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/50 bg-white/65 px-3 py-2 text-sm font-medium text-gray-800 hover:border-brand-200 [&::-webkit-details-marker]:hidden",
                       grouping === "custom" && name !== null && "pr-24"
@@ -1237,8 +1268,8 @@ function StoreDropZone({
               ))}
             </div>
           ) : (
-            <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-              <div className="min-w-[1000px]">{indexedItems.map((entry) => renderRow(entry))}</div>
+            <SortableContext items={visibleItems.map(({ item }) => item.id)} strategy={verticalListSortingStrategy}>
+              <div className="min-w-[1000px]">{visibleItems.map((entry) => renderRow(entry))}</div>
             </SortableContext>
           )}
         </div>
