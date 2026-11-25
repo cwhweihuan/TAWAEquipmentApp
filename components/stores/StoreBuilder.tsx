@@ -493,12 +493,25 @@ export function StoreBuilder({
             >
               <Download size={15} /> Excel
             </a>
-            <a
-              href={`/api/stores/${store.id}/export.zip`}
-              className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <FileText size={15} /> PDFs
-            </a>
+            <details className="relative open:z-20">
+              <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <FileText size={15} /> PDFs <ChevronDown size={14} />
+              </summary>
+              <div className="absolute right-0 top-full mt-1 w-max rounded-lg border border-gray-200 bg-white p-1 text-sm text-gray-700 shadow-lg">
+                <a
+                  href={`/api/stores/${store.id}/export.zip?numbering=floor-plan`}
+                  className="block rounded-md px-3 py-2 hover:bg-brand-50 focus-visible:bg-brand-50"
+                >
+                  By Floor plan no.
+                </a>
+                <a
+                  href={`/api/stores/${store.id}/export.zip?numbering=schedule`}
+                  className="block rounded-md px-3 py-2 hover:bg-brand-50 focus-visible:bg-brand-50"
+                >
+                  By Equipment Schedule #
+                </a>
+              </div>
+            </details>
           </div>
         </div>
 

@@ -1,5 +1,9 @@
 # 更新日志 / Changelog
 
+## 2026-11-25
+
+- ✅ **門店設備 PDF 下載**：從 PDFs 按鈕選擇以 Floor plan no. 或 Equipment Schedule # 作為 ZIP 內的檔名前綴。圖號模式將未填圖號的設備標為 `Unnumbered`。
+
 ## 2026-11-23
 
 - ✅ **門店設備搜尋**：Store Equipment Schedule 可搜尋已加入門店的設備，包括自訂設備。分組檢視會展開符合的結果。
